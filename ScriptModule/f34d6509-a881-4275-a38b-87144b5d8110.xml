@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createTag" result-type="void" api-version="6.0.0" id="f34d6509-a881-4275-a38b-87144b5d8110" version="0.0.2" allowed-operations="vf" category-name="com.vmware.library.aws">
+  <description><![CDATA[Adds or overwrites one or more tags for the specified resource or resources. Each resource can have a maximum of 10 tags. Each tag consists of a key and optional value. Tag keys must be unique per resource.]]></description>
+  <param n="client" t="AWS:AWSClient"><![CDATA[AWS client]]></param>
+  <param n="resourceId" t="string"><![CDATA[The IDs of the resource to tag]]></param>
+  <param n="key" t="string"><![CDATA[Tag key]]></param>
+  <param n="value" t="string"><![CDATA[Tag value]]></param>
+  <script encoded="false"><![CDATA[var ec2Client = client.getAmazonEC2Client();
+
+var tagRequest = new EC2CreateTagsRequest();
+
+//Set resource id
+var resourceIds = new Array();
+resourceIds.push(resourceId);
+tagRequest.withResources(resourceIds);
+
+//Set tag
+var tags = new Array();
+var tag = new EC2Tag();
+tag.setKey(key);
+tag.setValue(value);
+tags.push(tag);
+tagRequest.withTags(tags);
+
+ec2Client.createTags(tagRequest);]]></script>
+</dunes-script-module>

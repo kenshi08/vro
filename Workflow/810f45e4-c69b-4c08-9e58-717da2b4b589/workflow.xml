@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="810f45e4-c69b-4c08-9e58-717da2b4b589" version="1.1.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Add a computer in an OU]]></display-name>
+  <description><![CDATA[Creates an Active Directory computer in an organizational unit.]]></description>
+  <position y="20.0" x="180.0"/>
+  <input>
+    <param name="payload" type="Properties"/>
+  </input>
+  <output>
+    <param name="newComputer" type="AD:ComputerAD"/>
+  </output>
+  <attrib name="ou" type="AD:OrganizationalUnit" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='%23_v2_%23%2C%23OU%23%2C%237dc79035-c055-4569-bf3d-f7a3729d2ac2%23%2C%23OU%3DRainpole%2CDC%3Dcorp%2CDC%3Dlocal%23'&dunesName='AD:OrganizationalUnit']]></value>
+    <description><![CDATA[Parent organizational unit for the new computer]]></description>
+  </attrib>
+  <attrib name="computerName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Name for the new computer]]></description>
+  </attrib>
+  <attrib name="domainName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[corp.local]]></value>
+    <description><![CDATA[Domain name in form: company.sample (optional)]]></description>
+  </attrib>
+  <workflow-item name="item2" type="end" end-mode="0">
+    <position y="263.59090909090907" x="185.0"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item1" type="task" script-module="com.vmware.library.microsoft.activeDirectory/createComputer">
+    <display-name><![CDATA[createComputer]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.microsoft.activeDirectory").createComputer(parent,computerName,domainName) ;]]></script>
+    <in-binding>
+      <bind name="computerName" type="string" export-name="computerName">
+        <description><![CDATA[Name for the new computer]]></description>
+      </bind>
+      <bind name="domainName" type="string" export-name="domainName">
+        <description><![CDATA[Domain name if provided]]></description>
+      </bind>
+      <bind name="parent" type="AD:OrganizationalUnit" export-name="ou">
+        <description><![CDATA[Parent for the new computer]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Create a computer in the Active Directory]]></description>
+    <position y="155.4090909090909" x="145.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.library.microsoft.activeDirectory/getComputerFromContainer">
+    <display-name><![CDATA[getComputerFromContainer]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").getComputerFromContainer(container,computerName) ;]]></script>
+    <in-binding>
+      <bind name="computerName" type="string" export-name="computerName">
+        <description><![CDATA[Name of the computer]]></description>
+      </bind>
+      <bind name="container" type="AD:OrganizationalUnit" export-name="ou">
+        <description><![CDATA[Organizationl Unit / Group]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="AD:ComputerAD" export-name="newComputer"/>
+    </out-binding>
+    <description><![CDATA[Gets a computer by its name in the given OU or group (container).]]></description>
+    <position y="209.95454545454544" x="145.0"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[var executionContext = System.getContext();
+
+System.log(payload.get("requestId")) ;
+
+var machine = payload.get("machine") ;
+
+System.log(machine.get("name")) ;
+
+vmName = machine.get("name") ;
+var vmID = machine.get("id") ;
+var moref = machine.get("externalReference") ;
+
+System.log("VM id " + vmID) ;
+
+System.log(executionContext) ;]]></script>
+    <in-binding>
+      <bind name="payload" type="Properties" export-name="payload"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vmName" type="string" export-name="computerName"/>
+    </out-binding>
+    <position y="91.77272727272727" x="145.0"/>
+  </workflow-item>
+  <presentation>
+    <p-step>
+      <title><![CDATA[Create a computer in an organizational unit]]></title>
+      <p-group>
+        <title><![CDATA[Details]]></title>
+        <desc><![CDATA[Provide a domain name if it is not the same as the default domain name.]]></desc>
+      </p-group>
+    </p-step>
+    <p-param name="payload">
+      <desc><![CDATA[payload]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

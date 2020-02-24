@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="02fb442b-26f9-44cf-bd93-9c4c8602be0e" version="0.0.7" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Reboot VM]]></display-name>
+  <description><![CDATA[Reboot a managed VM in Cloud Automation Center.]]></description>
+  <error-handler name="item7" throw-bind-name="errorCode">
+    <position y="72.68181818181817" x="45.0"/>
+  </error-handler>
+  <position y="9.045454545454543" x="45.0"/>
+  <input>
+    <param name="vCACVm" type="vCAC:VirtualMachine">
+      <description><![CDATA[vCAC Virtual Machine]]></description>
+    </param>
+    <param name="vCACVmName" type="string">
+      <description><![CDATA[VM Name]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="finalResult" type="string"/>
+  </output>
+  <attrib name="vm" type="vCAC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="vmName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="result" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="sleepTime" type="number" read-only="false">
+    <value encoded="n"><![CDATA[120.0]]></value>
+    <description><![CDATA[Time to sleep in seconds]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="9.045454545454543" x="804.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[init]]></display-name>
+    <script encoded="false"><![CDATA[vm     = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineByNameOrObject(vCACVmName,vCACVm) ;
+vmName = vm.virtualMachineName;
+
+System.log('Initiating reboot request for '+vmName);]]></script>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vCACVm"/>
+      <bind name="vCACVmName" type="string" export-name="vCACVmName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vm"/>
+      <bind name="vmName" type="string" export-name="vmName"/>
+    </out-binding>
+    <position y="19.045454545454543" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item8" type="link" linked-workflow-id="198f1424-db60-48ca-9112-1e0933a63720">
+    <display-name><![CDATA[Shutdown vCAC VM]]></display-name>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[vCAC Virtual Machine]]></description>
+      </bind>
+      <bind name="vCACVmName" type="string" explicitly-not-bound="true" export-name="NULL"/>
+    </in-binding>
+    <out-binding>
+      <bind name="finalResult" type="string" export-name="finalResult"/>
+    </out-binding>
+    <position y="19.045454545454543" x="244.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item5" type="link" linked-workflow-id="3135ea7c-599b-4e73-afd1-35466df52995">
+    <display-name><![CDATA[Power On vCAC VM]]></display-name>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[vCAC Virtual Machine]]></description>
+      </bind>
+      <bind name="vCACVmName" type="string" explicitly-not-bound="true" export-name="NULL"/>
+    </in-binding>
+    <out-binding>
+      <bind name="finalResult" type="string" export-name="result"/>
+    </out-binding>
+    <position y="19.045454545454543" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item4" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="72.68181818181817" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item0" type="task">
+    <display-name><![CDATA[set outputs]]></display-name>
+    <script encoded="false"><![CDATA[finalResult = result;
+]]></script>
+    <in-binding>
+      <bind name="result" type="string" export-name="result"/>
+    </in-binding>
+    <out-binding>
+      <bind name="finalResult" type="string" export-name="finalResult"/>
+    </out-binding>
+    <position y="19.045454545454543" x="644.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item4" type="task">
+    <display-name><![CDATA[set outputs]]></display-name>
+    <script encoded="false"><![CDATA[finalResult = result;
+]]></script>
+    <in-binding>
+      <bind name="result" type="string" export-name="result"/>
+    </in-binding>
+    <out-binding>
+      <bind name="finalResult" type="string" export-name="finalResult"/>
+    </out-binding>
+    <position y="82.68181818181817" x="244.5"/>
+  </workflow-item>
+  <workflow-item name="item7" prototype-id="system-error" out-name="item6" type="task" interaction="l">
+    <display-name><![CDATA[System error]]></display-name>
+    <script encoded="false"><![CDATA[//Auto-generated script
+System.error(text);
+]]></script>
+    <in-binding>
+      <bind name="text" type="String" export-name="errorCode">
+        <description><![CDATA[The text to log]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Log the input text to the console log with level 'error']]></description>
+    <position y="82.68181818181817" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item8" prototype-id="sleep" out-name="item3" content-mode="x" type="task">
+    <display-name><![CDATA[Sleep]]></display-name>
+    <script encoded="false"><![CDATA[//Auto-generated script
+if ( sleepTime != null )  {
+	System.sleep(sleepTime*1000);
+}
+else  {
+	throw "'sleepTime' is NULL";
+}
+]]></script>
+    <in-binding>
+      <bind name="sleepTime" type="number" export-name="sleepTime">
+        <description><![CDATA[Time to sleep in seconds]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Sleep a given number of seconds]]></description>
+    <position y="19.045454545454543" x="384.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vCACVm">
+      <desc><![CDATA[vCAC Virtual Machine]]></desc>
+    </p-param>
+    <p-param name="vCACVmName">
+      <desc><![CDATA[VM Name]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

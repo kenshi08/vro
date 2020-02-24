@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getAllTableNamesForNamespaceDb" result-type="Array/string" api-version="6.0.0" id="f6b623df-fe28-4b58-b384-a8a0af01ac06" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes.sql">
+  <description><![CDATA[This action returns an array of strings containing the names of all tables for the SQL:Database that is set as a Custom Property (key = sqlDb) on the given Namespace.]]></description>
+  <param n="namespace" t="DynamicTypes:DynamicNamespaceDefinition"/>
+  <script encoded="false"><![CDATA[if (!namespace) return [];
+var database = System.getModule("com.vmware.library.customProperties").getCustomProperty(namespace,"sqlDb");
+var tableNames = System.getModule("com.vmware.library.sql.configuration").getAllTableNames(database);
+return tableNames;]]></script>
+</dunes-script-module>

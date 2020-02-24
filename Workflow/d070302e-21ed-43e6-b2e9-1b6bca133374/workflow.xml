@@ -1,0 +1,426 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="d070302e-21ed-43e6-b2e9-1b6bca133374" version="0.0.5" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[2 - Define a Type and its parent folder]]></display-name>
+  <description><![CDATA[Create a type and its root / parent folder.
+If the types exist, update its icon & properties]]></description>
+  <position y="0.0" x="25.0"/>
+  <input>
+    <param name="icon" type="ResourceElement">
+      <description><![CDATA[Resource element image to be used as inventory icon]]></description>
+    </param>
+    <param name="typeName" type="string">
+      <description><![CDATA[Name of type]]></description>
+    </param>
+    <param name="namespace" type="DynamicTypes:DynamicNamespaceDefinition">
+      <description><![CDATA[Namespace]]></description>
+    </param>
+    <param name="idField" type="string">
+      <description><![CDATA[Choose the database column to be used as inventory ID]]></description>
+    </param>
+    <param name="nameField" type="string">
+      <description><![CDATA[Choose the database column to be used as inventory Name]]></description>
+    </param>
+    <param name="folderName" type="string">
+      <description><![CDATA[Folder Name]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="objectType" type="DynamicTypes:DynamicTypeDefinition"/>
+  </output>
+  <attrib name="generateWorkflowStubs" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+  </attrib>
+  <attrib name="workflowStubsCategory" type="WorkflowCategory" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="findByIdBindingType" type="string" read-only="false">
+    <value encoded="n"><![CDATA[action]]></value>
+  </attrib>
+  <attrib name="findByIdBindingAction" type="Action" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/Action?id='55ee6642-e7d1-4816-863a-5aeff993a78f'&dunesName='Action'&name='findById'&category='com.vmware.coe.dynamicTypes.sql']]></value>
+  </attrib>
+  <attrib name="findByIdBindingWorkflow" type="Workflow" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="findAllBindingType" type="string" read-only="false">
+    <value encoded="n"><![CDATA[action]]></value>
+  </attrib>
+  <attrib name="findAllBindingAction" type="Action" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/Action?id='8685ac3b-b835-43a3-88a4-cce2304cd352'&dunesName='Action'&name='findAll'&category='com.vmware.coe.dynamicTypes.sql']]></value>
+  </attrib>
+  <attrib name="findAllBindingWorkflow" type="Workflow" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="hasChildrenInRelationBindingType" type="string" read-only="false">
+    <value encoded="n"><![CDATA[action]]></value>
+  </attrib>
+  <attrib name="hasChildrenInRelationBindingAction" type="Action" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/Action?id='72edc9ce-aed5-4ccd-b66a-ba68f2f6cf66'&dunesName='Action'&name='hasChildrenInRelation'&category='com.vmware.coe.dynamicTypes.sql']]></value>
+  </attrib>
+  <attrib name="hasChildrenInRelationBindingWorkflow" type="Workflow" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="findRelationBindingType" type="string" read-only="false">
+    <value encoded="n"><![CDATA[action]]></value>
+  </attrib>
+  <attrib name="findRelationBindingAction" type="Action" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/Action?id='0190a695-abea-49ea-bd3d-443a30b3ffd4'&dunesName='Action'&name='findRelation'&category='com.vmware.coe.dynamicTypes.sql']]></value>
+  </attrib>
+  <attrib name="findRelationBindingWorkflow" type="Workflow" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="typeDefinition" type="DynamicTypes:DynamicTypeDefinition" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="relationName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="customPropertyKey" type="string" read-only="false">
+    <value encoded="n"><![CDATA[tableName]]></value>
+    <description><![CDATA[Custom property key]]></description>
+  </attrib>
+  <attrib name="newFolder" type="DynamicTypes:DynamicTypeDefinition" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="idFieldCustomPropKey" type="string" read-only="false">
+    <value encoded="n"><![CDATA[idField]]></value>
+  </attrib>
+  <attrib name="nameFieldCustomPropKey" type="string" read-only="false">
+    <value encoded="n"><![CDATA[nameField]]></value>
+  </attrib>
+  <attrib name="props" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Properties]]></description>
+  </attrib>
+  <attrib name="parentFolder" type="DynamicTypes:DynamicTypeDefinition" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Parent Folder]]></description>
+  </attrib>
+  <workflow-note x="596.5" y="751.7272727272726" w="137.0" h="174.0">
+    <description><![CDATA[Check if type exist. If it does update it]]></description>
+  </workflow-note>
+  <workflow-note x="540.0" y="40.590909090909086" w="380.0" h="37.0">
+    <description><![CDATA[Set Custom Properties on DynamicTypeDefinition:
+folderName - Database table name
+idField - Database table column to be used for Inventory ID
+nameField - Database table column to be used for Inventory Name]]></description>
+  </workflow-note>
+  <workflow-item name="item1" out-name="item12" throw-bind-name="errorCode" type="link" linked-workflow-id="52d82b26-4142-44c4-87d6-3d26b2075502">
+    <display-name><![CDATA[Define Type]]></display-name>
+    <in-binding>
+      <bind name="namespace" type="DynamicTypes:DynamicNamespaceDefinition" export-name="namespace"/>
+      <bind name="typeName" type="string" export-name="typeName"/>
+      <bind name="icon" type="ResourceElement" export-name="icon"/>
+      <bind name="props" type="Array/string" export-name="props"/>
+      <bind name="generateWorkflowStubs" type="boolean" export-name="generateWorkflowStubs"/>
+      <bind name="workflowStubsCategory" type="WorkflowCategory" export-name="workflowStubsCategory"/>
+      <bind name="findByIdBindingType" type="string" export-name="findByIdBindingType"/>
+      <bind name="findByIdBindingAction" type="Action" export-name="findByIdBindingAction"/>
+      <bind name="findByIdBindingWorkflow" type="Workflow" export-name="findByIdBindingWorkflow"/>
+      <bind name="findAllBindingType" type="string" export-name="findAllBindingType"/>
+      <bind name="findAllBindingAction" type="Action" export-name="findAllBindingAction"/>
+      <bind name="findAllBindingWorkflow" type="Workflow" export-name="findAllBindingWorkflow"/>
+      <bind name="hasChildrenInRelationBindingType" type="string" export-name="hasChildrenInRelationBindingType"/>
+      <bind name="hasChildrenInRelationBindingAction" type="Action" export-name="hasChildrenInRelationBindingAction"/>
+      <bind name="hasChildrenInRelationBindingWorkflow" type="Workflow" export-name="hasChildrenInRelationBindingWorkflow"/>
+      <bind name="findRelationBindingType" type="string" export-name="findRelationBindingType"/>
+      <bind name="findRelationBindingAction" type="Action" export-name="findRelationBindingAction"/>
+      <bind name="findRelationBindingWorkflow" type="Workflow" export-name="findRelationBindingWorkflow"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="DynamicTypes:DynamicTypeDefinition" export-name="typeDefinition"/>
+    </out-binding>
+    <position y="9.954545454545453" x="504.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item10" type="condition" alt-out-name="item8" comparator="0">
+    <display-name><![CDATA[Parent folder ?]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (parentFolder  != null ) ;]]></script>
+    <in-binding>
+      <bind name="parentFolder" type="DynamicTypes:DynamicTypeDefinition" export-name="parentFolder"/>
+    </in-binding>
+    <condition name="parentFolder" type="DynamicTypes:DynamicTypeDefinition" comparator="0" label="null"/>
+    <position y="0.0" x="984.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item13" throw-bind-name="errorCode" type="link" linked-workflow-id="ca57483e-7a3b-4934-9f81-1fa46ab61ffd">
+    <display-name><![CDATA[Define root db folder]]></display-name>
+    <in-binding>
+      <bind name="childType" type="DynamicTypes:DynamicTypeDefinition" export-name="typeDefinition"/>
+      <bind name="namespace" type="DynamicTypes:DynamicNamespaceDefinition" export-name="namespace"/>
+      <bind name="typeName" type="string" export-name="folderName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="newFolder" type="DynamicTypes:DynamicTypeDefinition" export-name="newFolder"/>
+    </out-binding>
+    <description><![CDATA[Create 1 relation + 1 object definition
+]]></description>
+    <position y="9.954545454545453" x="1104.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item11" throw-bind-name="errorCode" type="link" linked-workflow-id="53a325f0-8a2a-4cea-82f6-c73e9e8fa93c">
+    <display-name><![CDATA[Define Relation]]></display-name>
+    <in-binding>
+      <bind name="parentType" type="DynamicTypes:DynamicTypeDefinition" export-name="parentFolder"/>
+      <bind name="childType" type="DynamicTypes:DynamicTypeDefinition" export-name="typeDefinition"/>
+      <bind name="relationName" type="string" export-name="relationName"/>
+    </in-binding>
+    <out-binding/>
+    <position y="73.59090909090908" x="1344.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item9" type="task">
+    <display-name><![CDATA[Set relationName]]></display-name>
+    <script encoded="false"><![CDATA[relationName = parentFolder.name + "-" + typeDefinition.name;]]></script>
+    <in-binding>
+      <bind name="parentFolder" type="DynamicTypes:DynamicTypeDefinition" export-name="parentFolder"/>
+      <bind name="typeDefinition" type="DynamicTypes:DynamicTypeDefinition" export-name="typeDefinition"/>
+    </in-binding>
+    <out-binding>
+      <bind name="relationName" type="string" export-name="relationName"/>
+    </out-binding>
+    <position y="73.59090909090908" x="984.5"/>
+  </workflow-item>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="0.45454545454545325" x="1504.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item18" type="task" script-module="com.vmware.coe.dynamicTypes/getTypeDefinitionByName">
+    <display-name><![CDATA[getTypeDefinitionByName]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.coe.dynamicTypes").getTypeDefinitionByName(namespace,typeName) ;]]></script>
+    <in-binding>
+      <bind name="namespace" type="DynamicTypes:DynamicNamespaceDefinition" export-name="namespace"/>
+      <bind name="typeName" type="string" export-name="typeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="DynamicTypes:DynamicTypeDefinition" export-name="typeDefinition"/>
+    </out-binding>
+    <position y="9.954545454545453" x="105.0"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" type="condition" alt-out-name="item1" comparator="0">
+    <display-name><![CDATA[Type exist ?]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (typeDefinition  != null ) ;]]></script>
+    <in-binding>
+      <bind name="typeDefinition" type="DynamicTypes:DynamicTypeDefinition" export-name="typeDefinition"/>
+    </in-binding>
+    <condition name="typeDefinition" type="DynamicTypes:DynamicTypeDefinition" comparator="0" label="null"/>
+    <position y="0.0" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item7" type="link" linked-workflow-id="691b2020-20d0-469a-9be3-a57937266c6a">
+    <display-name><![CDATA[Update Type]]></display-name>
+    <in-binding>
+      <bind name="type" type="DynamicTypes:DynamicTypeDefinition" export-name="typeDefinition"/>
+      <bind name="newNamespace" type="DynamicTypes:DynamicNamespaceDefinition" export-name="namespace"/>
+      <bind name="newType" type="string" export-name="typeName"/>
+      <bind name="newIcon" type="ResourceElement" export-name="icon"/>
+      <bind name="newProperties" type="Array/string" export-name="props"/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="DynamicTypes:DynamicTypeDefinition" export-name="objectType"/>
+    </out-binding>
+    <position y="73.59090909090908" x="504.5"/>
+  </workflow-item>
+  <workflow-item name="item5" type="end" end-mode="0">
+    <position y="118.13636363636363" x="904.5"/>
+  </workflow-item>
+  <workflow-item name="item11" out-name="item0" type="task">
+    <display-name><![CDATA[Set output]]></display-name>
+    <script encoded="false"><![CDATA[objectType = typeDefinition;]]></script>
+    <in-binding>
+      <bind name="typeDefinition" type="DynamicTypes:DynamicTypeDefinition" export-name="typeDefinition"/>
+    </in-binding>
+    <out-binding>
+      <bind name="objectType" type="DynamicTypes:DynamicTypeDefinition" export-name="objectType"/>
+    </out-binding>
+    <position y="9.954545454545453" x="1344.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item14" type="task" script-module="com.vmware.library.customProperties/setCustomProperty">
+    <display-name><![CDATA[setCustomProperty]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.customProperties").setCustomProperty(object,key,value) ;]]></script>
+    <in-binding>
+      <bind name="object" type="Any" export-name="typeDefinition">
+        <description><![CDATA[Object to which affect the custome property]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="customPropertyKey">
+        <description><![CDATA[Custom property key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="folderName">
+        <description><![CDATA[Custom property value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Set a custom property on an object]]></description>
+    <position y="73.59090909090908" x="624.5"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item16" type="task" script-module="com.vmware.library.customProperties/setCustomProperty">
+    <display-name><![CDATA[setCustomProperty]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.customProperties").setCustomProperty(object,key,value) ;]]></script>
+    <in-binding>
+      <bind name="object" type="Any" export-name="typeDefinition">
+        <description><![CDATA[Object to which affect the custome property]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="customPropertyKey">
+        <description><![CDATA[Custom property key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="folderName">
+        <description><![CDATA[Custom property value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Set a custom property on an object]]></description>
+    <position y="9.954545454545453" x="624.5"/>
+  </workflow-item>
+  <workflow-item name="item13" out-name="item11" type="task" script-module="com.vmware.library.customProperties/setCustomProperty">
+    <display-name><![CDATA[setCustomProperty]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.customProperties").setCustomProperty(object,key,value) ;]]></script>
+    <in-binding>
+      <bind name="object" type="Any" export-name="newFolder">
+        <description><![CDATA[Object to which affect the custome property]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="customPropertyKey">
+        <description><![CDATA[Custom property key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="folderName">
+        <description><![CDATA[Custom property value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Set a custom property on an object]]></description>
+    <position y="9.954545454545453" x="1224.5"/>
+  </workflow-item>
+  <workflow-item name="item14" out-name="item15" type="task" script-module="com.vmware.library.customProperties/setCustomProperty">
+    <display-name><![CDATA[setCustomProperty]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.customProperties").setCustomProperty(object,key,value) ;]]></script>
+    <in-binding>
+      <bind name="object" type="Any" export-name="typeDefinition">
+        <description><![CDATA[Object to which affect the custome property]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="idFieldCustomPropKey">
+        <description><![CDATA[Custom property key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="idField">
+        <description><![CDATA[Custom property value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Set a custom property on an object]]></description>
+    <position y="73.59090909090908" x="744.5"/>
+  </workflow-item>
+  <workflow-item name="item15" out-name="item5" type="task" script-module="com.vmware.library.customProperties/setCustomProperty">
+    <display-name><![CDATA[setCustomProperty]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.customProperties").setCustomProperty(object,key,value) ;]]></script>
+    <in-binding>
+      <bind name="object" type="Any" export-name="typeDefinition">
+        <description><![CDATA[Object to which affect the custome property]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="nameFieldCustomPropKey">
+        <description><![CDATA[Custom property key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="nameField">
+        <description><![CDATA[Custom property value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Set a custom property on an object]]></description>
+    <position y="73.59090909090908" x="864.5"/>
+  </workflow-item>
+  <workflow-item name="item16" out-name="item17" type="task" script-module="com.vmware.library.customProperties/setCustomProperty">
+    <display-name><![CDATA[setCustomProperty]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.customProperties").setCustomProperty(object,key,value) ;]]></script>
+    <in-binding>
+      <bind name="object" type="Any" export-name="typeDefinition">
+        <description><![CDATA[Object to which affect the custome property]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="idFieldCustomPropKey">
+        <description><![CDATA[Custom property key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="idField">
+        <description><![CDATA[Custom property value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Set a custom property on an object]]></description>
+    <position y="9.954545454545453" x="744.5"/>
+  </workflow-item>
+  <workflow-item name="item17" out-name="item6" type="task" script-module="com.vmware.library.customProperties/setCustomProperty">
+    <display-name><![CDATA[setCustomProperty]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.customProperties").setCustomProperty(object,key,value) ;]]></script>
+    <in-binding>
+      <bind name="object" type="Any" export-name="typeDefinition">
+        <description><![CDATA[Object to which affect the custome property]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="nameFieldCustomPropKey">
+        <description><![CDATA[Custom property key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="nameField">
+        <description><![CDATA[Custom property value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Set a custom property on an object]]></description>
+    <position y="9.954545454545453" x="864.5"/>
+  </workflow-item>
+  <workflow-item name="item18" out-name="item3" type="task">
+    <display-name><![CDATA[Prepare Props]]></display-name>
+    <script encoded="false"><![CDATA[var columns = System.getModule("com.vmware.coe.dynamicTypes.sql").getAllTableColumnNamesForNamespaceDb(namespace,folderName);
+System.debug("Column count: "+columns.length);
+var props = new Array("id","name");
+for each (c in columns){
+	if (c != idField && c != nameField) props.push(c);
+}
+System.debug("Props Count: "+props.length);
+System.debug("Type Definition Properties: "+props);]]></script>
+    <in-binding>
+      <bind name="namespace" type="DynamicTypes:DynamicNamespaceDefinition" export-name="namespace"/>
+      <bind name="idField" type="string" export-name="idField"/>
+      <bind name="nameField" type="string" export-name="nameField"/>
+      <bind name="folderName" type="string" export-name="folderName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="props" type="Array/string" export-name="props"/>
+    </out-binding>
+    <position y="9.954545454545453" x="244.5"/>
+  </workflow-item>
+  <presentation>
+    <p-step>
+      <title><![CDATA[Type definition]]></title>
+      <p-group>
+        <title><![CDATA[Type settings]]></title>
+        <p-param name="namespace">
+          <desc><![CDATA[namespace]]></desc>
+        </p-param>
+        <p-param name="folderName">
+          <desc><![CDATA[Parent folder name (this will be the label of the folder in the inventory - choose a DB Table)]]></desc>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#parentFolder == null]]></p-qual>
+          <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.coe.dynamicTypes.sql","getAllTableNamesForNamespaceDb").call( #namespace )]]></p-qual>
+        </p-param>
+        <p-param name="typeName">
+          <desc><![CDATA[Type name]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+          <p-qual kind="ognl" name="ognlValidator" type="String"><![CDATA[#typeName == #folderName ? "Object name must be different than parent folder name" : ""]]></p-qual>
+        </p-param>
+        <p-param name="idField">
+          <desc><![CDATA[Choose the database column to be used as inventory ID]]></desc>
+          <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.coe.dynamicTypes.sql","getAllTableColumnNamesForNamespaceDb").call( #namespace , #folderName )]]></p-qual>
+        </p-param>
+        <p-param name="nameField">
+          <desc><![CDATA[Choose the database column to be used as inventory Name]]></desc>
+          <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.coe.dynamicTypes.sql","getAllTableColumnNamesForNamespaceDb").call( #namespace , #folderName )]]></p-qual>
+        </p-param>
+        <p-param name="icon">
+          <desc><![CDATA[Icon Resource]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+          <p-qual kind="static" name="defaultValue" type="ResourceElement"><![CDATA[dunes://service.dunes.ch/ResourceElement?id='7a53f356-d7b1-44a8-877b-ab1e06ded616'&dunesName='ResourceElement']]></p-qual>
+        </p-param>
+      </p-group>
+    </p-step>
+  </presentation>
+</workflow>

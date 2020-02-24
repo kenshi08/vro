@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="executeCommand" result-type="CompositeType(exitCode:number,error:string,output:string)" api-version="6.0.0" id="156ccfa3-c91a-40ed-a047-b6ef402f3d88" version="0.0.1" allowed-operations="evf" category-name="com.vmware.o11n.plugin.puppet">
+  <param n="master" t="Puppet:Master"/>
+  <param n="command" t="string"/>
+  <param n="args" t="Array/string"/>
+  <script encoded="false"><![CDATA[if (command === null) {
+	command = "";
+}
+
+var argsString = System.getModule("com.vmware.o11n.plugin.puppet").formatShellArguments(args);
+if (argsString !== "") {
+	command += " " + argsString;
+}
+
+System.log("Execute command. command=" + command);
+
+var result = master.executeCommand(command);
+
+var exitCode = result.exitCode;
+var output = result.output.trim();
+var error = result.error.trim();
+
+System.log("Execute command result. command=" + command + " exitCode=" + exitCode + " output=" + output + " error=" + error);
+
+return {exitCode: exitCode, output: output, error: error};]]></script>
+</dunes-script-module>

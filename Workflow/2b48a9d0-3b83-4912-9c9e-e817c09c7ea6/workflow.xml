@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="2b48a9d0-3b83-4912-9c9e-e817c09c7ea6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" editor-version="1.6" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Delete Database]]></display-name>
+  <description><![CDATA[This Workflow Deletes a user-defined database in SQL Server Management Studio in Microsoft SQL Server.]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="DBName" type="SQL:Database">
+      <description><![CDATA[Enter the Database Name]]></description>
+    </param>
+  </input>
+  <attrib name="interactiveSession" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+  </attrib>
+  <attrib name="programPath" type="string" read-only="false">
+    <value encoded="n"><![CDATA[C:\Windows\System32\cmd.exe]]></value>
+  </attrib>
+  <attrib name="arguments" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="workingDirectory" type="string" read-only="false">
+    <value encoded="n"><![CDATA[C:\Windows\System32]]></value>
+  </attrib>
+  <attrib name="environment" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="vmUsername" type="string" read-only="false">
+    <value encoded="n"><![CDATA[neetcloud\administrator]]></value>
+  </attrib>
+  <attrib name="vmPassword" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[8BL56T4DV77G40M72X33J31M21YB341927UD2B2718R43DE77FPB9E7986O397A505M37B2FD4TB1CAD5BO21F2EEBJ8A6BAEAH9088C8EO2CF82D2G34DC824N301A6BTA0D7943P38AB96V2EA9B20JCD6112ALD8DD03ENA5348B0ID866D8CM3CE3AB7M57BD039W8062EF3T75C757CJ]]></value>
+  </attrib>
+  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-57'&dunesName='VC:VirtualMachine']]></value>
+  </attrib>
+  <attrib name="sqluser" type="string" read-only="false">
+    <value encoded="n"><![CDATA[sa]]></value>
+  </attrib>
+  <attrib name="sqlpwd" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[8BM56O4DY77J40X72R33O31P21K68523E1Y13ED87H4E02226N5C66EB1S6FCB5E9H9284F54JEB7438EQB9EF72DOA7CD48BZA43B29EM9DB245BKED2A22CQ1F3DE9FK23439C7KD727C96J754080ETA84D442QD82C1DFMB1D4F6EM91D1264K896E4D8TE6073E9G21251C1U43F59B5Y]]></value>
+  </attrib>
+  <attrib name="sqlinstance" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="Sqlfilepath" type="string" read-only="false">
+    <value encoded="n"><![CDATA[C:\sqlscripts\DeleteDB.sql]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="464.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Delete Database]]></display-name>
+    <script encoded="false"><![CDATA[var item = SQLDatabaseManager.removeDatabase(DBName);
+
+var dbname=DBName.name.toString();
+
+//System.log(DBName.name.toString());
+
+var host = vm.sdkConnection;
+
+var guestOperationsManager = host.guestOperationsManager;
+var guestAuth = new VcNamePasswordAuthentication();
+guestAuth.username = vmUsername;
+guestAuth.password = vmPassword;
+guestAuth.interactiveSession = interactiveSession;
+var guestProgramSpec = new VcGuestProgramSpec();
+guestProgramSpec.programPath = programPath;
+var arguments="/c sqlcmd -v dbname=\""+dbname+"\" -i "+Sqlfilepath+"";
+System.log(arguments);
+guestProgramSpec.arguments = arguments;
+
+guestProgramSpec.workingDirectory = workingDirectory;
+guestProgramSpec.envVariables = environment;
+
+var processManager = guestOperationsManager.processManager;
+processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);]]></script>
+    <in-binding>
+      <bind name="vmUsername" type="string" export-name="vmUsername"/>
+      <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+      <bind name="programPath" type="string" export-name="programPath"/>
+      <bind name="arguments" type="string" export-name="arguments"/>
+      <bind name="workingDirectory" type="string" export-name="workingDirectory"/>
+      <bind name="environment" type="Array/string" export-name="environment"/>
+      <bind name="interactiveSession" type="boolean" export-name="interactiveSession"/>
+      <bind name="DBName" type="SQL:Database" export-name="DBName"/>
+      <bind name="sqluser" type="string" export-name="sqluser"/>
+      <bind name="sqlpwd" type="SecureString" export-name="sqlpwd"/>
+      <bind name="sqlinstance" type="string" export-name="sqlinstance"/>
+      <bind name="Sqlfilepath" type="string" export-name="Sqlfilepath"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="224.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="DBName">
+      <desc><![CDATA[DBName]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

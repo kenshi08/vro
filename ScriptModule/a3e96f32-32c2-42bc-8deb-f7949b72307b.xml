@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getSystemBlueprintByVirtualMachine" result-type="vCAC:Entity" api-version="6.0.0" id="a3e96f32-32c2-42bc-8deb-f7949b72307b" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <param n="host" t="vCAC:VCACHost"><![CDATA[vCAC host]]></param>
+  <param n="vm" t="vCAC:VirtualMachine"><![CDATA[vCAC virtual machine]]></param>
+  <script encoded="false"><![CDATA[var vmEntity = vm.getEntity();
+var hostEntity = vmEntity.getLink(host, "Host")[0];
+var endpointEntity = hostEntity.getLink(host, "ManagementEndpoint")[0];
+//This is the interface type of the vm
+var interfaceType = endpointEntity.getProperty("InterfaceType");
+System.log("VM interface type is: " + interfaceType);
+var filter = "InterfaceTypeId eq '" + interfaceType + "'";
+var systemBlueprint = vCACEntityManager.readModelEntitiesBySystemQuery(host.id, "ManagementModelEntities.svc", "VirtualMachineTemplates", filter, null, null, 1, 0, null)[0];
+return systemBlueprint;]]></script>
+</dunes-script-module>

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="Workflow:name=generic" id="a15d04dc-f58e-418f-9cb1-6498caad63cb" version="0.2.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Revert Staging VM]]></display-name>
+  <description><![CDATA[Reverts to the current snapshot.]]></description>
+  <position y="10.0" x="160.0"/>
+  <attrib name="task" type="VC:Task" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Task to await]]></description>
+  </attrib>
+  <attrib name="progress" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+    <description><![CDATA[Log progress while waiting for the task to complete]]></description>
+  </attrib>
+  <attrib name="pollRate" type="number" read-only="false">
+    <value encoded="n"><![CDATA[2.0]]></value>
+    <description><![CDATA[Polling rate for the task state, in seconds]]></description>
+  </attrib>
+  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='vcsa-l-01b.nullphase.local/vm-1890'&dunesName='VC:VirtualMachine']]></value>
+    <description><![CDATA[Virtual machine to revert to the current snapshot]]></description>
+  </attrib>
+  <attrib name="host" type="VC:HostSystem" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='vcsa-l-01b.nullphase.local/host-947'&dunesName='VC:HostSystem']]></value>
+    <description><![CDATA[Choice of host for the virtual machine, if this operation causes the virtual machine to power on]]></description>
+  </attrib>
+  <workflow-item name="item0" out-name="item1" type="task" script-module="com.vmware.library.vc.vm.snapshot/revertToCurrentSnapshot">
+    <display-name><![CDATA[revertToCurrentSnapshot]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vc.vm.snapshot").revertToCurrentSnapshot(vm,host) ;]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[The VM to revert to the current snapshot]]></description>
+      </bind>
+      <bind name="host" type="VC:HostSystem" export-name="host">
+        <description><![CDATA[Choice of host for the virtual machine, in case this operation causes the virtual machine to power on. ]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="VC:Task" export-name="task"/>
+    </out-binding>
+    <description><![CDATA[Reverts the virtual machine to the current snapshot. This is equivalent to doing snapshot.currentSnapshot.revert.
+If no snapshot exists, then the operation does nothing, and the virtual machine state remains unchanged.]]></description>
+    <position y="100.0" x="120.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.library.vc.basic/vim3WaitTaskEnd">
+    <display-name><![CDATA[vim3WaitTaskEnd]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vc.basic").vim3WaitTaskEnd(task,progress,pollRate) ;]]></script>
+    <in-binding>
+      <bind name="task" type="VC:Task" export-name="task">
+        <description><![CDATA[Task to Wait for]]></description>
+      </bind>
+      <bind name="progress" type="boolean" export-name="progress">
+        <description><![CDATA[Log progess while waiting for the task]]></description>
+      </bind>
+      <bind name="pollRate" type="number" export-name="pollRate">
+        <description><![CDATA[Polling rate for the task state [seconds]]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Any" explicitly-not-bound="true" export-name="NULL"/>
+    </out-binding>
+    <description><![CDATA[Wait a VIM 3 Task to end.
+When task ended, return the ]]></description>
+    <position y="160.0" x="120.0"/>
+  </workflow-item>
+  <workflow-item name="item2" type="end" end-mode="0">
+    <position y="190.0" x="160.0"/>
+  </workflow-item>
+  <presentation/>
+</workflow>

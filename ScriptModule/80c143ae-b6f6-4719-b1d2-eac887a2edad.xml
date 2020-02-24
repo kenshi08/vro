@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getTypeDefinitionByName" result-type="DynamicTypes:DynamicTypeDefinition" api-version="6.0.0" id="80c143ae-b6f6-4719-b1d2-eac887a2edad" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes">
+  <param n="namespace" t="DynamicTypes:DynamicNamespaceDefinition"/>
+  <param n="typeName" t="string"/>
+  <script encoded="false"><![CDATA[var allTypesDefinitions = Server.findAllForType("DynamicTypes:DynamicTypeDefinition");
+
+for each (var typeDefinition in allTypesDefinitions) {
+	if (typeDefinition.namespace == namespace.name && typeDefinition.name == typeName) {
+		return typeDefinition;
+	}
+}
+return null;]]></script>
+</dunes-script-module>

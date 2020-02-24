@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createStorageAccount" result-type="Azure:StorageAccount" api-version="6.0.0" id="5b6298c2-39ff-41c1-9246-a3b0567bbc72" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.azure">
+  <param n="connection" t="Azure:Connection"><![CDATA[Azure connection]]></param>
+  <param n="resourceGroup" t="Azure:ResourceGroupExtended"><![CDATA[Resource group]]></param>
+  <param n="location" t="Azure:Location"><![CDATA[Azure location]]></param>
+  <param n="storageAccountName" t="string"><![CDATA[Storage account name]]></param>
+  <script encoded="false"><![CDATA[if (!connection) {
+	throw "Connection cannot be null.";
+}
+
+if (!resourceGroup) {
+	throw "Resource group cannot be null.";
+}
+
+if (!location) {
+	throw "Location cannot be null.";
+}
+
+var parameters = new AzureStorageAccountCreateParameters(AzureAccountType.StandardGRS, location.name);
+connection.storageClient.storageAccountsOperations.create(resourceGroup.name, storageAccountName, parameters);
+
+var retries = 30;
+//Wait for the storage client to be created
+while (true) {
+	System.sleep(3000);
+	retries--;
+	var storageAccount = resourceGroup.getStorageAccountByName(storageAccountName);
+	if (storageAccount) {
+		return storageAccount;
+	}
+	if (retries <= 0) {
+		throw "Failed to create storage account '" + storageAccountName + "'";
+	}
+}]]></script>
+</dunes-script-module>

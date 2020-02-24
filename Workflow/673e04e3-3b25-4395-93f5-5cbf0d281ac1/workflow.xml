@@ -1,0 +1,217 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="673e04e3-3b25-4395-93f5-5cbf0d281ac1" version="0.0.4" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Test vRA 7 EB Get Custom Properties Example]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="payload" type="Properties"/>
+  </input>
+  <output>
+    <param name="scriptOutputText" type="string">
+      <description><![CDATA[Output of the script]]></description>
+    </param>
+    <param name="scriptExitCode" type="number">
+      <description><![CDATA[Exit code of the script]]></description>
+    </param>
+  </output>
+  <attrib name="vmname" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="ipaddress" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="myscript" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="mynewscript" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
+    <description><![CDATA[Virtual Machine (VC)]]></description>
+  </attrib>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+    <description><![CDATA[Guest OS username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[8BH56X4DW77W61S72R65U31I21H24B6628P2B6B7BCZEFC117FMA1F563J3B2BB74T9972DC8M1B5A04DU14693FY9ABCDABT72CB16AL4346CDBXB148502OF5FFDA3PF3F19BDHA1B85D5V1C8AAA0Z431BDEAJDC7B4EETDD686DFGDB2EA03M4417990Q177C047K57123E3W489F193J]]></value>
+    <description><![CDATA[Guest OS password]]></description>
+  </attrib>
+  <attrib name="scriptType" type="string" read-only="false">
+    <value encoded="n"><![CDATA[bash]]></value>
+    <description><![CDATA[bash / bat / powershell]]></description>
+  </attrib>
+  <attrib name="scriptTimeout" type="number" read-only="false">
+    <value encoded="n"><![CDATA[10.0]]></value>
+    <description><![CDATA[Timeout for the running script (in second)]]></description>
+  </attrib>
+  <attrib name="scriptRefreshTime" type="number" read-only="false">
+    <value encoded="n"><![CDATA[5.0]]></value>
+    <description><![CDATA[(default) Time (in seconds) where a check of script status occurs]]></description>
+  </attrib>
+  <attrib name="scriptWorkingDirectory" type="string" read-only="false">
+    <value encoded="n"><![CDATA[/tmp]]></value>
+    <description><![CDATA[Script working directory in the guest]]></description>
+  </attrib>
+  <attrib name="interactiveSession" type="boolean" read-only="false">
+    <description><![CDATA[Script context interactivity]]></description>
+  </attrib>
+  <attrib name="vms" type="Array/VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Virtual machines found]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="944.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[Get vRA Properties]]></display-name>
+    <script encoded="false"><![CDATA[var executionContext = System.getContext();
+
+System.log("BlueprintName: " + payload.get("blueprintName")) ;
+System.log("ComponentId: " + payload.get("componentId")) ;
+System.log("ComponentTypeId: " + payload.get("componentTypeId")) ;
+System.log("EndpointId: " + payload.get("endpointId")) ;
+System.log("RequestId: " + payload.get("requestId")) ;
+System.log("VirtualMachineEvent: " + payload.get("virtualMachineEvent")) ;
+System.log("WorkflowNextState: " + payload.get("workflowNextState")) ;
+
+var lifecycleState = payload.get("lifecycleState") ;
+System.log("State: " + lifecycleState.get("state")) ;
+System.log("Phase: " + lifecycleState.get("phase")) ;
+System.log("Event: " + lifecycleState.get("event")) ;
+
+var machine = payload.get("machine") ;
+System.log("ID: " + machine.get("id")) ;
+System.log("Name: " + machine.get("name")) ;
+System.log("ExternalReference: " + machine.get("externalReference")) ;
+System.log("Owner: " + machine.get("owner")) ;
+System.log("Type: " + machine.get("type")) ;
+System.log("Properties: " + machine.get("properties")) ;
+
+var vCACVmProperties = machine.get("properties") ;
+if (vCACVmProperties != null) {
+	var log = "";
+	log += "vCAC VM properties :\n";
+	var array = new Array();
+	for each (var key in vCACVmProperties.keys) {
+		array.push(key + " : " + vCACVmProperties.get(key));	
+	}
+	array.sort();
+	
+	for each (var line in array) {
+		log += "\t" + line + "\n";
+	}	
+	System.log(log);	
+}
+
+//Get custom properties from vRA and store in an attribute
+System.log('Getting the custom properties needed') ;
+var vmname = machine.get("name") ;
+var ipaddress = vCACVmProperties.get("VirtualMachine.Network0.Address") ;
+var myscript =  vCACVmProperties.get("myscript") ;]]></script>
+    <in-binding>
+      <bind name="payload" type="Properties" export-name="payload"/>
+    </in-binding>
+    <out-binding>
+      <bind name="ipaddress" type="string" export-name="ipaddress"/>
+      <bind name="myscript" type="string" export-name="myscript"/>
+      <bind name="vmname" type="string" export-name="vmname"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item4" type="task">
+    <display-name><![CDATA[Make my script]]></display-name>
+    <script encoded="false"><![CDATA[mynewscript = myscript + " " + ipaddress;]]></script>
+    <in-binding>
+      <bind name="ipaddress" type="string" export-name="ipaddress"/>
+      <bind name="myscript" type="string" export-name="myscript"/>
+    </in-binding>
+    <out-binding>
+      <bind name="mynewscript" type="string" export-name="mynewscript"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="link" linked-workflow-id="f8cd5692-92a0-46b6-a98d-53ffd878d779">
+    <display-name><![CDATA[Run Script In Guest]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[Virtual Machine (VC)]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[Guest OS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[Guest OS password]]></description>
+      </bind>
+      <bind name="scriptType" type="string" export-name="scriptType">
+        <description><![CDATA[bash / bat / powershell]]></description>
+      </bind>
+      <bind name="script" type="string" export-name="mynewscript">
+        <description><![CDATA[Script Text]]></description>
+      </bind>
+      <bind name="scriptTimeout" type="number" export-name="scriptTimeout">
+        <description><![CDATA[Timeout for the running script (in second)]]></description>
+      </bind>
+      <bind name="scriptRefreshTime" type="number" export-name="scriptRefreshTime">
+        <description><![CDATA[(default) Time (in seconds) where a check of script status occurs]]></description>
+      </bind>
+      <bind name="scriptWorkingDirectory" type="string" export-name="scriptWorkingDirectory">
+        <description><![CDATA[Script working directory in the guest]]></description>
+      </bind>
+      <bind name="interactiveSession" type="boolean" export-name="interactiveSession">
+        <description><![CDATA[Script context interactivity]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="scriptOutputText" type="string" export-name="scriptOutputText">
+        <description><![CDATA[Output of the script]]></description>
+      </bind>
+      <bind name="scriptExitCode" type="number" export-name="scriptExitCode">
+        <description><![CDATA[Exit code of the script]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Run a script inside the VM and wait until it returns his result.
+Retrieve the output of the script and returns it as output in the workflow
+
+Inspired by implementation done in PowerCLI in the following .NET class :
+- VMware.VimAutomation.ViCore.Impl.V1.RunScriptInGuestHelper
+- VMware.VimAutomation.ViCore.Impl.V1.Service.VmGuestServiceImpl
+
+Requires running VMwareTools instance in the GuestOS.
+Leverages the vSphere 5.x GuestOperationsManager object and is not backwards compatible with previous versions of vSphere.]]></description>
+    <position y="55.40909090909091" x="764.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item3" type="task">
+    <display-name><![CDATA[Convert to VC:VM]]></display-name>
+    <script encoded="false"><![CDATA[//convert array to vc:virtualmachine
+System.log('Converting VMs array to VM object') ;
+vm=vms[0] ;
+System.log('Found VM = ' + vm) ;]]></script>
+    <in-binding>
+      <bind name="vms" type="Array/VC:VirtualMachine" export-name="vms"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+    </out-binding>
+    <position y="55.40909090909091" x="624.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item5" type="link" linked-workflow-id="BB808080808080808080808080808080A180808001322751030482b80adf61e7c">
+    <display-name><![CDATA[Get virtual machines by name]]></display-name>
+    <in-binding>
+      <bind name="criteria" type="string" export-name="vmname">
+        <description><![CDATA[Search criteria. Regular expressions supported.]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="vms" type="Array/VC:VirtualMachine" export-name="vms">
+        <description><![CDATA[Virtual machines found]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Returns a list of virtual machines from all registered vCenter Server hosts that match the provided expression.]]></description>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="payload">
+      <desc><![CDATA[payload]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

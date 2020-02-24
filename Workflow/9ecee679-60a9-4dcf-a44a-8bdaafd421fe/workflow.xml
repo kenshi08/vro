@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="9ecee679-60a9-4dcf-a44a-8bdaafd421fe" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Copy file from vCO to guest]]></display-name>
+  <description><![CDATA[Copies the specified file from the vCO server to the guest file system.]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="vm" type="VC:VirtualMachine">
+      <description><![CDATA[Virtual machine]]></description>
+    </param>
+    <param name="vcoPath" type="string">
+      <description><![CDATA[Path on vCO server]]></description>
+    </param>
+    <param name="guestFilePath" type="string">
+      <description><![CDATA[Guest file path]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="result" type="boolean">
+      <description><![CDATA[Set to true if copy operation was successful]]></description>
+    </param>
+  </output>
+  <attrib name="vmUsername" type="string" read-only="false">
+    <value encoded="n"><![CDATA[administrator]]></value>
+    <description><![CDATA[Username for the virtual machine]]></description>
+  </attrib>
+  <attrib name="vmPassword" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[11A94EC7506CD6CE70F68A61173F65131D2121A3473F99B38DB8EC5BD93B630ABFAC0C322EA8B03D5E3BB47352656605CAD]]></value>
+    <description><![CDATA[Password for the virtual machine]]></description>
+  </attrib>
+  <attrib name="overwrite" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[Overwrite file if exists]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.90909090909091" x="385.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[var host = vm.sdkConnection;
+
+var guestOperationsManager = host.guestOperationsManager;
+var guestAuth = new VcNamePasswordAuthentication();
+guestAuth.username = vmUsername;
+guestAuth.password = vmPassword;
+
+var fileManager = guestOperationsManager.fileManager;
+result = false;
+var attr = new VcGuestFileAttributes();
+var srcFile = new File(vcoPath);
+var uri = fileManager.initiateFileTransferToGuest(vm , guestAuth ,guestFilePath, attr, srcFile.length, overwrite);
+result = fileManager.putFile(vcoPath, uri);]]></script>
+    <in-binding>
+      <bind name="vmUsername" type="string" export-name="vmUsername"/>
+      <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+      <bind name="guestFilePath" type="string" export-name="guestFilePath"/>
+      <bind name="vcoPath" type="string" export-name="vcoPath"/>
+      <bind name="overwrite" type="boolean" export-name="overwrite"/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="boolean" export-name="result"/>
+    </out-binding>
+    <position y="55.90909090909091" x="205.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vm">
+      <desc><![CDATA[Virtual machine]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="guestFilePath">
+      <desc><![CDATA[Guest file path]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="vcoPath">
+      <desc><![CDATA[Path on vCO server]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

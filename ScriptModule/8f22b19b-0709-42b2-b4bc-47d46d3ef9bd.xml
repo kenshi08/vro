@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getSampleExchangeBlueprintNames" result-type="Array/string" api-version="6.0.0" id="8f22b19b-0709-42b2-b4bc-47d46d3ef9bd" version="0.0.3" allowed-operations="evf" category-name="com.vmware.coe.vra.content">
+  <script encoded="false"><![CDATA[var restHost = RESTHostManager.createHost("vdc-repo.vmware.com");
+var transientHost = RESTHostManager.createTransientHostFrom(restHost);
+transientHost.url = "https://vdc-repo.vmware.com";
+
+var request = transientHost.createRequest("GET", "/sampleExchange/v1/search/samples/tag/category/Language/name/vRA%20Blueprint");
+var response = request.execute();
+
+statusCode = response.statusCode;
+System.log("Status code: " + statusCode);
+contentAsString = response.contentAsString;
+
+
+var blueprints = JSON.parse(contentAsString);
+System.log("Found " + blueprints.length + " blueprints");
+
+var blueprintNames = new Array();
+
+for each (var blueprint in blueprints) {
+	blueprintNames.push(blueprint.name);
+}
+
+return blueprintNames;]]></script>
+</dunes-script-module>

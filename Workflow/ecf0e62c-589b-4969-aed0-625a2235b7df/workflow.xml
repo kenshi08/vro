@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="ecf0e62c-589b-4969-aed0-625a2235b7df" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Test findAll]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="type" type="string"/>
+  </input>
+  <attrib name="assets" type="Array/DynamicTypes:MyCMDB.Asset" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[findAll]]></display-name>
+    <script encoded="false"><![CDATA[var startDate = new Date();
+
+System.debug("com.vmware.coe.dynamicTypes.sql/findAll - type :" + type);
+
+var namespace = type.split(".")[0];
+type = type.split(".")[1];
+var ns = DynamicTypesManager.getNamespace(namespace);
+var typeObj = DynamicTypesManager.getType(namespace,type);
+
+var sqlDb = System.getModule("com.vmware.library.customProperties").getCustomProperty(ns,"sqlDb");
+var sqlTableName = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"tableName");
+var idField = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"idField");
+var nameField = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"nameField");
+
+var sqlTables = sqlDb.getTables();
+for each (table in sqlTables){
+	if (table.name == sqlTableName){
+		var sqlTable = table;
+		break;
+	}
+}
+if (!sqlTable) throw "cannot get table: " + sqlTableName;
+var columns = System.getModule("com.vmware.coe.sql").getTableColumnNames(sqlTableName,sqlDb);
+System.debug("Columns found: "+columns);
+
+var records = sqlTable.readRecords(null,false);
+System.debug("Records found: "+records.length);
+
+var objects = new Array();
+for each (var record in  records) {
+	var objProps = new Properties();
+	for each (field in columns){
+		if (field == idField){
+			objProps.put("id", record.getProperty(field));
+		}else if (field == nameField){
+			objProps.put("name", record.getProperty(field));
+		} else {
+			objProps.put(field, record.getProperty(field));
+		}
+	}
+	objects.push(System.getModule("com.vmware.coe.dynamicTypes").makeDynamicObjectFromProperties(namespace, type, objProps));
+}
+
+
+if (objects.length >0) {
+	System.debug("Completed query in " + ((new Date()).getTime() - startDate.getTime()) / 1000 + " seconds");
+}
+System.debug(objects);
+//return objects; 	
+var assets = objects;
+System.debug("Object type: "+System.getObjectType(objects[0]));]]></script>
+    <in-binding>
+      <bind name="type" type="string" export-name="type"/>
+    </in-binding>
+    <out-binding>
+      <bind name="assets" type="Array/DynamicTypes:MyCMDB.Asset" export-name="assets"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="type">
+      <desc><![CDATA[type]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

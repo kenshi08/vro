@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getBlueprintNames" result-type="Array/string" api-version="6.0.0" id="2211e19b-f165-405e-a47a-fac9c65958e2" version="0.0.2" allowed-operations="evf" category-name="com.vmware.coe.vra.content">
+  <param n="host" t="vCACCAFE:VCACHost"/>
+  <script encoded="false"><![CDATA[var restClient = host.createRestClient('com.vmware.csp.core.content.service.api');
+var response = restClient.get('/contents?limit=1000&$filter=contentTypeId eq \'composite-blueprint\'');
+
+var objectJson = response.getBodyAsString().split("\\"); // For some reasons the JSON is coming back with a \ that messes up JSON parsing whether using getBodyAsJson or JSON.parse
+//System.log(objectJson);
+
+var object = JSON.parse(objectJson);
+
+var contentItems = object.content;
+
+var array = new Array();
+for each (var contentItem in contentItems) {
+	System.log(contentItem.name);
+	array.push(contentItem.name);
+}
+return array;
+]]></script>
+</dunes-script-module>

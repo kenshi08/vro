@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getManagedVirtualMachines" result-type="Array/vCAC:VirtualMachine" api-version="6.0.0" id="431fab80-cdbf-4a81-9033-5bfcfe2b1b94" version="0.0.0" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <param n="host" t="vCAC:VCACHost"/>
+  <script encoded="false"><![CDATA[var result = new Array()
+
+if (host == null) return result;
+
+var properties = new Properties();
+properties.put("IsManaged", true);
+
+var entities = vCACEntityManager.readModelEntitiesByCustomFilter(host.id, "ManagementModelEntities.svc", "VirtualMachines", properties, null);
+
+System.log(entities);
+
+
+for each( var entity in entities) {
+	result.push(entity.getInventoryObject());
+}
+
+return result;]]></script>
+</dunes-script-module>

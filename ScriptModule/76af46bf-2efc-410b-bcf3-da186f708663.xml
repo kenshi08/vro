@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="requestResourceAction" result-type="vCACCAFE:ResourceActionRequest" api-version="6.0.0" id="76af46bf-2efc-410b-bcf3-da186f708663" version="1.0.2" allowed-operations="vf" category-name="com.vmware.library.vcaccafe.request">
+  <description><![CDATA[Sends a request for a resource action.]]></description>
+  <param n="operation" t="vCACCAFE:ConsumerResourceOperation"><![CDATA[Resource operation]]></param>
+  <param n="inputs" t="Properties"><![CDATA[Input values]]></param>
+  <script encoded="false"><![CDATA[System.getModule("com.vmware.library.vcaccafe.util").validateObject(operation, "Resource operation");
+System.log("Getting resource action '" + operation.getName() + "' request form...");
+var form = vCACCAFERequestsHelper.getRequestFormForResourceAction(operation);
+
+System.log("Accepted inputs:");
+var fields = vCACCAFERequestsHelper.getFormKeys(form);
+for (var i = 0; i < fields.length; i++) {
+	System.log(" - " + fields[i]);
+}
+
+System.log("Filling in resource action request...");
+form = vCACCAFERequestsHelper.setFormValues(form, inputs);
+
+System.log("Sending resource action request...");
+var request = vCACCAFERequestsHelper.requestResourceAction(operation, form);
+
+System.log("Resource action request '" + request.getId() + "' sent!");
+return request;]]></script>
+</dunes-script-module>

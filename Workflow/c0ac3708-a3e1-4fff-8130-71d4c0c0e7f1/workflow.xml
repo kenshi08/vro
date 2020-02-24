@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="c0ac3708-a3e1-4fff-8130-71d4c0c0e7f1" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Terminate]]></display-name>
+  <description><![CDATA[Shuts down one or more instances. This operation is idempotent; if you terminate an instance more than once, each call succeeds.
+
+Terminated instances remain visible after termination (approximately one hour).]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="instance" type="AWS:EC2Instance">
+      <description><![CDATA[Instance]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="result" type="AWS:EC2Instance">
+      <description><![CDATA[Instance]]></description>
+    </param>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[//Get the AmazonEC2 client
+var client = instance.getClient().getAmazonEC2Client();
+
+//Initiate the TerminateInstancesRequest
+var terminateRequest = new EC2TerminateInstancesRequest() ;
+
+var instanceIds = new Array();
+var instanceId = instance.getInstanceId();
+instanceIds.push(instanceId);
+
+//Set the instance ids
+terminateRequest.withInstanceIds(instanceIds);
+
+//Send the request
+client.terminateInstances(terminateRequest);
+
+result = instance;]]></script>
+    <in-binding>
+      <bind name="instance" type="AWS:EC2Instance" export-name="instance"/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="AWS:EC2Instance" export-name="result">
+        <description><![CDATA[Instance]]></description>
+      </bind>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-group>
+      <title><![CDATA[Instance]]></title>
+      <p-param name="instance">
+        <desc><![CDATA[Instance]]></desc>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      </p-param>
+    </p-group>
+  </presentation>
+</workflow>

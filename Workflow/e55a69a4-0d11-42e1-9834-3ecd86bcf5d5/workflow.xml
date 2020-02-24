@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="e55a69a4-0d11-42e1-9834-3ecd86bcf5d5" version="1.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[changeVMAdvancedSettings]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="optionKey" type="string"/>
+    <param name="optionValue" type="string"/>
+    <param name="vm" type="VC:VirtualMachine"/>
+  </input>
+  <output>
+    <param name="actionResult" type="VC:Task"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="50.0" x="330.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task" script-module="com.neetcloud.vmconfig/addAdvancedSettingtoVM">
+    <display-name><![CDATA[Action element]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.neetcloud.vmconfig").addAdvancedSettingtoVM(optionKey,optionValue,vm);
+]]></script>
+    <in-binding>
+      <bind name="optionKey" type="string" export-name="optionKey"/>
+      <bind name="optionValue" type="string" export-name="optionValue"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="VC:Task" export-name="actionResult"/>
+    </out-binding>
+    <description><![CDATA[Use this element to include an action in the workflow.]]></description>
+    <position y="60.0" x="170.0"/>
+  </workflow-item>
+  <presentation/>
+</workflow>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getTableColumnNames" result-type="Array/string" api-version="6.0.0" id="717e7b12-4882-43a7-999f-7fc40aeb02da" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.sql">
+  <description><![CDATA[Given a SQL:Database and the name of a table, this action will return an Array of strings containing the column names.]]></description>
+  <param n="tableName" t="string"/>
+  <param n="sqlDb" t="SQL:Database"/>
+  <script encoded="false"><![CDATA[var sqlStatement = "SELECT TOP 1 * FROM "+tableName;
+var columnNames = new Array();
+if (!sqlDb || !tableName) return columnNames;
+var main = new JDBCConnection();
+var con;
+try  {
+	con = main.getConnection( sqlDb.connectionURL, sqlDb.username, sqlDb.password );
+	System.log( "Connection to database successful" );
+	var stat = con.createStatement();
+	var rs = stat.executeQuery( sqlStatement );
+	var md = rs.getMetaData();
+	System.debug(md.getColumnCount() + " columns found");
+	for (i = 1; i <= md.getColumnCount(); i++){
+		System.debug(md.getColumnName(i));
+		columnNames.push(md.getColumnName(i));
+	}
+	if ( i == 0 )  {
+		System.log( "No rows" );
+	}
+	rs.close();
+	stat.close();
+} catch( ex )  {
+	throw "Connection to database failed (Reason: " + ex + ")";
+} finally {
+	if (con) {
+		con.close();
+	}
+	return columnNames;
+}]]></script>
+</dunes-script-module>

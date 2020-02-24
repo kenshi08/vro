@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="requestCatalogItemWithProvisioningRequest" result-type="vCACCAFE:CatalogItemRequest" api-version="6.0.0" id="34558beb-3611-4576-8e40-db1581c89ac5" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.vcaccafe.request">
+  <description><![CDATA[Requests a catalog item using provisioning request.]]></description>
+  <param n="catalogItem" t="vCACCAFE:CatalogItem"><![CDATA[Catalog item]]></param>
+  <param n="provisioningRequest" t="Any"><![CDATA[Catalog item provisioning request]]></param>
+  <script encoded="false"><![CDATA[return vCACCAFERequestsHelper.requestCatalogItemWithProvisioningRequest(catalogItem, provisioningRequest);]]></script>
+</dunes-script-module>

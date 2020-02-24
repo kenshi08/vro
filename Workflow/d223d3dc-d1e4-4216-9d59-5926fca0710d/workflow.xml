@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="d223d3dc-d1e4-4216-9d59-5926fca0710d" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Test Get Namespace Table Column Names]]></display-name>
+  <description><![CDATA[This is a test workflow to confirm that the getTableColumnNames action is working properly.]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="tableName" type="string"/>
+    <param name="namespace" type="DynamicTypes:DynamicNamespaceDefinition"/>
+  </input>
+  <output>
+    <param name="columnNames" type="Array/string"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[if (!namespace || !tableName) System.debug("Error, namespace or tableName is not defined");
+var database = System.getModule("com.vmware.library.customProperties").getCustomProperty(namespace,"sqlDb");
+System.debug("DB Found: "+database);
+var columnNames = System.getModule("com.vmware.coe.sql").getTableColumnNames(tableName,database);
+System.debug(columnNames.length + " columns found for table "+ tableName);
+//return columnNames;]]></script>
+    <in-binding>
+      <bind name="tableName" type="string" export-name="tableName"/>
+      <bind name="namespace" type="DynamicTypes:DynamicNamespaceDefinition" export-name="namespace"/>
+    </in-binding>
+    <out-binding>
+      <bind name="columnNames" type="Array/string" export-name="columnNames"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="namespace">
+      <desc><![CDATA[namespace]]></desc>
+    </p-param>
+    <p-param name="tableName">
+      <desc><![CDATA[tableName]]></desc>
+      <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.coe.dynamicTypes.sql","getAllTableNamesForNamespaceDb").call( #namespace )]]></p-qual>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

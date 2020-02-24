@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="805cf082-7fd9-400b-b651-38248e51c817" version="0.0.18" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Change vRA VM Owner and vRA Reservation]]></display-name>
+  <description><![CDATA[This workflow will change the vRA Reservation of a provisioned VM and change the vRA owner of the VM.
+
+Caveats:
+1. The vCACHost and vCAC:CAFEHost are set by retrieving the host objects from the attribute constants (ResourceConstants). 
+2. The hardcoded attribute value at start time is only for the presentation layer, if this workflow is executed as a day 2 operation.
+2. The executing credentials are required to have entitlement to the "Edit" resource action in the originating business group entitlement for the VM. If you use a shared connection back to vRA, it is this (service) account that requires entitlement.
+3. It is valid to change just the Owner or just the vRA reservation.
+]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="vmHostname" type="string"/>
+    <param name="newUser" type="string"/>
+    <param name="newReservationName" type="string"/>
+  </input>
+  <attrib name="vCACHost" type="vCAC:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='f20b2668-f51a-4943-b7a7-e90670512b66'&dunesName='vCAC:VCACHost']]></value>
+  </attrib>
+  <attrib name="actionResult" type="boolean" read-only="false"/>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Change Owner]]></display-name>
+    <script encoded="false"><![CDATA[
+var fmResource = System.getModule("com.fm.resources");
+
+//set cafehost variable for later
+vCACCAFEHost = fmResource.getResourceConstantsObject("defaultVCACCAFEHost");
+//set vcachost variable for later
+vCACHost = fmResource.getResourceConstantsObject("defaultVCACHost");
+
+System.log("Finding: "+vmHostname);
+
+// get vCAC Entity
+var vCACEntity = System.getModule("com.vmware.pso.vcac").getVirtualMachineEntityByName(vmHostname,vCACHost);
+
+// get vCAC VirtualMachine
+vCACVm = vCACEntity.getInventoryObject();
+System.log("vCAC:Entity Retrieved: vCAC VM UniqueID: " + vCACVm.vmUniqueID);
+
+// ***********************************
+// Start Change reservation
+// ***********************************
+
+var resourceOps = new Array();
+var catalogResource = System.getModule("com.vmware.pso.vcac").getCatalogResourceByName(vCACCAFEHost,vmHostname);
+
+// find the Edit operation ID
+resourceOps = vCACCAFEEntitiesFinder.getAdminCatalogResourceActions(vCACCAFEHost);
+
+for each (var op in resourceOps)
+{
+	if (op.name =="Edit")
+	{
+		System.log("Edit ID: "+op.id);
+		var opEditID = op.id;
+		break;
+	}
+}
+// get the vCACCAFEConsumerResourceOperation for the VM and the Edit operation
+var vmOperation = vCACCAFEEntitiesFinder.getCatalogResourceAction(catalogResource,opEditID);
+if (vmOperation == null || vmOperation == undefined)
+{
+	throw "The EDIT action is not available to this VM from the originating ID. Please fix in entitlements";
+}
+System.log("Resource Operation: " + vmOperation);
+System.log("Resource Operation binding ID: " + vmOperation.getBindingId());
+
+var model = 'ManagementModelEntities.svc';
+var entitySetName = 'Users';
+var userProperty = new Properties();
+userProperty.put('UserName',newUser);
+
+var allUserNames = new Array();
+allUserNames = System.getModule("com.vmware.library.vcac").getUserNames(vCACHost);
+if (allUserNames.indexOf(newUser) < 0 )
+{
+	throw "New user does not exist as a vRA Entity yet. The new user needs to provision something.";
+}
+
+var userEntity = System.getModule("com.vmware.library.vcac").getUserEntityByName(vCACHost,newUser);
+//System.log("User Entity: "+userEntity);
+//throw "stop";
+// Build input list for the form
+
+var FormInputs = new Properties();
+FormInputs.put("provider-operationId", vmOperation.getBindingId());
+FormInputs.put("provider-machineId", vCACVm.virtualMachineID);
+FormInputs.put("provider-MachineName", vCACVm.displayName);
+FormInputs.put("provider-Cafe.Shim.VirtualMachine.Owner", userEntity.getProperty("UserID"));
+
+//System.log("UserID: "+ userEntity.getProperty("UserID"));
+
+System.log("Getting resource action " + vmOperation.getName() + " request form... ");
+var form = vCACCAFERequestsHelper.getRequestFormForResourceAction(vmOperation);
+
+System.log("Expected inputs: ");
+var fields = vCACCAFERequestsHelper.getFormKeys(form);
+for (var i = 0; i < fields.length; i++) {
+	System.log(" - " + fields[i]);
+}
+
+System.log("Filling in resource action request..");
+
+form = vCACCAFERequestsHelper.setFormValues(form, FormInputs);
+
+System.log("Sending resource action request...");
+var request = vCACCAFERequestsHelper.requestResourceAction(vmOperation, form);
+
+System.log("Resource action request " + request.getId() + " sent!");]]></script>
+    <in-binding>
+      <bind name="newUser" type="string" export-name="newUser"/>
+      <bind name="vmHostname" type="string" export-name="vmHostname"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="324.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item1" type="task" script-module="com.vmware.pso.vcac/changeVMvRAReservation">
+    <display-name><![CDATA[changeVMvRAReservation]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.pso.vcac").changeVMvRAReservation(vmHostname,newReservationName) ;]]></script>
+    <in-binding>
+      <bind name="vmHostname" type="string" export-name="vmHostname"/>
+      <bind name="newReservationName" type="string" export-name="newReservationName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="boolean" export-name="actionResult"/>
+    </out-binding>
+    <description><![CDATA[This action changes the vRA reservation of the vm to the supplied reservation name]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vmHostname">
+      <desc><![CDATA[vmHostname]]></desc>
+    </p-param>
+    <p-param name="newUser">
+      <desc><![CDATA[newUser]]></desc>
+    </p-param>
+    <p-param name="newReservationName">
+      <desc><![CDATA[newReservationName]]></desc>
+      <p-qual kind="ognl" name="genericEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.library.vcac","getReservationNames").call( #vCACHost )]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

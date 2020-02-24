@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="31a3f69c-1c2a-42f9-bfc3-cf969a3059b5" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Import Sample Exchange certificate]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <attrib name="url" type="string" read-only="false">
+    <value encoded="n"><![CDATA[https://vdc-repo.vmware.com]]></value>
+    <description><![CDATA[URL or just host:port for non-HTTPS SSL services:]]></description>
+  </attrib>
+  <attrib name="ignoreWarnings" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[If set to true, the certificate is accepted silently and the certificate is added to the trusted store]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="link" linked-workflow-id="c5a874a2-e8e7-480d-bdde-d1a80b8a3011">
+    <display-name><![CDATA[Import a certificate from URL]]></display-name>
+    <in-binding>
+      <bind name="url" type="string" export-name="url">
+        <description><![CDATA[URL or just host:port for non-HTTPS SSL services:]]></description>
+      </bind>
+      <bind name="ignoreWarnings" type="boolean" export-name="ignoreWarnings">
+        <description><![CDATA[If set to true, the certificate is accepted silently and the certificate is added to the trusted store]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Imports an SSL certificate into the server trust store.]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation/>
+</workflow>

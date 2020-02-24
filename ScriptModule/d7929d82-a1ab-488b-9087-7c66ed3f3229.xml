@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getFromCache" result-type="Any" api-version="6.0.0" id="d7929d82-a1ab-488b-9087-7c66ed3f3229" version="1.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes">
+  <param n="objectId" t="string"/>
+  <param n="ttl" t="string"/>
+  <script encoded="false"><![CDATA[var obj = DynamicTypesManager.getFromCache(objectId);
+while(obj == "Populating") {
+	System.log("Cache is being populated by someone else - waiting 2 sec");
+	System.sleep(2000);
+	obj = DynamicTypesManager.getFromCache(objectId);
+	if (obj != "Populating") return obj; //Object is max 2 seconds old we can return it
+}
+
+var timeStamp = DynamicTypesManager.getFromCache(objectId + "-timestamp");
+if (timeStamp == null) {
+	System.log(objectId + " was not cached");
+	return null;
+}
+
+var dif = ((new Date()).getTime() - timeStamp.getTime()) / 1000;
+
+if (dif <= ttl || ttl == 0) {
+	var obj = DynamicTypesManager.getFromCache(objectId);
+	if (obj != null) {
+		System.log("Got object " + objectId + "(" + System.getObjectClassName(obj) + ") from cache");
+		return obj;	
+	}
+}
+
+if (dif > ttl) {
+	System.log(objectId + " was cached for too long (" + dif + " seconds)");
+	return null;
+}
+]]></script>
+</dunes-script-module>

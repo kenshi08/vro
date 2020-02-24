@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="2160ae76-5a6f-47f8-b158-f1e1c1053373" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Create and connect to an Oracle database]]></display-name>
+  <position y="36.31818181818181" x="25.0"/>
+  <input>
+    <param name="sid" type="string"/>
+    <param name="sys_pwd" type="SecureString"/>
+    <param name="system_pwd" type="SecureString"/>
+  </input>
+  <output>
+    <param name="database" type="SQL:Database">
+      <description><![CDATA[The new database attached to the Inventory]]></description>
+    </param>
+  </output>
+  <attrib name="hostNameOrIP" type="string" read-only="false" conf-id="55dde5a9-6482-4b96-a274-c33e6d2c402b" conf-key="hostname">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Hostname or IP address of the SSH host]]></description>
+  </attrib>
+  <attrib name="username" type="string" read-only="false" conf-id="55dde5a9-6482-4b96-a274-c33e6d2c402b" conf-key="username">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false" conf-id="55dde5a9-6482-4b96-a274-c33e6d2c402b" conf-key="password">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Password]]></description>
+  </attrib>
+  <attrib name="cmd" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[The SSH command to run]]></description>
+  </attrib>
+  <attrib name="outputText" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Result of running the SSH command]]></description>
+  </attrib>
+  <attrib name="type" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Oracle]]></value>
+    <description><![CDATA[Database type]]></description>
+  </attrib>
+  <attrib name="sessionMode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Shared Session]]></value>
+    <description><![CDATA[Session mode]]></description>
+  </attrib>
+  <attrib name="connectionURL" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Connection URL]]></description>
+  </attrib>
+  <attrib name="port" type="string" read-only="false" conf-id="55dde5a9-6482-4b96-a274-c33e6d2c402b" conf-key="port">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="environmentVariables" type="Array/CompositeType(Name:string,Value:string):env" read-only="false" conf-id="55dde5a9-6482-4b96-a274-c33e6d2c402b" conf-key="environmentVariables">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="output" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="error" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="exitCode" type="number" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="script" type="string" read-only="false" conf-id="55dde5a9-6482-4b96-a274-c33e6d2c402b" conf-key="script">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="dbUsername" type="string" read-only="false" conf-id="55dde5a9-6482-4b96-a274-c33e6d2c402b" conf-key="dbUsername">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="dbPassword" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="36.31818181818181" x="1004.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="18541090831854109083178946495518541090830101010101010101010101010">
+    <display-name><![CDATA[Add a database]]></display-name>
+    <in-binding>
+      <bind name="name" type="string" export-name="sid">
+        <description><![CDATA[Name of the specified database]]></description>
+      </bind>
+      <bind name="type" type="string" export-name="type">
+        <description><![CDATA[Database type]]></description>
+      </bind>
+      <bind name="connectionURL" type="string" export-name="connectionURL">
+        <description><![CDATA[Connection URL]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="dbUsername">
+        <description><![CDATA[User name]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="dbPassword">
+        <description><![CDATA[Password]]></description>
+      </bind>
+      <bind name="sessionMode" type="string" export-name="sessionMode">
+        <description><![CDATA[Session mode]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="database" type="SQL:Database" export-name="database">
+        <description><![CDATA[The new database attached to the Inventory]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Adds a database object to the plug-in's inventory.]]></description>
+    <position y="46.31818181818181" x="824.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item2" type="task">
+    <display-name><![CDATA[Set connection url]]></display-name>
+    <script encoded="false"><![CDATA[connectionURL = "jdbc:oracle:thin:@//" + hostNameOrIP + ":" + port + "/" + sid;
+System.log("Connecting to database using URL " + connectionURL);
+
+
+]]></script>
+    <in-binding>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP"/>
+      <bind name="sid" type="string" export-name="sid"/>
+      <bind name="port" type="string" export-name="port"/>
+    </in-binding>
+    <out-binding>
+      <bind name="connectionURL" type="string" export-name="connectionURL"/>
+    </out-binding>
+    <position y="46.31818181818181" x="684.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item5" type="task">
+    <display-name><![CDATA[Set SSH command]]></display-name>
+    <script encoded="false"><![CDATA[cmd = script;
+// cmd = "source ~/.bash_profile; " + script;]]></script>
+    <in-binding>
+      <bind name="script" type="string" export-name="script"/>
+    </in-binding>
+    <out-binding>
+      <bind name="cmd" type="string" export-name="cmd"/>
+    </out-binding>
+    <position y="46.31818181818181" x="264.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item6" type="task">
+    <display-name><![CDATA[Run SSH command]]></display-name>
+    <script encoded="false"><![CDATA[try{
+	var session = new SSHSession(hostNameOrIP,username);	
+	// Adding environment variables requires /etc/sshd to have AcceptEnv set for the variable to add
+
+	// Setting environment variables with configuration element;
+	for each (var environmentVariable in environmentVariables) {
+		var name = environmentVariable.get("Name");
+		var value = environmentVariable.get("Value");
+		System.log("Setting configuration environment variable " + name + " : " + value);
+		session.addEnvironment(name,value);
+	}			
+					
+	// Setting environment variables with workflows inputs
+	var inputParametersProp =  workflow.getInputParameters();
+	for each (var name in inputParametersProp.keys) {
+		var value = inputParametersProp.get(name);
+		var name = name.toUpperCase();
+		
+		System.log("Setting end user provided environment variable " + name + " : " + value);		
+		session.addEnvironment(name,value);
+	}
+			
+	session.connectWithPassword(password);
+	System.log("Connected!");
+						
+	System.log("Executing '"+cmd+"'");
+	session.executeCommand(cmd,true) ;
+	
+	output = session.getOutput();
+	error = session.getError();
+	exitCode = session.exitCode;
+	
+	System.log("Output: '"+output+"'");
+	System.log("Error: '"+error+"'");
+	System.log("Exit code: '"+exitCode+"'");
+	
+	session.disconnect();
+	
+} catch (e) {
+	throw "Unable to execute command " + e;
+}]]></script>
+    <in-binding>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP"/>
+      <bind name="username" type="string" export-name="username"/>
+      <bind name="password" type="SecureString" export-name="password"/>
+      <bind name="environmentVariables" type="Array/CompositeType(Name:string,Value:string):env" export-name="environmentVariables"/>
+      <bind name="cmd" type="string" export-name="cmd"/>
+    </in-binding>
+    <out-binding>
+      <bind name="output" type="string" export-name="output"/>
+      <bind name="error" type="string" export-name="error"/>
+      <bind name="exitCode" type="number" export-name="exitCode"/>
+    </out-binding>
+    <position y="46.31818181818181" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item3" type="custom-condition" alt-out-name="item7">
+    <display-name><![CDATA[Check output]]></display-name>
+    <script encoded="false"><![CDATA[return (exitCode == 0);
+
+//return (outputText.indexOf("Exit code: '0'") > -1);]]></script>
+    <in-binding>
+      <bind name="outputText" type="string" export-name="outputText"/>
+      <bind name="exitCode" type="number" export-name="exitCode"/>
+    </in-binding>
+    <position y="36.31818181818181" x="544.5"/>
+  </workflow-item>
+  <workflow-item name="item7" throw-bind-name="error" type="end" end-mode="1">
+    <position y="99.95454545454544" x="584.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item4" catch-name="item9" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Set connection password]]></display-name>
+    <script encoded="false"><![CDATA[var inputParametersProp =  workflow.getInputParameters();
+dbPassword = inputParametersProp.get(dbUsername + "_pwd");
+if (dbPassword == null) throw "Failed to get input parameter " + dbUsername + "_pwd";]]></script>
+    <in-binding>
+      <bind name="dbUsername" type="string" export-name="dbUsername"/>
+    </in-binding>
+    <out-binding>
+      <bind name="dbPassword" type="SecureString" export-name="dbPassword"/>
+    </out-binding>
+    <position y="46.31818181818181" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item9" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="99.95454545454544" x="165.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="sid">
+      <desc><![CDATA[SID]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="sys_pwd">
+      <desc><![CDATA[SYS password]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="system_pwd">
+      <desc><![CDATA[SYSTEM password]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

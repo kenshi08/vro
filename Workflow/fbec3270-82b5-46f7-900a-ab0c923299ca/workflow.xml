@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="fbec3270-82b5-46f7-900a-ab0c923299ca" version="0.0.7" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[PuppetRemove]]></display-name>
+  <description><![CDATA[Workflow used  for vCAC extensibility
+
+This workflow will call a script on the Puppet master using SSH to remove the node from the dashboard, remove the cert request and deactivate the node to free up Puppet License. 
+
+Make sure you update the username and password for the Puppet master server using the attributes below. 
+
+Follow me on twitter @vmtocloud]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="vCACVm" type="vCAC:VirtualMachine">
+      <description><![CDATA[vCAC virtual machine]]></description>
+    </param>
+    <param name="vCenterVm" type="VC:VirtualMachine">
+      <description><![CDATA[VC virtual machine]]></description>
+    </param>
+    <param name="virtualMachineEntity" type="vCAC:Entity">
+      <description><![CDATA[vCAC virtual machine entity]]></description>
+    </param>
+    <param name="vCACHost" type="vCAC:VCACHost">
+      <description><![CDATA[vCAC host]]></description>
+    </param>
+    <param name="externalWFStub" type="string">
+      <description><![CDATA[External workflow stub]]></description>
+    </param>
+    <param name="vCACVmProperties" type="Properties">
+      <description><![CDATA[vCAC virtual machine properties]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="result" type="number">
+      <description><![CDATA[0 = OK, Negative = Error, Positive = Number of values returned, after error text]]></description>
+    </param>
+    <param name="errorText" type="string">
+      <description><![CDATA[Error text, if any]]></description>
+    </param>
+    <param name="outputText" type="string">
+      <description><![CDATA[Result of running the SSH command]]></description>
+    </param>
+  </output>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+    <description><![CDATA[Username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[11AA4E675F6C76C870C68361673665F310210A206934F71DD5892FEDEC9B20A5BAD422C4047CB8F17109ABA4A593511D69A]]></value>
+    <description><![CDATA[Password]]></description>
+  </attrib>
+  <attrib name="hostNameOrIP" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Hostname or IP address of the SSH host]]></description>
+  </attrib>
+  <attrib name="cmd" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[The SSH command to run]]></description>
+  </attrib>
+  <attrib name="puppetremovescript" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="puppetgroup" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="domainname" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="path" type="Path" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Path to the private key]]></description>
+  </attrib>
+  <attrib name="passphrase" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Private key pass-phrase]]></description>
+  </attrib>
+  <attrib name="passwordAuthentication" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[Sets authentication to password or key file]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="664.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item3" type="task">
+    <display-name><![CDATA[Get Custom Props]]></display-name>
+    <script encoded="false"><![CDATA[System.log("Workflow started from workflow stub " + externalWFStub + " on vCAC host " + vCACHost.displayName);
+System.log("Got vCAC virtual machine " + vCACVm.virtualMachineName);
+System.log("Matching virtual machine entity " + virtualMachineEntity.keyString);
+
+//If you do not get a vApp or VM it is likely that it is not accessible at the stage of the vCAC process
+
+if (vCenterVm != null) {
+	System.log("Got vCloud VM " + vCenterVm.name);
+}
+				
+//Displaying vCAC VM properties
+if (vCACVmProperties != null) {
+	var log = "";
+	log += "vCAC VM properties :\n";
+	var array = new Array();
+	for each (var key in vCACVmProperties.keys) {
+		array.push(key + " : " + vCACVmProperties.get(key));	
+	}
+	array.sort();
+	
+	for each (var line in array) {
+		log += "\t" + line + "\n";
+	}	
+	System.log(log);	
+}
+hostNameOrIP = vCACVmProperties.get('puppet.master');
+puppetremovescript = vCACVmProperties.get('puppet.remove.script');
+puppetgroup = vCACVmProperties.get('puppet.group');
+domainname = vCACVmProperties.get('VirtualMachine.Network0.DnsSuffix');
+]]></script>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vCACVm"/>
+      <bind name="vCenterVm" type="VC:VirtualMachine" export-name="vCenterVm"/>
+      <bind name="virtualMachineEntity" type="vCAC:Entity" export-name="virtualMachineEntity"/>
+      <bind name="vCACHost" type="vCAC:VCACHost" export-name="vCACHost"/>
+      <bind name="externalWFStub" type="string" export-name="externalWFStub"/>
+      <bind name="vCACVmProperties" type="Properties" export-name="vCACVmProperties"/>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP">
+        <description><![CDATA[Hostname or IP address of the SSH host]]></description>
+      </bind>
+      <bind name="puppetgroup" type="string" export-name="puppetgroup"/>
+      <bind name="domainname" type="string" export-name="domainname"/>
+      <bind name="puppetremovescript" type="string" export-name="puppetremovescript"/>
+    </in-binding>
+    <out-binding>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP"/>
+      <bind name="puppetgroup" type="string" export-name="puppetgroup"/>
+      <bind name="domainname" type="string" export-name="domainname"/>
+      <bind name="puppetremovescript" type="string" export-name="puppetremovescript"/>
+    </out-binding>
+    <description><![CDATA[Get Custom properties from vCAC and convert to vCO Parameters. ]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="90808080808080808080808080808080D28080800120523434428525559a3425f">
+    <display-name><![CDATA[Run SSH command]]></display-name>
+    <in-binding>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP">
+        <description><![CDATA[Hostname or IP address of the SSH host]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[Username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[Password]]></description>
+      </bind>
+      <bind name="cmd" type="string" export-name="cmd">
+        <description><![CDATA[The SSH command to run]]></description>
+      </bind>
+      <bind name="passwordAuthentication" type="boolean" export-name="passwordAuthentication">
+        <description><![CDATA[Sets authentication to password or key file]]></description>
+      </bind>
+      <bind name="path" type="Path" export-name="path">
+        <description><![CDATA[Path to the private key]]></description>
+      </bind>
+      <bind name="passphrase" type="SecureString" export-name="passphrase">
+        <description><![CDATA[Private key pass-phrase]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="number" export-name="result">
+        <description><![CDATA[0 = OK, Negative = Error, Positive = Number of values returned, after error text]]></description>
+      </bind>
+      <bind name="errorText" type="string" export-name="errorText">
+        <description><![CDATA[Error text, if any]]></description>
+      </bind>
+      <bind name="outputText" type="string" export-name="outputText">
+        <description><![CDATA[Result of running the SSH command]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Runs an SSH command.]]></description>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item2" type="task">
+    <display-name><![CDATA[Create cmd]]></display-name>
+    <script encoded="false"><![CDATA[cmd = "sh" + " " + puppetremovescript + " " + vCACVm.virtualMachineName + "." + domainname;]]></script>
+    <in-binding>
+      <bind name="domainname" type="string" export-name="domainname"/>
+      <bind name="puppetgroup" type="string" export-name="puppetgroup"/>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vCACVm"/>
+      <bind name="puppetremovescript" type="string" export-name="puppetremovescript"/>
+    </in-binding>
+    <out-binding>
+      <bind name="cmd" type="string" export-name="cmd"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vCACVm">
+      <desc><![CDATA[vCACVm]]></desc>
+    </p-param>
+    <p-param name="vCenterVm">
+      <desc><![CDATA[vCenterVm]]></desc>
+    </p-param>
+    <p-param name="virtualMachineEntity">
+      <desc><![CDATA[virtualMachineEntity]]></desc>
+    </p-param>
+    <p-param name="vCACHost">
+      <desc><![CDATA[vCACHost]]></desc>
+    </p-param>
+    <p-param name="externalWFStub">
+      <desc><![CDATA[externalWFStub]]></desc>
+    </p-param>
+    <p-param name="vCACVmProperties">
+      <desc><![CDATA[vCACVmProperties]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

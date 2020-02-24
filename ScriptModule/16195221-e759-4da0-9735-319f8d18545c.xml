@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getAllTableColumnNamesForNamespaceDb" result-type="Array/string" api-version="6.0.0" id="16195221-e759-4da0-9735-319f8d18545c" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes.sql">
+  <description><![CDATA[This action returns an array of strings containing the names of all columns for the SQL:Database table]]></description>
+  <param n="namespace" t="DynamicTypes:DynamicNamespaceDefinition"/>
+  <param n="tableName" t="string"/>
+  <script encoded="false"><![CDATA[if (!namespace || !tableName) return [];
+var database = System.getModule("com.vmware.library.customProperties").getCustomProperty(namespace,"sqlDb");
+var columnNames = System.getModule("com.vmware.coe.sql").getTableColumnNames(tableName,database);
+return columnNames;]]></script>
+</dunes-script-module>

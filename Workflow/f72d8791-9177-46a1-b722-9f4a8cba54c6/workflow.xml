@@ -1,0 +1,790 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item7" object-name="workflow:name=generic" id="f72d8791-9177-46a1-b722-9f4a8cba54c6" version="0.0.76" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Add Virtual Server to LB]]></display-name>
+  <description><![CDATA[Add a virtual server to the Load Balancer.
+
+VMware PSO I&A Selva 08/2015]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="edgeName" type="string">
+      <description><![CDATA[Edge Name]]></description>
+    </param>
+    <param name="member" type="Array/CompositeType(memberIp:string,weight:string,monitorPort:number,port:number,maxConnections:number,minConnections:number):member">
+      <description><![CDATA[Array of Pool Members]]></description>
+    </param>
+    <param name="port" type="number">
+      <description><![CDATA[port details]]></description>
+    </param>
+    <param name="interval" type="number">
+      <description><![CDATA[Service Monitor Intervals]]></description>
+    </param>
+    <param name="timeout" type="number">
+      <description><![CDATA[Service Monitor timeout]]></description>
+    </param>
+    <param name="maxRetries" type="number">
+      <description><![CDATA[Service Monitor maximum retries]]></description>
+    </param>
+    <param name="type" type="string">
+      <description><![CDATA[Protocol type]]></description>
+    </param>
+    <param name="monitorMethod" type="string">
+      <description><![CDATA[Service Monitor method]]></description>
+    </param>
+    <param name="expected" type="string"/>
+    <param name="url" type="string">
+      <description><![CDATA[Service Monitor URL]]></description>
+    </param>
+    <param name="send" type="string">
+      <description><![CDATA[Service Monitor Send ]]></description>
+    </param>
+    <param name="receive" type="string">
+      <description><![CDATA[Service Monitor Receive]]></description>
+    </param>
+    <param name="algorithm" type="string">
+      <description><![CDATA[Pool Algorithm]]></description>
+    </param>
+    <param name="transparent" type="string">
+      <description><![CDATA[Pool Tranparent Enable/Disable]]></description>
+    </param>
+    <param name="persistenceMethod" type="string">
+      <description><![CDATA[Application Profile Persistent Method]]></description>
+    </param>
+    <param name="expires" type="number">
+      <description><![CDATA[Application Profile expires ]]></description>
+    </param>
+    <param name="sslPassthrough" type="string">
+      <description><![CDATA[Application Profile sslPassthrough Enable/Disable]]></description>
+    </param>
+    <param name="cookieMode" type="string">
+      <description><![CDATA[Application Profile Cookie Mode]]></description>
+    </param>
+    <param name="connectionLimit" type="number">
+      <description><![CDATA[Application Profile connetion limit]]></description>
+    </param>
+    <param name="connectionRateLimit" type="number">
+      <description><![CDATA[Application Profile connection rate limit]]></description>
+    </param>
+    <param name="httpRedirectUrl" type="string">
+      <description><![CDATA[HTTP Direct URL]]></description>
+    </param>
+    <param name="insertXForwardedFor" type="string">
+      <description><![CDATA[insertXForwarded For]]></description>
+    </param>
+    <param name="cookieName" type="string">
+      <description><![CDATA[Cookie Name]]></description>
+    </param>
+    <param name="extension" type="string"/>
+    <param name="monitorType" type="string"/>
+    <param name="arg_in_0" type="Array/CompositeType(vm:VC:VirtualMachine,name:string):test"/>
+  </input>
+  <output>
+    <param name="error" type="string">
+      <description><![CDATA[Error Content]]></description>
+    </param>
+  </output>
+  <attrib name="edgeNicIp" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge Primary NIC]]></description>
+  </attrib>
+  <attrib name="poolMember" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Pool Member]]></description>
+  </attrib>
+  <attrib name="poolId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Pool Id]]></description>
+  </attrib>
+  <attrib name="appProfileName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Application Proflile Name]]></description>
+  </attrib>
+  <attrib name="appProfileId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Application Profile ID]]></description>
+  </attrib>
+  <attrib name="monitorId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Service Monitor ID]]></description>
+  </attrib>
+  <attrib name="ip" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge Primary Nic IP]]></description>
+  </attrib>
+  <attrib name="j" type="number" read-only="false">
+    <value encoded="n"><![CDATA[0.0]]></value>
+    <description><![CDATA[Counter]]></description>
+  </attrib>
+  <attrib name="currentPort" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[port detail]]></description>
+  </attrib>
+  <attrib name="vsNames" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Virtual Server Name]]></description>
+  </attrib>
+  <attrib name="baseName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Virtual Server Name Base Naming Convention]]></description>
+  </attrib>
+  <attrib name="newIp" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge Primar Nic IP assignment]]></description>
+  </attrib>
+  <attrib name="nsxRestHost" type="REST:RESTHost" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[NSX Rest Host]]></description>
+  </attrib>
+  <attrib name="edgeId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge ID]]></description>
+  </attrib>
+  <attrib name="name" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Virtual Server Name]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[error code]]></description>
+  </attrib>
+  <workflow-item name="item1" out-name="item3" catch-name="item6" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Create pool]]></display-name>
+    <script encoded="false"><![CDATA[	System.log("Creating pool");
+
+	// create the pool with rest call
+	var method = "POST";
+	var uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/pools";
+	System.log("Algorithm befor = " + algorithm)
+	if (algorithm == null || algorithm == "" || algorithm == " ") {
+	 algorithm = "ROUND-ROBIN";
+	 System.log("Algorithm = " + algorithm);
+	}
+	if (transparent == null || transparent == "" || transparent == " ") {
+	 transparent = "false";
+	}
+
+	var body = "<pool><name>pl" + baseName + "</name><transparent>" + transparent + "</transparent><algorithm>" + algorithm + "</algorithm><monitorId>" + monitorId + "</monitorId>";
+	//var body ="<pool><name>"+poolName+"</name><algorithm>"+algorithm+"</algorithm><transparent>"+transparent+"</transparent><monitorId>"+monitorId+"</monitorId></pool>";
+	var k = 0;
+	while (k < member.length) {
+	 if (member[k].weight == "" || member[k].weight == null) {
+	  member[k].weight = 1;
+	 }
+	 if (member[k].monitorPort == undefined || member[k].monitorPort == null) {
+	  member[k].monitorPort = member[k].port;
+	 }
+	 if (member[k].maxConnections == undefined || member[k].maxConnections == null) {
+	  member[k].maxConnections = 0;
+	 }
+	 if (member[k].minConnections == undefined || member[k].minConnections == null) {
+	  member[k].minConnections = 0;
+	 }
+
+
+	 body += "<member><ipAddress>" + member[k].memberIp + "</ipAddress><weight>" + member[k].weight + "</weight><port>" + member[k].port + "</port><monitorPort>" + member[k].monitorPort + "</monitorPort><minConn>" + member[k].minConnections + "</minConn><maxConn>" + member[k].maxConnections + "</maxConn></member>";
+
+	 //body+="<member><ipAddress>"+member[k].memberIp+"</ipAddress><weight>"+member[k].weight+"</weight><port>"+member[k].port+"</port><monitorPort>"+member[k].monitorPort+"</monitorPort><minConn>"+member[k].minConnections+"</minConn><maxConn>"+member[k].maxConnections+"</maxConn><name>"+member[k].memberName+"</name></member>";
+	 k++;
+	}
+	body += "</pool>";
+	//<member><ipAddress>"+member[i].memberIp+"</ipAddress><weight>"+member[i].weight+"</weight><port>"+member[i].port+"</port><minConn>"+member[i].minConnections+"</minConn><maxConn>"+member[i].maxConnections+"</maxConn><name>"+member[i].memberName+"</name><monitorPort>"+member[i].monitorPort+"</monitorPort></member></pool>
+
+	System.log("Pool Body :" + body);
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+
+	var response = request.execute()
+
+	var respContent = response.contentAsString;
+
+	System.log("Response was " + response.statusCode);
+
+	if (response.statusCode == 201) {
+	 System.log("Create pool was successful. ");
+	} else {
+	 System.error(respContent);
+	 errorContent = respContent;
+	 System.error("Creating Pool Failed !");
+	 System.error("Cleaning Up....");
+	 var monrequest = nsxRestHost.createRequest("DELETE", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/monitors/" + monitorId);
+	 var monresponse = monrequest.execute();
+	 System.error("Deleting ServiceMonitor Id " + monitorId);
+	 System.error("Cleanup Completed !");
+	 throw errorContent;
+	}
+
+	method = "GET";
+	request = nsxRestHost.createRequest(method, uri, "");
+	respContent = request.execute().contentAsString;
+	var resp0 = respContent.split("pl" + baseName);
+	var resp1 = resp0[0].split("<poolId>");
+	poolId = resp1[resp1.length - 1].split("</poolId>")[0];
+
+	System.log("Pool created with id " + poolId);]]></script>
+    <in-binding>
+      <bind name="edgeNicIp" type="string" export-name="edgeNicIp"/>
+      <bind name="poolMember" type="string" export-name="poolMember"/>
+      <bind name="member" type="Array/CompositeType(memberIp:string,weight:string,monitorPort:number,port:number,maxConnections:number,minConnections:number):member" export-name="member"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+      <bind name="j" type="number" export-name="j"/>
+      <bind name="baseName" type="string" export-name="baseName"/>
+      <bind name="algorithm" type="string" export-name="algorithm"/>
+      <bind name="transparent" type="string" export-name="transparent"/>
+    </in-binding>
+    <out-binding>
+      <bind name="poolId" type="string" export-name="poolId"/>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="109.95454545454544" x="284.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item8" catch-name="item6" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Create vip]]></display-name>
+    <script encoded="false"><![CDATA[var uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers";
+
+if (connectionRateLimit == "null" || connectionRateLimit == null) {
+ connectionRateLimit = 0;
+}
+if (connectionLimit == "null" || connectionLimit == null) {
+ connectionLimit = 0;
+}
+
+if (type == "UDP") {
+ var body = "<virtualServer><name>vs" + baseName + "</name><enabled>true</enabled><accelerationEnabled>true</accelerationEnabled><ipAddress>" + ip + "</ipAddress><protocol>" + type + "</protocol><port>" + port + "</port><connectionLimit>" + connectionLimit + "</connectionLimit><connectionRateLimit>" + connectionRateLimit + "</connectionRateLimit><applicationProfileId>" + applicationProfile + "</applicationProfileId><defaultPoolId>" + poolId + "</defaultPoolId></virtualServer>";
+} else {
+ var body = "<virtualServer><name>vs" + baseName + "</name><enabled>true</enabled><ipAddress>" + ip + "</ipAddress><protocol>" + type + "</protocol><port>" + port + "</port><connectionLimit>" + connectionLimit + "</connectionLimit><connectionRateLimit>" + connectionRateLimit + "</connectionRateLimit><applicationProfileId>" + applicationProfile + "</applicationProfileId><defaultPoolId>" + poolId + "</defaultPoolId></virtualServer>";
+}
+System.log("Virtual Server Body :" + body);
+var method = "POST";
+
+var request = nsxRestHost.createRequest(method, uri, body);
+
+request.contentType = "application/xml";
+
+var response = request.execute()
+
+var respContent = response.contentAsString;
+
+System.log("Response was " + response.statusCode);
+
+if (response.statusCode == 201) {
+ System.log("Create virtual server was successful. ");
+} else {
+ System.error(respContent);
+ System.error("Creating Virual Server Failed !");
+ errorContent = respContent;
+ System.error("Cleaning Up....");
+ var apprequest = nsxRestHost.createRequest("DELETE", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + appProfileId);
+ var appresponse = apprequest.execute();
+ System.error("Deleting ApplicationProfile Id " + appProfileId);
+ var poolrequest = nsxRestHost.createRequest("DELETE", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/pools/" + poolId);
+ var poolresponse = poolrequest.execute();
+ System.error("Deleting Pool Id " + poolId);
+ var monrequest = nsxRestHost.createRequest("DELETE", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/monitors/" + monitorId);
+ var monresponse = monrequest.execute();
+ System.error("Deleting ServiceMonitor Id " + monitorId);
+ System.error("Cleanup Completed ! ");
+ throw errorContent;
+}
+//System.log(response.contentAsString);
+
+vsNames.push("vs" + baseName + "-1");]]></script>
+    <in-binding>
+      <bind name="applicationProfile" type="string" export-name="appProfileId"/>
+      <bind name="name" type="string" export-name="name"/>
+      <bind name="poolId" type="string" export-name="poolId"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="edgeNicIp" type="string" export-name="edgeNicIp"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="member" type="Array/CompositeType(memberIp:string,weight:string,monitorPort:number,port:number,maxConnections:number,minConnections:number):member" export-name="member"/>
+      <bind name="ip" type="string" export-name="ip"/>
+      <bind name="j" type="number" export-name="j"/>
+      <bind name="vsNames" type="Array/string" export-name="vsNames"/>
+      <bind name="baseName" type="string" export-name="baseName"/>
+      <bind name="type" type="string" export-name="type"/>
+      <bind name="port" type="number" export-name="port"/>
+      <bind name="connectionLimit" type="number" export-name="connectionLimit"/>
+      <bind name="connectionRateLimit" type="number" export-name="connectionRateLimit"/>
+      <bind name="appProfileId" type="string" export-name="appProfileId"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vsNames" type="Array/string" export-name="vsNames"/>
+      <bind name="errorContent" type="string" explicitly-not-bound="true" export-name="NULL"/>
+    </out-binding>
+    <position y="109.95454545454544" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item2" catch-name="item6" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Create App Profile]]></display-name>
+    <script encoded="false"><![CDATA[	System.log("creating app profile");
+
+	appProfileName = "ap-vs" + baseName;
+
+
+	if (persistenceMethod == " " || persistenceMethod == null || persistenceMethod == "") {
+	 persistenceMethod = "NONE"
+	}
+
+	var uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles";
+	var body = "<applicationProfile><name>" + appProfileName + "</name><insertXForwardedFor>" + insertXForwardedFor + "</insertXForwardedFor><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + appType + "</applicationProfile>";
+	var method = "POST";
+
+	if (sslPassthrough == null) {
+	 sslPassthrough = false;
+	}
+
+	if (insertXForwardedFor == null) {
+	 insertXForwardedFor = false;
+	}
+
+	// When SSL termination is enabled please adjust this condition accordignly.
+	if (appType == "HTTPS") {
+	 sslPassthrough = true;
+	}
+
+	if (persistenceMethod == "NONE") {
+	 body = "<applicationProfile><name>" + appProfileName + "</name><insertXForwardedFor>" + insertXForwardedFor + "</insertXForwardedFor><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + appType + "</template></applicationProfile>";
+	} else if (persistenceMethod == "COOKIE") {
+	 body = "<applicationProfile><persistence><method>" + persistenceMethod + "</method><cookieName>" + cookieName + "</cookieName><cookieMode>" + cookieMode + "</cookieMode><expire>" + expires + "</expire></persistence><name>" + appProfileName + "</name><insertXForwardedFor>" + insertXForwardedFor + "</insertXForwardedFor><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + appType + "</template></applicationProfile>";
+	} else {
+	 body = "<applicationProfile><persistence><method>" + persistenceMethod + "</method><expire>" + expires + "</expire></persistence><name>" + appProfileName + "</name><insertXForwardedFor>" + insertXForwardedFor + "</insertXForwardedFor><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + appType + "</template></applicationProfile>";
+	}
+
+	if ((appType == "HTTP" || appType == "HTTPS") && httpRedirectUrl != "") {
+	 httpRedirect = "<httpRedirect><to>" + httpRedirectUrl + "</to></httpRedirect></applicationProfile>"
+	 body = body.replace("</applicationProfile>", httpRedirect);
+	}
+	//<persistence><method>cookie</method><cookieName>JSESSIONID</cookieName><cookieMode>insert</cookieMode></persistence>
+	System.log("Application Profile Body :" + body);
+	var request = nsxRestHost.createRequest(method, uri, body);
+
+	request.contentType = "application/xml";
+
+	var response = request.execute()
+
+	var respContent = response.contentAsString;
+
+	System.log(respContent);
+	System.log("Response was " + response.statusCode);
+
+	if (response.statusCode == 201) {
+	 System.log("Create app profile was successful. ");
+	} else {
+	 System.error(respContent);
+	 errorContent = respContent;
+	 System.error("Creating Application Profile Failed !");
+	 System.error("Cleaning Up....");
+	 var poolrequest = nsxRestHost.createRequest("DELETE", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/pools/" + poolId);
+	 var poolresponse = poolrequest.execute();
+	 System.error("Deleting Pool Id " + poolId);
+	 var monrequest = nsxRestHost.createRequest("DELETE", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/monitors/" + monitorId);
+	 var monresponse = monrequest.execute();
+	 System.error("Deleting ServiceMonitor Id " + monitorId);
+	 System.error("Cleanup Completed ! ");
+	 throw errorContent;
+	}
+	//System.log(response.contentAsString);
+	method = "GET"
+	request = nsxRestHost.createRequest(method, uri, "");
+	respContent = request.execute().contentAsString;
+	System.log(respContent);
+	var resp0 = respContent.split(appProfileName);
+	var resp1 = resp0[0].split("<applicationProfileId>");
+	appProfileId = resp1[resp1.length - 1].split("</applicationProfileId>")[0];
+
+	System.log("App profile created with id " + appProfileId);]]></script>
+    <in-binding>
+      <bind name="name" type="string" export-name="name"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="j" type="number" export-name="j"/>
+      <bind name="baseName" type="string" export-name="baseName"/>
+      <bind name="appType" type="string" export-name="type"/>
+      <bind name="persistenceMethod" type="string" export-name="persistenceMethod"/>
+      <bind name="expires" type="number" export-name="expires"/>
+      <bind name="sslPassthrough" type="string" export-name="sslPassthrough"/>
+      <bind name="cookieMode" type="string" export-name="cookieMode"/>
+      <bind name="poolId" type="string" export-name="poolId"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+      <bind name="httpRedirectUrl" type="string" export-name="httpRedirectUrl"/>
+      <bind name="insertXForwardedFor" type="string" export-name="insertXForwardedFor"/>
+      <bind name="cookieName" type="string" export-name="cookieName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="appProfileName" type="string" export-name="appProfileName"/>
+      <bind name="appProfileId" type="string" export-name="appProfileId"/>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="109.95454545454544" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item4" type="task">
+    <display-name><![CDATA[Select vNic]]></display-name>
+    <script encoded="false"><![CDATA[/*
+System.log(newIp);
+if (newIp != null){
+
+
+var method = "GET";
+var uri = "api/4.0/edges/"+edgeId+"/vnics";
+var body = "";
+
+var request = nsxRestHost.createRequest(method,uri,body);
+request.contentType = "application/xml"
+
+respContent = request.execute().contentAsString;
+
+if (respContent.indexOf(newIp) == -1){
+
+
+var ind1 = respContent.indexOf("<primaryAddress>")+"<primaryAddress>".length;
+var ind2 = respContent.indexOf("</primaryAddress>");
+
+var primaryIp = respContent.substring(ind1,ind2);
+
+//<secondaryAddresses><ipAddress>"+newIp+"</ipAddress></secondaryAddresses>
+
+var ind3 = respContent.indexOf("<secondaryAddresses>")+"<secondaryAddresses>".length;
+var ind4 = respContent.indexOf("</secondaryAddresses>")+"</secondaryAddresses>".length;
+
+var substr1 = respContent.substring(ind3,ind4);
+
+var secIps = "<secondaryAddresses>"+"<ipAddress>"+newIp+"</ipAddress>"+substr1;
+
+
+
+method = "PUT";
+body = "<vnic><index>0</index><name>vnic0</name><addressGroups><addressGroup><primaryAddress>"+primaryIp+"</primaryAddress><subnetMask>255.255.255.0</subnetMask><subnetPrefixLength>24</subnetPrefixLength>"+secIps+"</addressGroup></addressGroups></vnic>";
+uri = "https://nsxmgr-l-01a.corp.local/api/4.0/edges/edge-6/vnics/0";
+System.log(body);
+
+request = nsxRestHost.createRequest(method,uri,body);
+request.contentType = "application/xml"
+
+respContent = request.execute().contentAsString;
+
+System.log(respContent);
+
+ip = newIp;
+
+}
+
+ip = newIp;
+
+} else {
+*/
+var method = "GET";
+var uri = "api/4.0/edges/" + edgeId + "/vnics";
+var body = "";
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml"
+
+respContent = request.execute().contentAsString;
+
+var ind1 = respContent.indexOf("<primaryAddress>") + "<primaryAddress>".length;
+var ind2 = respContent.indexOf("</primaryAddress>");
+
+ip = respContent.substring(ind1, ind2);
+
+System.log("Primary Ip Address  :" + ip);
+//}]]></script>
+    <in-binding>
+      <bind name="newIp" type="string" export-name="newIp"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="ip" type="string" export-name="ip"/>
+    </out-binding>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item1" catch-name="item6" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Add monitor]]></display-name>
+    <script encoded="false"><![CDATA[	var method = "POST";
+	var uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/monitors";
+
+
+	if (monitorType == "" || monitorType == null) {
+	 monitorType = type;
+	}
+	if (interval == "null" || interval == null) {
+	 interval = 10;
+	}
+	if (timeout == "null" || timeout == null) {
+	 timeout = 15;
+	}
+	if (maxRetries == "null" || maxRetries == null) {
+	 maxRetries = 3;
+	}
+
+
+
+
+	// Body for TCP or UDP or ICMP monitors
+	if (monitorType == "TCP" || monitorType == "UDP" || monitorType == "ICMP") {
+	 var body = "<monitor><type>" + monitorType + "</type><interval>" + interval + "</interval><timeout>" + timeout + "</timeout><maxRetries>" + maxRetries + "</maxRetries><url>" + url + "</url><name>m" + baseName + "</name><send>" + send + "</send><receive>" + receive + "</receive><extension>" + extension + "</extension></monitor>";
+	}
+	// Body for HTTP or HTTPS monitors
+	else {
+	 if (monitorMethod == "" || monitorMethod == null) {
+	  var body = "<monitor><type>" + monitorType + "</type><interval>" + interval + "</interval><timeout>" + timeout + "</timeout><maxRetries>" + maxRetries + "</maxRetries><expected>" + expected + "</expected><method>GET</method><url>" + url + "</url><name>m" + baseName + "</name><send>" + send + "</send><receive>" + receive + "</receive><extension>" + extension + "</extension></monitor>";
+	 } else {
+	  var body = "<monitor><type>" + monitorType + "</type><interval>" + interval + "</interval><timeout>" + timeout + "</timeout><maxRetries>" + maxRetries + "</maxRetries><expected>" + expected + "</expected><method>" + monitorMethod + "</method><url>" + url + "</url><name>m" + baseName + "</name><send>" + send + "</send><receive>" + receive + "</receive><extension>" + extension + "</extension></monitor>";
+	 }
+	}
+
+	System.log("Monitor Body :" + body);
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+
+	var response = request.execute()
+
+	var respContent = response.contentAsString;
+
+	System.log("Response was " + response.statusCode);
+
+	if (response.statusCode == 201) {
+	 System.log("Create monitor was successful. ");
+	} else {
+	 System.error(respContent);
+	 errorContent = respContent;
+	 System.error("Creating Service Monitor Failed !");
+	 System.error("Cleanup Completed");
+	 throw errorContent;
+	}
+	// Retrieve the monitor ID
+	method = "GET";
+	vuri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/monitors";
+	body = "";
+
+	request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+
+	respContent = request.execute().contentAsString;
+
+	System.log(respContent);
+
+	var resp0 = respContent.split("m" + baseName);
+	var resp1 = resp0[0].split("<monitorId>");
+	monitorId = resp1[resp1.length - 1].split("</monitorId>")[0];
+
+	System.log("Monitor ID: " + monitorId);]]></script>
+    <in-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="name" type="string" export-name="name"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="j" type="number" export-name="j"/>
+      <bind name="baseName" type="string" export-name="baseName"/>
+      <bind name="currentPort" type="string" export-name="currentPort"/>
+      <bind name="maxRetries" type="number" export-name="maxRetries"/>
+      <bind name="method" type="string" export-name="monitorMethod"/>
+      <bind name="url" type="string" export-name="url"/>
+      <bind name="send" type="string" export-name="send"/>
+      <bind name="receive" type="string" export-name="receive"/>
+      <bind name="interval" type="number" export-name="interval"/>
+      <bind name="timeout" type="number" export-name="timeout"/>
+      <bind name="monitorMethod" type="string" export-name="monitorMethod"/>
+      <bind name="expected" type="string" export-name="expected"/>
+      <bind name="extension" type="string" export-name="extension"/>
+      <bind name="monitorType" type="string" export-name="monitorType"/>
+      <bind name="type" type="string" export-name="type">
+        <description><![CDATA[Protocol type]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="109.95454545454544" x="164.5"/>
+  </workflow-item>
+  <workflow-item name="item8" type="end" end-mode="0">
+    <position y="99.95454545454544" x="684.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item5" type="task">
+    <display-name><![CDATA[Select Port]]></display-name>
+    <script encoded="false"><![CDATA[var method = "GET";
+var uri = "api/4.0/edges/" + edgeId + "/vnics";
+var body = "";
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml"
+
+respContent = request.execute().contentAsString;
+
+var ind1 = respContent.indexOf("<primaryAddress>") + "<primaryAddress>".length;
+var ind2 = respContent.indexOf("</primaryAddress>");
+
+newIp = respContent.substring(ind1, ind2);
+
+//System.log("Ports found: "+port.length);
+
+//currentPort = port[j];
+currentPort = port;
+vsNames = [];
+
+var temp = newIp.split(".")
+
+baseName = "-" + temp[0] + "-" + temp[1] + "-" + temp[2] + "-" + temp[3] + "-" + currentPort;
+
+//System.log("Primary Ip  :" +newIp);]]></script>
+    <in-binding>
+      <bind name="j" type="number" export-name="j"/>
+      <bind name="port" type="number" export-name="port"/>
+      <bind name="newIp" type="string" export-name="newIp"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="currentPort" type="string" export-name="currentPort"/>
+      <bind name="vsNames" type="Array/string" export-name="vsNames"/>
+      <bind name="baseName" type="string" export-name="baseName"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item0" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="218.13636363636363" x="385.0"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item0" type="task">
+    <display-name><![CDATA[Error Handler]]></display-name>
+    <script encoded="false"><![CDATA[errorContent = errorCode;]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="173.59090909090907" x="345.0"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item9" type="link" linked-workflow-id="d02637fa-eb7c-4d09-8ccb-56f87715170d">
+    <display-name><![CDATA[Get NSX and EdgeId]]></display-name>
+    <in-binding>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-step>
+      <title><![CDATA[Virtual Server Details]]></title>
+      <p-param name="edgeName">
+        <desc><![CDATA[edgeName]]></desc>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      </p-param>
+      <p-param name="port">
+        <desc><![CDATA[port]]></desc>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      </p-param>
+      <p-param name="connectionLimit">
+        <desc><![CDATA[connectionLimit]]></desc>
+        <p-qual kind="static" name="defaultValue" type="number"><![CDATA[0.0]]></p-qual>
+      </p-param>
+      <p-param name="connectionRateLimit">
+        <desc><![CDATA[connectionRateLimit]]></desc>
+        <p-qual kind="static" name="defaultValue" type="number"><![CDATA[0.0]]></p-qual>
+      </p-param>
+    </p-step>
+    <p-step>
+      <title><![CDATA[Pool Details]]></title>
+      <p-param name="algorithm">
+        <desc><![CDATA[algorithm]]></desc>
+        <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#ROUND-ROBIN#;#string#IP-HASH#;#string#LEASTCONN#}#]]></p-qual>
+        <p-qual kind="static" name="defaultValue" type="string"><![CDATA[ROUND-ROBIN]]></p-qual>
+      </p-param>
+      <p-param name="transparent">
+        <desc><![CDATA[transparent
+(true or false)]]></desc>
+        <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#true#;#string#false#}#]]></p-qual>
+        <p-qual kind="static" name="defaultValue" type="string"><![CDATA[false]]></p-qual>
+      </p-param>
+      <p-param name="member">
+        <desc><![CDATA[member]]></desc>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      </p-param>
+    </p-step>
+    <p-step>
+      <title><![CDATA[Monitor Details]]></title>
+      <p-param name="monitorType">
+        <desc><![CDATA[monitorType]]></desc>
+        <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#TCP#;#string#UPD#;#string#ICMP#;#string#HTTP#;#string#HTTPS#}#]]></p-qual>
+        <p-qual kind="static" name="defaultValue" type="string"><![CDATA[TCP]]></p-qual>
+      </p-param>
+      <p-param name="interval">
+        <desc><![CDATA[interval]]></desc>
+        <p-qual kind="static" name="defaultValue" type="number"><![CDATA[10.0]]></p-qual>
+      </p-param>
+      <p-param name="timeout">
+        <desc><![CDATA[timeout]]></desc>
+        <p-qual kind="static" name="defaultValue" type="number"><![CDATA[15.0]]></p-qual>
+      </p-param>
+      <p-param name="maxRetries">
+        <desc><![CDATA[maxRetries]]></desc>
+        <p-qual kind="static" name="defaultValue" type="number"><![CDATA[3.0]]></p-qual>
+      </p-param>
+      <p-param name="expected">
+        <desc><![CDATA[expected]]></desc>
+      </p-param>
+      <p-param name="monitorMethod">
+        <desc><![CDATA[method]]></desc>
+        <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.nsx.apiselection","monitorMethodList_AddVS").call( #monitorType )]]></p-qual>
+        <p-qual kind="static" name="defaultValue" type="string"><![CDATA[GET]]></p-qual>
+      </p-param>
+      <p-param name="url">
+        <desc><![CDATA[url]]></desc>
+        <p-qual kind="static" name="defaultValue" type="string"><![CDATA[/]]></p-qual>
+      </p-param>
+      <p-param name="send">
+        <desc><![CDATA[send]]></desc>
+      </p-param>
+      <p-param name="receive">
+        <desc><![CDATA[receive]]></desc>
+      </p-param>
+      <p-param name="extension">
+        <desc><![CDATA[extension]]></desc>
+      </p-param>
+    </p-step>
+    <p-step>
+      <title><![CDATA[Service Profile Details]]></title>
+      <p-param name="type">
+        <desc><![CDATA[protocol]]></desc>
+        <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#HTTP#;#string#HTTPS#;#string#TCP#;#string#UDP#}#]]></p-qual>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      </p-param>
+      <p-param name="httpRedirectUrl">
+        <desc><![CDATA[HTTP Redirect URL]]></desc>
+      </p-param>
+      <p-param name="persistenceMethod">
+        <desc><![CDATA[persistence]]></desc>
+        <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.nsx.apiselection","applicationProfileMethodList_AddVS").call( #type )]]></p-qual>
+      </p-param>
+      <p-param name="cookieMode">
+        <desc><![CDATA[cookieMode]]></desc>
+        <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.nsx.apiselection","cookieMode_AddVS").call( #persistenceMethod )]]></p-qual>
+      </p-param>
+      <p-param name="cookieName">
+        <desc><![CDATA[Cookie Name]]></desc>
+      </p-param>
+      <p-param name="expires">
+        <desc><![CDATA[expires]]></desc>
+      </p-param>
+      <p-param name="sslPassthrough">
+        <desc><![CDATA[sslPassthrough
+(true or false)]]></desc>
+        <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#true#;#string#false#}#]]></p-qual>
+        <p-qual kind="static" name="defaultValue" type="string"><![CDATA[false]]></p-qual>
+      </p-param>
+      <p-param name="insertXForwardedFor">
+        <desc><![CDATA[insertXForwarded For
+(true or false)]]></desc>
+        <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#true#;#string#false#}#]]></p-qual>
+        <p-qual kind="static" name="defaultValue" type="string"><![CDATA[false]]></p-qual>
+      </p-param>
+    </p-step>
+    <p-param name="arg_in_0">
+      <desc><![CDATA[arg_in_0]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

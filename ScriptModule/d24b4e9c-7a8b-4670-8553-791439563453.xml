@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="escapeShellArgument" result-type="string" api-version="6.0.0" id="d24b4e9c-7a8b-4670-8553-791439563453" version="0.0.0" allowed-operations="evf" category-name="com.vmware.o11n.plugin.puppet">
+  <param n="arg" t="string"/>
+  <script encoded="false"><![CDATA[if (/[|&;<>()$`\\\"\'\s*?]/.test(arg)) {
+	return "'" + arg.replace(/\'/g, "'\\''") + "'";
+}
+
+return arg;]]></script>
+</dunes-script-module>

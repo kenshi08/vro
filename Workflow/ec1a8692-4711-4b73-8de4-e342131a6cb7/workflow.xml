@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="ec1a8692-4711-4b73-8de4-e342131a6cb7" version="0.0.3" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[ValidateTarget]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="targetId" type="string"/>
+    <param name="correlationId" type="string"/>
+  </input>
+  <output>
+    <param name="status" type="boolean"/>
+    <param name="eventOut" type="string"/>
+    <param name="eventDetails" type="string"/>
+  </output>
+  <attrib name="event" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Validate Target]]></value>
+  </attrib>
+  <attrib name="startingEvent" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Starting Process]]></value>
+  </attrib>
+  <attrib name="exitingEventSuccess" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Validate Target - Successful. Continuing...]]></value>
+  </attrib>
+  <attrib name="exitingEventFailed" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Validate Target - Failed]]></value>
+  </attrib>
+  <attrib name="severity" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item2" out-name="item5" type="custom-condition" alt-out-name="item4">
+    <display-name><![CDATA[Custom decision]]></display-name>
+    <script encoded="false"><![CDATA[//consider the following
+//vcenter and path to target 
+//are vmware tools installed
+return targetId.length > 0;
+]]></script>
+    <in-binding>
+      <bind name="targetId" type="string" export-name="targetId"/>
+    </in-binding>
+    <position y="45.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item6" type="task">
+    <display-name><![CDATA[Failed target]]></display-name>
+    <script encoded="false"><![CDATA[
+eventOut = event;
+eventDetails = "Target MOID is not valid.";
+severity = "error";
+]]></script>
+    <in-binding>
+      <bind name="event" type="string" export-name="event"/>
+    </in-binding>
+    <out-binding>
+      <bind name="status" type="boolean" export-name="status"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </out-binding>
+    <position y="119.04545454545453" x="345.0"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item3" type="task">
+    <display-name><![CDATA[Good Target]]></display-name>
+    <script encoded="false"><![CDATA[status = true;
+eventOut = event;
+eventDetails = "Target name is valid.";
+severity = "info";]]></script>
+    <in-binding>
+      <bind name="event" type="string" export-name="event"/>
+    </in-binding>
+    <out-binding>
+      <bind name="status" type="boolean" export-name="status"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </out-binding>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="90.86363636363636" x="784.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="event"/>
+      <bind name="eventDetails" type="string" export-name="startingEvent"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="targetVMName" type="string" explicitly-not-bound="true" export-name="NULL"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="event"/>
+      <bind name="eventDetails" type="string" export-name="exitingEventSuccess"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="targetVMName" type="string" explicitly-not-bound="true" export-name="NULL"/>
+    </in-binding>
+    <out-binding/>
+    <position y="82.68181818181817" x="604.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item0" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="event"/>
+      <bind name="eventDetails" type="string" export-name="exitingEventFailed"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="targetVMName" type="string" explicitly-not-bound="true" export-name="NULL"/>
+    </in-binding>
+    <out-binding/>
+    <position y="109.95454545454544" x="505.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="targetId">
+      <desc><![CDATA[targetName]]></desc>
+    </p-param>
+    <p-param name="correlationId">
+      <desc><![CDATA[correlationId]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="findRelation" result-type="Array" api-version="6.0.0" id="97dd5ba8-76c9-4e95-82a2-b1239f59b749" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes.sql">
+  <param n="parentType" t="string"><![CDATA[Parent Type]]></param>
+  <param n="parentId" t="string"><![CDATA[Parent Id]]></param>
+  <param n="relationName" t="string"><![CDATA[Relation Name]]></param>
+  <script encoded="false"><![CDATA[System.log("Get child type for parent " + parentType + " and relation " + relationName);
+var childType = System.getModule("com.vmware.coe.dynamicTypes").getChildType(parentType, parentId, relationName);
+if (childType == null) return null;
+System.log("Found childType " + childType);
+
+var namespace = childType.split(".")[0];
+var type = childType.split(".")[1];
+var objects = new Array();
+
+var parentObject = DynamicTypesManager.getObject(namespace, parentType.split(".")[1], parentId);
+
+//Determine if the child is a folder
+var isFolder = System.getModule("com.vmware.coe.dynamicTypes").isFolder(namespace , type);
+if (isFolder == true) {
+	// Create a folder
+	var id = type;
+	System.log("Create folder of type " + type + " with name " + type + " and ID " + id);  
+	var object = DynamicTypesManager.makeObject(namespace, type, id, type);
+	object.setProperty("isFolder",true);
+	objects.push(object);
+	return objects;
+}
+else {
+	System.log("Find All objects for type " + childType);
+	var objects = System.getModule("com.vmware.coe.dynamicTypes.sql").findAll(childType);
+	return objects;
+}
+
+]]></script>
+</dunes-script-module>

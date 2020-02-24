@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="d13a44bc-ff2e-4435-81a3-846332a45e9c" version="0.0.10" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[changevRAVmReservation]]></display-name>
+  <description><![CDATA[Attach a .csv file for bulk vcpu and vmem resource adds]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="inFile" type="MimeAttachment">
+      <description><![CDATA[Input File]]></description>
+    </param>
+    <param name="host" type="vCAC:VCACHost">
+      <description><![CDATA[vCAC host]]></description>
+    </param>
+  </input>
+  <attrib name="newCluster" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[New vCPU number]]></description>
+  </attrib>
+  <attrib name="allLines" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="currentLine" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="vmname" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Search criteria. Regular expressions supported. VM name from string imput]]></description>
+  </attrib>
+  <attrib name="vCACVMs" type="Array/vCAC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Virtual machines found]]></description>
+  </attrib>
+  <attrib name="reservationName" type="vCAC:Reservation" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="vcVM" type="vCAC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item2" out-name="item6" type="task">
+    <display-name><![CDATA[Get-Data]]></display-name>
+    <script encoded="false"><![CDATA[allLines = new Array();
+var completedCSVData = inFile.content
+
+allLines = completedCSVData.split(/\r\n|\r\n/);
+System.debug("all lines: = " + allLines);]]></script>
+    <in-binding>
+      <bind name="inFile" type="MimeAttachment" export-name="inFile"/>
+    </in-binding>
+    <out-binding>
+      <bind name="allLines" type="Array/string" export-name="allLines"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" type="task">
+    <display-name><![CDATA[Extract-Data]]></display-name>
+    <script encoded="false"><![CDATA[System.debug("Before currentline " +allLines)
+
+currentLine = allLines.pop();
+
+System.debug("currentline "+ currentLine);
+System.debug(allLines)]]></script>
+    <in-binding>
+      <bind name="allLines" type="Array/string" export-name="allLines"/>
+    </in-binding>
+    <out-binding>
+      <bind name="allLines" type="Array/string" export-name="allLines"/>
+      <bind name="currentLine" type="string" export-name="currentLine"/>
+    </out-binding>
+    <position y="55.40909090909091" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item5" type="task">
+    <display-name><![CDATA[Parse-Data]]></display-name>
+    <script encoded="false"><![CDATA[var values = currentLine.split(",");
+vmname = values[0];
+newCluster = values[1];
+
+System.log("VMname : "+vmname+" Cluster : "+newCluster);]]></script>
+    <in-binding>
+      <bind name="currentLine" type="string" export-name="currentLine"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vmname" type="string" export-name="vmname"/>
+      <bind name="newCluster" type="string" export-name="newCluster"/>
+    </out-binding>
+    <position y="55.40909090909091" x="724.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item3" type="custom-condition" alt-out-name="item7">
+    <display-name><![CDATA[Continue?]]></display-name>
+    <script encoded="false"><![CDATA[return (allLines.length >1 );]]></script>
+    <in-binding>
+      <bind name="allLines" type="Array/string" export-name="allLines"/>
+    </in-binding>
+    <position y="45.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item7" type="end" end-mode="0">
+    <position y="145.4090909090909" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item0" type="task">
+    <display-name><![CDATA[Get vCAC VM and ReservationName]]></display-name>
+    <script encoded="false"><![CDATA[vmList = [];
+var vCACVMs = Server.findAllForType("vCAC:VirtualMachine", "VirtualMachineName eq '" + vmname + "'"); 
+ //if (vCACVMs.length > 1) { 
+//  throw 'more than one VM found matching '+vmName; 
+// } else if (vCACVMs.length == 0) {
+
+if (vCACVMs.length == 0) {
+  System.log("No VM object found for "+vmname);
+ } else {
+  vmList.push(vCACVMs[0]);
+ }
+
+
+
+
+vcVM = vCACVMs[0];
+System.log('Found VM = ' + vcVM) ;
+
+
+var currentReservationObj = System.getModule("com.nullphase.local").getReservationForVraVm(host,vcVM) ;
+var currentRes = currentReservationObj.hostReservationName;
+var currentCluster = currentRes.split("-",1);
+//var newCluster = "selva";
+var newResName = currentRes.replace(currentCluster,newCluster);
+System.log("New ReservationName : "+newResName);
+var reservationName = System.getModule("com.nullphase.local").getReservation(newResName);
+
+//System.log("Found Reservation : "+resName);
+//System.log("Found Reservation Object : "+reservationName);]]></script>
+    <in-binding>
+      <bind name="vmname" type="string" export-name="vmname"/>
+      <bind name="vCACVMs" type="Array/vCAC:VirtualMachine" export-name="vCACVMs"/>
+      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+      <bind name="newCluster" type="string" export-name="newCluster"/>
+    </in-binding>
+    <out-binding>
+      <bind name="reservationName" type="vCAC:Reservation" export-name="reservationName"/>
+      <bind name="vCACVMs" type="Array/vCAC:VirtualMachine" export-name="vCACVMs"/>
+      <bind name="vcVM" type="vCAC:VirtualMachine" export-name="vcVM"/>
+    </out-binding>
+    <position y="128.13636363636363" x="625.0"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item6" type="link" linked-workflow-id="b9c5f744-e902-4684-aeea-b9293135cbfb">
+    <display-name><![CDATA[Change reservation of an IaaS Virtual Machine]]></display-name>
+    <in-binding>
+      <bind name="host" type="vCAC:VCACHost" export-name="host">
+        <description><![CDATA[vCAC host]]></description>
+      </bind>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vcVM">
+        <description><![CDATA[A virtual machine]]></description>
+      </bind>
+      <bind name="hostReservation" type="vCAC:Reservation" export-name="reservationName">
+        <description><![CDATA[Host reservation]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Changes the reservation of a managed virtual machine.]]></description>
+    <position y="91.77272727272727" x="504.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="inFile">
+      <desc><![CDATA[Input File]]></desc>
+    </p-param>
+    <p-param name="host">
+      <desc><![CDATA[vCAC host]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

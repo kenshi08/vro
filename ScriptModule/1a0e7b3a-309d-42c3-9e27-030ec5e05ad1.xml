@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="isMultiMachine" result-type="boolean" api-version="6.0.0" id="1a0e7b3a-309d-42c3-9e27-030ec5e05ad1" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <description><![CDATA[Determines whether a VM has children]]></description>
+  <param n="host" t="vCAC:VCACHost"><![CDATA[vCAC host]]></param>
+  <param n="vm" t="vCAC:VirtualMachine"><![CDATA[Virtual machine]]></param>
+  <script encoded="false"><![CDATA[if (vm == null) {
+	return false;
+}
+var entityVm  = vm.getEntity();
+var childEntities = entityVm.getLink(host , "ChildVirtualMachines");
+return childEntities != null && childEntities.length > 0;]]></script>
+</dunes-script-module>

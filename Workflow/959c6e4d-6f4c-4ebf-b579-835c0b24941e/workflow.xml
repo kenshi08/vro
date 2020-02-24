@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="959c6e4d-6f4c-4ebf-b579-835c0b24941e" version="0.0.3" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Add or Update properties for vRA]]></display-name>
+  <description><![CDATA[Workflows Developed by: Gary Coburn - http://www.extendingclouds.com
+Documentation coming soon
+Tested Product Versions: 
+	vRA 7.0.1
+Disclaimer: 
+These workflows have been created entirely for educational and informational purpose. They do not come with any warranty or support but will provide a good base understanding of how you can accomplish your goals. These are not intended for production. Use at your own risk.
+]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="payload" type="Properties"/>
+  </input>
+  <output>
+    <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Get properties and apply logic]]></display-name>
+    <script encoded="false"><![CDATA[// Log the standard out puts in payload without pulling any vRA custom properties
+System.log("BlueprintName: " + payload.get("blueprintName")) ;
+System.log("ComponentId: " + payload.get("componentId")) ;
+System.log("ComponentTypeId: " + payload.get("componentTypeId")) ;
+System.log("EndpointId: " + payload.get("endpointId")) ;
+System.log("RequestId: " + payload.get("requestId")) ;
+System.log("VirtualMachineEvent: " + payload.get("virtualMachineEvent")) ;
+System.log("WorkflowNextState: " + payload.get("workflowNextState")) ;
+
+var lifecycleState = payload.get("lifecycleState") ;
+System.log("State: " + lifecycleState.get("state")) ;
+System.log("Phase: " + lifecycleState.get("phase")) ;
+System.log("Event: " + lifecycleState.get("event")) ;
+
+var machine = payload.get("machine") ;
+System.log("ID: " + machine.get("id")) ;
+System.log("Name: " + machine.get("name")) ;
+System.log("ExternalReference: " + machine.get("externalReference")) ;
+System.log("Owner: " + machine.get("owner")) ;
+System.log("Type: " + machine.get("type")) ;
+System.log("Properties: " + machine.get("properties")) ;
+
+
+// Writing all payload properties to system log
+var vRAVmProperties = machine.get("properties") ;
+if (vRAVmProperties != null) {
+	var log = "";
+	log += "vRA VM properties :\n";
+	var array = new Array();
+	for each (var key in vRAVmProperties.keys) {
+		array.push(key + " : " + vRAVmProperties.get(key));	
+	}
+	array.sort();
+	
+	for each (var line in array) {
+		log += "\t" + line + "\n";
+	}	
+	System.log(log);
+}
+
+// Creating or updating property against the payload
+System.log("Updating or Adding specific custom property");
+virtualMachineAddOrUpdateProperties = new Properties ();
+virtualMachineAddOrUpdateProperties.put('VirtualMachine.Network0.Name', 'dvPortGroup'); //updating existing property
+virtualMachineAddOrUpdateProperties.put('custom.example', 'just a simple example'); //creating a new property
+]]></script>
+    <in-binding>
+      <bind name="payload" type="Properties" export-name="payload"/>
+    </in-binding>
+    <out-binding>
+      <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="payload">
+      <desc><![CDATA[payload]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

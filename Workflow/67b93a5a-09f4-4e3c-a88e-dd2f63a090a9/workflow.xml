@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item10" object-name="workflow:name=generic" id="67b93a5a-09f4-4e3c-a88e-dd2f63a090a9" version="0.0.4" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[S/M/L W2K8R2 2]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="Services" type="string">
+      <description><![CDATA[Choose VM level service from the drop down menu]]></description>
+    </param>
+    <param name="NetworkName" type="string">
+      <description><![CDATA[Name of the network]]></description>
+    </param>
+    <param name="__asd_requestedFor" type="string"/>
+    <param name="storagepolicy" type="string"/>
+    <param name="needMonitoring" type="string"/>
+    <param name="needBackup" type="string"/>
+    <param name="needAntivirus" type="string"/>
+    <param name="numberofInstance" type="string"/>
+  </input>
+  <attrib name="catalogItem" type="vCACCAFE:CatalogItem" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='e7ae0a19-1984-4dc1-89ac-ea4687090fe3/44f702ac-4a35-4662-a26e-307235406a5c/337f8ae6-ade7-4f27-a696-8d9cae23a3b1'&dunesName='vCACCAFE:CatalogItem']]></value>
+    <description><![CDATA[Catalog item]]></description>
+  </attrib>
+  <attrib name="inputs" type="Array/CompositeType(name:string,value:string):FormInput" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Input values]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="924.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item1" type="task">
+    <display-name><![CDATA[Set Resource Sizes]]></display-name>
+    <script encoded="false"><![CDATA[var vmDiskSize;
+var vmMemorySize;
+var vmNoOfCpus;
+var NetworkProfileName;
+
+if (Services=="Gold") {
+vmDiskSize="40";
+vmMemorySize="4096";
+vmNoOfCpus="4";
+}
+else if (Services=="Silver") {
+vmDiskSize="20";
+vmMemorySize="2048";
+vmNoOfCpus="2";
+}
+else if (Services=="Bronze") {
+vmDiskSize=null;
+vmMemorySize="1024";
+vmNoOfCpus="1";
+}
+
+/*if (NetworkName == "vSphere-Web")
+	NetworkProfileName = "vSphere-Web";
+else if (NetworkName == "vSphere-App")
+	NetworkProfileName = "vSphere-App";
+else if (NetworkName == "vSphere-DB")
+	NetworkProfileName = "vSphere-DB";
+*/
+if (NetworkName == "Eng-App-Network")
+	NetworkProfileName = "Eng-App-Net";
+else if (NetworkName == "Eng-Web-Network")
+	NetworkProfileName = "Eng-Web-Net";
+else if (NetworkName == "Eng-DB-Network")
+	NetworkProfileName = "Eng-DB-Net";
+
+inputs = [];
+inputs[0] = new Properties();
+inputs[0].name = "provider-VirtualMachine.CPU.Count";
+inputs[0].value = vmNoOfCpus;
+inputs[1] = new Properties();
+inputs[1].name = "provider-VirtualMachine.Memory.Size";
+inputs[1].value = vmMemorySize;
+inputs[2] = new Properties();
+inputs[2].name = "provider-VirtualMachine.Network0.Name";
+inputs[2].value = NetworkName;
+inputs[3] = new Properties();
+inputs[3].name = "provider-VirtualMachine.Network0.ProfileName";
+inputs[3].value = NetworkProfileName;
+inputs[4] = new Properties();
+inputs[4].name = "provider-VirtualMachine.Disk0.StorageReservationPolicy";
+inputs[4].value = storagepolicy;
+/*inputs[5] = new Properties();
+inputs[5].name = "provider-VirtualMachine.Disk1.StorageReservationPolicy";
+inputs[5].value = storagepolicy;*/
+if (needMonitoring != null) {
+	inputs[5] = new Properties();
+	inputs[5].name = "provider-need.Monitoring.Agent";
+	inputs[5].value = needMonitoring;
+}
+
+if (needBackup != null) {
+	inputs[6] = new Properties();
+	inputs[6].name = "provider-need.Backup.Agent";
+	inputs[6].value = needBackup;
+}
+
+if (needAntivirus != null) {
+	inputs[7] = new Properties();
+	inputs[7].name = "provider-need.Antivirus.Agent";
+	inputs[7].value = needAntivirus;
+}
+
+inputs[8] = new Properties();
+inputs[8].name = "provider-Cafe.Shim.VirtualMachine.NumberOfInstances";
+inputs[8].value = numberofInstance;
+
+if (vmDiskSize != null) {
+	inputs[9] = new Properties();
+	inputs[9].name = "provider-VirtualMachine.Disk1.Size";
+	inputs[9].value = vmDiskSize;
+	inputs[10] = new Properties();
+	inputs[10].name = "provider-VirtualMachine.Disk1.StorageReservationPolicy";
+	inputs[10].value = storagepolicy;
+	inputs[11] = new Properties();
+	inputs[11].name = "provider-VirtualMachine.Disk1.StorageReservationPolicyMode";
+	inputs[11].value = "Exact";
+}
+
+
+
+]]></script>
+    <in-binding>
+      <bind name="Services" type="string" export-name="Services"/>
+      <bind name="NetworkName" type="string" export-name="NetworkName"/>
+      <bind name="storagepolicy" type="string" export-name="storagepolicy"/>
+      <bind name="needMonitoring" type="string" export-name="needMonitoring"/>
+      <bind name="needBackup" type="string" export-name="needBackup"/>
+      <bind name="needAntivirus" type="string" export-name="needAntivirus"/>
+      <bind name="numberofInstance" type="string" export-name="numberofInstance"/>
+    </in-binding>
+    <out-binding>
+      <bind name="inputs" type="Array/CompositeType(name:string,value:string):FormInput" export-name="inputs"/>
+    </out-binding>
+    <position y="55.40909090909091" x="244.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="link" linked-workflow-id="f9746c6e-e84e-49ef-9a9a-23aa80dd01ce">
+    <display-name><![CDATA[Request a catalog item on behalf of a user]]></display-name>
+    <in-binding>
+      <bind name="item" type="vCACCAFE:CatalogItem" export-name="catalogItem">
+        <description><![CDATA[Catalog item]]></description>
+      </bind>
+      <bind name="user" type="string" export-name="__asd_requestedFor">
+        <description><![CDATA[User id]]></description>
+      </bind>
+      <bind name="inputs" type="Array/CompositeType(name:string,value:string):FormInput" export-name="inputs">
+        <description><![CDATA[Input values]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="request" type="vCACCAFE:CatalogItemRequest">
+        <description><![CDATA[Request]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Sends a request for a catalog item on behalf of a user. You can use this workflow only for catalog items entitled to both you and the user on behalf of whom you are sending the request.]]></description>
+    <position y="65.0" x="564.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="NetworkName">
+      <desc><![CDATA[Network Name]]></desc>
+    </p-param>
+    <p-param name="Services">
+      <desc><![CDATA[Choose VM level service from the drop down menu]]></desc>
+      <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#Gold#;#string#Silver#;#string#Bronze#}#]]></p-qual>
+    </p-param>
+    <p-param name="__asd_requestedFor">
+      <desc><![CDATA[__asd_requestedFor]]></desc>
+    </p-param>
+    <p-param name="storagepolicy">
+      <desc><![CDATA[storagepolicy]]></desc>
+    </p-param>
+    <p-param name="needMonitoring">
+      <desc><![CDATA[needMonitoring]]></desc>
+    </p-param>
+    <p-param name="needBackup">
+      <desc><![CDATA[needBackup]]></desc>
+    </p-param>
+    <p-param name="needAntivirus">
+      <desc><![CDATA[needAntivirus]]></desc>
+    </p-param>
+    <p-param name="numberofInstance">
+      <desc><![CDATA[numberofInstance]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

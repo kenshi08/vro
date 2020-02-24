@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getHostReservationToStorageFromStoragePath" result-type="vCAC:Entity" api-version="6.0.0" id="6bacf43b-c585-425c-9664-b6ed19502929" version="1.1.0" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <description><![CDATA[Returns the storage to host reservation mapping for a given storage path]]></description>
+  <param n="host" t="vCAC:VCACHost"><![CDATA[vCAC host]]></param>
+  <param n="hostReservation" t="vCAC:Reservation"><![CDATA[Host reservation]]></param>
+  <param n="storagePath" t="string"><![CDATA[Storage path]]></param>
+  <script encoded="false"><![CDATA[System.log("Storage path: " + storagePath);
+
+var hostReservationEntity = hostReservation.getEntity();
+
+var rStorages = hostReservationEntity.getLink(host, "HostReservationToStorages");
+
+var hostReservationToStorage = null;
+
+evalHostReservationToStorage(rStorages);
+
+function evalHostReservationToStorage(reservStorages) {
+	for each (var rs in reservStorages) {
+		var storage = rs.getLink(host, "HostToStorage")[0];
+		var isCluster = storage.getProperty("IsStorageCluster");
+		if (isCluster === true) {
+			var children = storage.getLink(host, "Children");
+			for each (var childHostTosTorage in children) {
+				if (childHostTosTorage.getProperty("StoragePath") == storagePath) {
+					hostReservationToStorage = rs;
+				}
+			}
+		} 
+		System.log("Storage storage path: " + storage.getProperty("StoragePath"));
+		if (storage.getProperty("StoragePath") == storagePath) {
+			hostReservationToStorage = rs;
+		}
+	}
+}
+return hostReservationToStorage;]]></script>
+</dunes-script-module>

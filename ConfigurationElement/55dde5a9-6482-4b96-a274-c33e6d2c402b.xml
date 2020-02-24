@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="55dde5a9-6482-4b96-a274-c33e6d2c402b" version="0.0.0">
+  <display-name><![CDATA[databaseHost]]></display-name>
+  <atts>
+    <att name="hostname" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+      <description><![CDATA[The SSH server]]></description>
+    </att>
+    <att name="port" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+      <description><![CDATA[The Oracle database port]]></description>
+    </att>
+    <att name="username" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+      <description><![CDATA[The SSH user name]]></description>
+    </att>
+    <att name="password" type="SecureString" read-only="false">
+      <description><![CDATA[The SSH password]]></description>
+    </att>
+    <att name="environmentVariables" type="Array/CompositeType(Name:string,Value:string):env" read-only="false">
+      <description><![CDATA[The environment variables to set in the SSH session]]></description>
+    </att>
+    <att name="script" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+      <description><![CDATA[The SSH script used to create the database]]></description>
+    </att>
+    <att name="dbUsername" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+      <description><![CDATA[The user name to use to connect to the database]]></description>
+    </att>
+  </atts>
+</config-element>

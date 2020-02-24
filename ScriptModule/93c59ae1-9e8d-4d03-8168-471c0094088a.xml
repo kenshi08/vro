@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVcacHost" result-type="vCACCAFE:VCACHost" api-version="6.0.0" id="93c59ae1-9e8d-4d03-8168-471c0094088a" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.library.vcac">
+  <description><![CDATA[Return the vCAC host for a vCAC CAFE finder object]]></description>
+  <param n="vcacObject" t="Any"/>
+  <script encoded="false"><![CDATA[var vcoId = vcacObject.vcoId.toString();
+var vcacHostId = vcoId.substring(0,vcoId.indexOf("/"));
+return Server.findForType("vCACCAFE:VCACHost", vcacHostId);]]></script>
+</dunes-script-module>

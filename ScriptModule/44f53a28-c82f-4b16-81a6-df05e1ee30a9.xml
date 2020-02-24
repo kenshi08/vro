@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getUserNames" result-type="Array/string" api-version="6.0.0" id="44f53a28-c82f-4b16-81a6-df05e1ee30a9" version="0.0.1" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <description><![CDATA[Given a vCAC Host, return an array of strings containing the name of all user names]]></description>
+  <param n="vcacHost" t="vCAC:VCACHost"><![CDATA[vCloud Automation Center host]]></param>
+  <script encoded="false"><![CDATA[if (vcacHost == null) return null;
+var modelName = "ManagementModelEntities.svc";
+var entitySetName = "Users";
+
+var entities = vCACEntityManager.readModelEntitiesByCustomFilter(vcacHost.id, modelName, entitySetName, null, null);
+System.log("User Names found: "+entities.length);
+var prop = new Properties();
+for each (var entity in entities) {
+	prop.put(entity.getProperty("UserName"));
+}
+return prop.keys.sort();]]></script>
+</dunes-script-module>

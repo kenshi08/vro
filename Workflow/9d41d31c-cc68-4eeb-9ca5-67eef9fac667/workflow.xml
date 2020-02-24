@@ -1,0 +1,898 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="9d41d31c-cc68-4eeb-9ca5-67eef9fac667" version="0.0.47" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Update Service Profile]]></display-name>
+  <description><![CDATA[
+VMware PSO I&A Selva 08/2015]]></description>
+  <position y="63.59090909090908" x="25.0"/>
+  <input>
+    <param name="edgeName" type="string">
+      <description><![CDATA[Edge Name]]></description>
+    </param>
+    <param name="type" type="string"/>
+    <param name="persistenceMethod" type="string">
+      <description><![CDATA[persistenceMethod Selection]]></description>
+    </param>
+    <param name="expires" type="number">
+      <description><![CDATA[expires in secs]]></description>
+    </param>
+    <param name="httpRedirectUrl" type="string">
+      <description><![CDATA[HTTP Redirect URL]]></description>
+    </param>
+    <param name="cookieMode" type="string"/>
+    <param name="cookieName" type="string"/>
+    <param name="virtualServerName" type="string"/>
+  </input>
+  <output>
+    <param name="error" type="string"/>
+  </output>
+  <attrib name="method" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest method]]></description>
+  </attrib>
+  <attrib name="uri" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest Url]]></description>
+  </attrib>
+  <attrib name="body" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest body]]></description>
+  </attrib>
+  <attrib name="edgeId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge ID]]></description>
+  </attrib>
+  <attrib name="applicationProfileId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Application Profile ID]]></description>
+  </attrib>
+  <attrib name="nsxRestHost" type="REST:RESTHost" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[NSX Rest Host]]></description>
+  </attrib>
+  <attrib name="monitorName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Monitor Name]]></description>
+  </attrib>
+  <attrib name="applicationProfileName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Application Profile Name]]></description>
+  </attrib>
+  <attrib name="virtualServerId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[virtual Server ID]]></description>
+  </attrib>
+  <attrib name="poolId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Pool ID]]></description>
+  </attrib>
+  <attrib name="poolName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Pool Name]]></description>
+  </attrib>
+  <attrib name="monitorId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Monitor ID]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Error Code]]></description>
+  </attrib>
+  <attrib name="rollbackVirtualServerConfig" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rollback Virtual Server Config Changes]]></description>
+  </attrib>
+  <attrib name="rollbackMonitorServiceConfig" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rollback Monitor Service Config Changes]]></description>
+  </attrib>
+  <attrib name="currentAccelerationEnabledValue" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="currentProtocol" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="currentType" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="rollbackApplicationServiceConfig" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-note x="720.0" y="109.0909090909091" w="420.0" h="63.63636363636363">
+    <description><![CDATA[when updating non HTTPS profile.]]></description>
+  </workflow-note>
+  <workflow-note x="720.0" y="18.181818181818183" w="420.0" h="54.54545454545454">
+    <description><![CDATA[when updating HTTPS profile]]></description>
+  </workflow-note>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="27.227272727272727" x="1064.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" catch-name="item9" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get applicationProfileId and applicationProfileName]]></display-name>
+    <script encoded="false"><![CDATA[method = "GET";
+uri = "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+body = "";
+var VSIDUrl = uri;
+// Get the pool ID
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+var ind1 = response.indexOf("<defaultPoolId>") + "<defaultPoolId>".length;
+var ind2 = response.indexOf("</defaultPoolId>");
+
+var ind3 = response.indexOf("<applicationProfileId>") + "<applicationProfileId>".length;
+var ind4 = response.indexOf("</applicationProfileId>");
+
+poolId = response.substring(ind1, ind2);
+applicationProfileId = response.substring(ind3, ind4);
+System.log("Pool ID : " + poolId);
+System.log("Application Profile ID : " + applicationProfileId);
+
+
+
+//Get Application Profile Name
+
+method = "GET";
+uri = "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId;
+body = "";
+var VSIDUrl = uri;
+// Get the pool ID
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+response = response.substring("<?xml version='1.0' encoding='UTF-8'?>".length, response.length);
+rollbackApplicationServiceConfig = response;
+
+var ind1 = response.indexOf("<name>") + "<name>".length;
+var ind2 = response.indexOf("</name>");
+
+applicationProfileName = response.substring(ind1, ind2);
+
+var ind3 = response.indexOf("<template>") + "<template>".length;
+var ind4 = response.indexOf("</template>");
+
+currentType = response.substring(ind3, ind4);]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="applicationProfileId" type="string" export-name="applicationProfileId"/>
+      <bind name="monitorName" type="string" export-name="monitorName"/>
+      <bind name="poolId" type="string" export-name="poolId"/>
+      <bind name="poolName" type="string" export-name="poolName"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+      <bind name="applicationProfileName" type="string" export-name="applicationProfileName"/>
+      <bind name="rollbackApplicationServiceConfig" type="string" export-name="rollbackApplicationServiceConfig"/>
+      <bind name="currentType" type="string" export-name="currentType"/>
+    </out-binding>
+    <position y="73.59090909090908" x="364.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item1" catch-name="item9" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get virtualServrId]]></display-name>
+    <script encoded="false"><![CDATA[var virtualServerMatchCounter = 0;
+// var edgeId
+// Create a REST call to query all edges configured
+
+var request = nsxRestHost.createRequest("GET", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers");
+//System.log("Request URL: " + request.fullUrl);
+
+// Execute the request
+
+var response = request.execute();
+var foundRule = false;
+
+
+
+// Evaluate the Response
+
+if (response.statusCode == 200) {
+ // Get XML response from NSX
+ var responseXML = XMLManager.fromString(response.ContentAsString);
+ var virtualServerNameList = responseXML.documentElement.getElementsByTagName("name");
+ var virtualServerIdList = responseXML.documentElement.getElementsByTagName("virtualServerId");
+
+ // loop through list of edge names in the response. 
+ for (x = 0; x < virtualServerNameList.length; x++) {
+  if (virtualServerNameList.item(x).firstChild.textContent == virtualServerName) {
+   virtualServerId = virtualServerIdList.item(x).firstChild.textContent;
+   virtualServerID = virtualServerId;
+   //NSXurl = nsxConnectionList[v].url;
+   virtualServerMatchCounter++;
+   //System.log("Virtual Server ID for " +virtualServerNameList.item(x).firstChild.textContent + " is >> " + virtualServerIdList.item(x).firstChild.textContent)
+   System.log("Virtual Server ID: " + virtualServerId);
+   // System.log("NSX URL for " +edgeNameList.item(x).firstChild.textContent + " is >> " + NSXurl)
+   if (virtualServerMatchCounter > 1) {
+    throw "Multiple virtualservers with the same virtual server name (" + virtualServerName + ") found";
+   }
+  }
+ }
+}
+
+if (virtualServerId == null) {
+ System.error("Virtual Server -> " + virtualServerName + " doesn't exist");
+ throw "Virtual Server -> " + virtualServerName + " doesn't exist";
+}]]></script>
+    <in-binding>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+    </out-binding>
+    <position y="73.59090909090908" x="244.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item7" catch-name="item9" throw-bind-name="errorCode" type="link" linked-workflow-id="d02637fa-eb7c-4d09-8ccb-56f87715170d">
+    <display-name><![CDATA[Get NSX and EdgeId]]></display-name>
+    <in-binding>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </out-binding>
+    <position y="73.59090909090908" x="125.0"/>
+  </workflow-item>
+  <workflow-item name="item8" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="190.86363636363635" x="1204.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item8" type="task">
+    <display-name><![CDATA[Error Handling]]></display-name>
+    <script encoded="false"><![CDATA[errorContent=errorCode;]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="200.86363636363635" x="324.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item5" catch-name="item9" throw-bind-name="error" type="task">
+    <display-name><![CDATA[Get rollback details]]></display-name>
+    <script encoded="false"><![CDATA[//Get Virtual Servr Config
+
+method = "GET";
+uri = "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+body = "";
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+var ind1 = response.indexOf("<defaultPoolId>") + "<defaultPoolId>".length;
+var ind2 = response.indexOf("</defaultPoolId>");
+
+poolId = response.substring(ind1, ind2);
+System.log("Pool : " + poolId);
+
+var ind1 = response.indexOf("<protocol>") + "<protocol>".length;
+var ind2 = response.indexOf("</protocol>");
+
+var ind3 = response.indexOf("<accelerationEnabled>") + "<accelerationEnabled>".length;
+var ind4 = response.indexOf("</accelerationEnabled>");
+
+var currentAccelerationEnabledValue = response.substring(ind3, ind4);
+System.log("acceleration detail :" + currentAccelerationEnabledValue);
+
+var currentProtocol = response.substring(ind1, ind2);
+System.log("Protocal Value : " + currentProtocol);
+
+
+method = "GET";
+uri = "/api/4.0/edges/" + edgeId + "/loadbalancer/config/pools/" + poolId;
+body = "";
+
+request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+/*var response = request.execute(); */
+var response1 = request.execute().contentAsString;
+System.log(response1);
+
+ind1 = response1.indexOf("<name>") + "<name>".length;
+ind2 = response1.indexOf("</name>");
+
+var poolName = response1.substring(ind1, ind2);
+
+System.log("Pool Name is " + poolName);
+
+
+
+response = response.substring("<?xml version='1.0' encoding='UTF-8'?>".length, response.length);
+rollbackVirtualServerConfig = response;
+System.log("Getting backup virt info :");
+System.log(rollbackVirtualServerConfig);]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="monitorName" type="string" export-name="monitorName"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+      <bind name="currentAccelerationEnabledValue" type="string" export-name="currentAccelerationEnabledValue"/>
+      <bind name="currentProtocol" type="string" export-name="currentProtocol"/>
+      <bind name="currentType" type="string" export-name="currentType"/>
+    </in-binding>
+    <out-binding>
+      <bind name="rollbackVirtualServerConfig" type="string" export-name="rollbackVirtualServerConfig"/>
+      <bind name="rollbackMonitorServiceConfig" type="string" export-name="rollbackMonitorServiceConfig"/>
+      <bind name="currentProtocol" type="string" export-name="currentProtocol"/>
+    </out-binding>
+    <position y="73.59090909090908" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item6" type="custom-condition" alt-out-name="item4">
+    <display-name><![CDATA[is HTTPS ?]]></display-name>
+    <script encoded="false"><![CDATA[if (currentType == "HTTPS") {
+ return true;
+} else {
+ return false;
+}]]></script>
+    <in-binding>
+      <bind name="currentType" type="string" export-name="currentType"/>
+    </in-binding>
+    <position y="63.59090909090908" x="604.5"/>
+  </workflow-item>
+  <workflow-item name="item11" type="end" end-mode="0">
+    <position y="118.13636363636363" x="1084.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item12" catch-name="item13" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Update Virtual Server]]></display-name>
+    <script encoded="false"><![CDATA[System.log("Updating Virtual Server -> " + virtualServerName);
+
+if (type == "keepExistingValue" || type == null || type == "") {
+ type = currentType;
+}
+
+method = "PUT";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+
+body = rollbackVirtualServerConfig.replace(currentProtocol, type.toLowerCase());
+
+System.log("New Body Virtual Server :" + body);
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+var response = request.execute();
+statusCode = response.statusCode;
+
+if (statusCode == 204) {
+ System.log("Step 1 ) Virtual Server Updated Successfully >> moving to application profile update");
+} else {
+ System.error("Virtual Server Update Failed, no changes committed");
+ errorContent = response.contentAsString;
+ throw errorContent;
+}]]></script>
+    <in-binding>
+      <bind name="rollbackVirtualServerConfig" type="string" export-name="rollbackVirtualServerConfig"/>
+      <bind name="currentAccelerationEnabledValue" type="string" export-name="currentAccelerationEnabledValue"/>
+      <bind name="currentProtocol" type="string" export-name="currentProtocol"/>
+      <bind name="type" type="string" export-name="type"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+      <bind name="applicationProfileId" type="string" export-name="applicationProfileId"/>
+      <bind name="currentType" type="string" export-name="currentType"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="37.22727272727273" x="744.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item10" catch-name="item13" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Update Application Service]]></display-name>
+    <script encoded="false"><![CDATA[//System.log(type);
+method = "GET";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId;
+body = "";
+var sslPassthrough = "";
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+var method1 = response.indexOf("<method>") + "<method>".length;
+var method2 = response.indexOf("</method>");
+methodvalue = response.substring(method1, method2);
+if (method2 == -1) {
+ methodvalue = "";
+}
+
+var ckname1 = response.indexOf("<cookieName>") + "<cookieName>".length;
+var ckname2 = response.indexOf("</cookieName>");
+cookieNamevalue = response.substring(ckname1, ckname2);
+if (ckname2 == -1) {
+ cookieNamevalue = "";
+}
+
+var ckmode1 = response.indexOf("<cookieMode>") + "<cookieMode>".length;
+var ckmode2 = response.indexOf("</cookieMode>");
+cookieModevalue = response.substring(ckmode1, ckmode2);
+if (ckmode2 == -1) {
+ cookieModevalue = "";
+}
+
+var typ1 = response.indexOf("<template>") + "<template>".length;
+var typ2 = response.indexOf("</template>");
+currentType = response.substring(typ1, typ2);
+if (typ2 == -1) {
+ currentType = "";
+}
+
+var ind1 = response.indexOf("<expire>") + "<expire>".length;
+var ind2 = response.indexOf("</expire>");
+expirevalue = response.substring(ind1, ind2);
+if (ind2 == -1) {
+ expirevalue = "";
+}
+
+var ind1 = response.indexOf("<httpRedirect><to>") + "<httpRedirect><to>".length;
+var ind2 = response.indexOf("</to></httpRedirect>");
+currentHttpRedirect = response.substring(ind1, ind2);
+if (ind2 == -1) {
+ currentHttpRedirect = "currentHttpRedirectIsEmpty";
+}
+
+if (expires == "-1" || expires == null || expires == "") {
+ expires = expirevalue;
+}
+
+if (cookieName == "keepExistingValue" || cookieName == null || cookieName == "") {
+ cookieName = cookieNamevalue;
+}
+
+if (cookieMode == "keepExistingValue" || cookieMode == null || cookieMode == "") {
+ cookieMode = cookieModevalue;
+}
+
+if (type == "keepExistingValue" || type == null || type == "") {
+ type = currentType;
+}
+
+if (type == "HTTPS") {
+ sslPassthrough = "true";
+} else {
+ sslPassthrough = "false";
+}
+
+/****************************************************************************************
+	Logic for persist method change
+
+	if type change then
+	 - if Persist = keep exisitng || null
+	 	- persist == Set to None
+	 - if Psersist = new value
+	 	- persist == apply new value
+	
+	if type == keep exisitng
+	 - if persist == kee[ existing
+	 	- persist == keep exisityn vlaue
+	 - if persisst == new value
+	 	- persist == apply new value
+     ******************************************************************************************/
+
+if (type != currentType) {
+ if (persistenceMethod == "keepExistingValue" || persistenceMethod == null || persistenceMethod == "") {
+  body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+  System.log("New Application Profile Body :" + body);
+
+ } else {
+  if (persistenceMethod == "COOKIE" || persistenceMethod == "cookie") {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><cookieName>" + cookieName + "</cookieName><cookieMode>" + cookieMode + "</cookieMode><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  } else {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  }
+ }
+} else {
+ if (persistenceMethod == "keepExistingValue" || persistenceMethod == null || persistenceMethod == "") {
+  persistenceMethod = methodvalue;
+  if (persistenceMethod == "") {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  } else {
+   if (persistenceMethod == "COOKIE" || persistenceMethod == "cookie") {
+    body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><cookieName>" + cookieName + "</cookieName><cookieMode>" + cookieMode + "</cookieMode><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+    System.log("New Application Profile Body :" + body);
+   } else {
+    body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+    System.log("New Application Profile Body :" + body);
+   }
+  }
+ } else {
+  if (persistenceMethod == "COOKIE" || persistenceMethod == "cookie") {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><cookieName>" + cookieName + "</cookieName><cookieMode>" + cookieMode + "</cookieMode><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  } else {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  }
+ }
+}
+
+if (type == "HTTP") {
+ if (httpRedirectUrl == "keepExistingValue" || httpRedirectUrl == null || httpRedirectUrl == "") {
+  if (currentHttpRedirect == "currentHttpRedirectIsEmpty") {} else {
+   httpRedirect = "<httpRedirect><to>" + currentHttpRedirect + "</to></httpRedirect></applicationProfile>";
+   body = body.replace("</applicationProfile>", httpRedirect);
+  }
+ } else {
+
+  if (httpRedirectUrl == "RESET") {} else {
+   httpRedirect = "<httpRedirect><to>" + httpRedirectUrl + "</to></httpRedirect></applicationProfile>";
+   body = body.replace("</applicationProfile>", httpRedirect);
+  }
+ }
+}
+
+System.log("New Application Profile Body :" + body);
+
+method = "PUT";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId;
+
+var request2 = nsxRestHost.createRequest("PUT", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId, body);
+
+// Execute the request
+request2.contentType = "application/xml";
+var response2 = request2.execute();
+var statusCode = response2.statusCode;
+
+//Error Handling
+
+if (statusCode == 204) {
+ System.log("Step 1) Service Profile Updated Successfully - moving to virtual server update");
+} else {
+ errorContent = response2.contentAsString;
+ System.error("Service Profile Update Failed - no changes committed ");
+ throw errorContent;
+}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="applicationProfileId" type="string" export-name="applicationProfileId"/>
+      <bind name="applicationProfileName" type="string" export-name="applicationProfileName"/>
+      <bind name="persistenceMethod" type="string" export-name="persistenceMethod"/>
+      <bind name="expires" type="number" export-name="expires"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="type" type="string" export-name="type"/>
+      <bind name="cookieMode" type="string" export-name="cookieMode"/>
+      <bind name="cookieName" type="string" export-name="cookieName"/>
+      <bind name="httpRedirectUrl" type="string" export-name="httpRedirectUrl"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+      <bind name="rollbackVirtualServerConfig" type="string" export-name="rollbackVirtualServerConfig"/>
+      <bind name="rollbackMonitorServiceConfig" type="string" export-name="rollbackMonitorServiceConfig"/>
+    </in-binding>
+    <out-binding>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="128.13636363636363" x="744.5"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item0" catch-name="item13" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Update Application Service]]></display-name>
+    <script encoded="false"><![CDATA[//System.log(type);
+method = "GET";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId;
+body = "";
+var sslPassthrough = "";
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+var method1 = response.indexOf("<method>") + "<method>".length;
+var method2 = response.indexOf("</method>");
+methodvalue = response.substring(method1, method2);
+if (method2 == -1) {
+ methodvalue = "";
+}
+
+var ckname1 = response.indexOf("<cookieName>") + "<cookieName>".length;
+var ckname2 = response.indexOf("</cookieName>");
+cookieNamevalue = response.substring(ckname1, ckname2);
+if (ckname2 == -1) {
+ cookieNamevalue = "";
+}
+
+var ckmode1 = response.indexOf("<cookieMode>") + "<cookieMode>".length;
+var ckmode2 = response.indexOf("</cookieMode>");
+cookieModevalue = response.substring(ckmode1, ckmode2);
+if (ckmode2 == -1) {
+ cookieModevalue = "";
+}
+
+var typ1 = response.indexOf("<template>") + "<template>".length;
+var typ2 = response.indexOf("</template>");
+currentType = response.substring(typ1, typ2);
+if (typ2 == -1) {
+ currentType = "";
+}
+
+var ind1 = response.indexOf("<expire>") + "<expire>".length;
+var ind2 = response.indexOf("</expire>");
+expirevalue = response.substring(ind1, ind2);
+if (ind2 == -1) {
+ expirevalue = "";
+}
+
+var ind1 = response.indexOf("<httpRedirect><to>") + "<httpRedirect><to>".length;
+var ind2 = response.indexOf("</to></httpRedirect>");
+currentHttpRedirect = response.substring(ind1, ind2);
+if (ind2 == -1) {
+ currentHttpRedirect = "currentHttpRedirectIsEmpty";
+}
+
+if (expires == "-1" || expires == null || expires == "") {
+ expires = expirevalue;
+}
+
+if (cookieName == "keepExistingValue" || cookieName == null || cookieName == "") {
+ cookieName = cookieNamevalue;
+}
+
+if (cookieMode == "keepExistingValue" || cookieMode == null || cookieMode == "") {
+ cookieMode = cookieModevalue;
+}
+
+if (type == "keepExistingValue" || type == null || type == "") {
+ type = currentType;
+}
+
+if (type == "HTTPS") {
+ sslPassthrough = "true";
+} else {
+ sslPassthrough = "false";
+}
+
+/****************************************************************************************
+	Logic for persist method change
+
+	if type change then
+	 - if Persist = keep exisitng || null
+	 	- persist == Set to None
+	 - if Psersist = new value
+	 	- persist == apply new value
+	
+	if type == keep exisitng
+	 - if persist == kee[ existing
+	 	- persist == keep exisityn vlaue
+	 - if persisst == new value
+	 	- persist == apply new value
+     ******************************************************************************************/
+
+if (type != currentType) {
+ if (persistenceMethod == "keepExistingValue" || persistenceMethod == null || persistenceMethod == "") {
+  body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+  System.log("New Application Profile Body :" + body);
+
+ } else {
+  if (persistenceMethod == "COOKIE" || persistenceMethod == "cookie") {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><cookieName>" + cookieName + "</cookieName><cookieMode>" + cookieMode + "</cookieMode><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  } else {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  }
+ }
+} else {
+ if (persistenceMethod == "keepExistingValue" || persistenceMethod == null || persistenceMethod == "") {
+  persistenceMethod = methodvalue;
+  if (persistenceMethod == "") {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  } else {
+   if (persistenceMethod == "COOKIE" || persistenceMethod == "cookie") {
+    body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><cookieName>" + cookieName + "</cookieName><cookieMode>" + cookieMode + "</cookieMode><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+    System.log("New Application Profile Body :" + body);
+   } else {
+    body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+    System.log("New Application Profile Body :" + body);
+   }
+  }
+ } else {
+  if (persistenceMethod == "COOKIE" || persistenceMethod == "cookie") {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><cookieName>" + cookieName + "</cookieName><cookieMode>" + cookieMode + "</cookieMode><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  } else {
+   body = "<applicationProfile><applicationProfileId>" + applicationProfileId + "</applicationProfileId><persistence><method>" + persistenceMethod + "</method><expire>" + expires + "</expire></persistence><name>" + applicationProfileName + "</name><sslPassthrough>" + sslPassthrough + "</sslPassthrough><template>" + type + "</template></applicationProfile>";
+   System.log("New Application Profile Body :" + body);
+  }
+ }
+}
+
+if (type == "HTTP") {
+ if (httpRedirectUrl == "keepExistingValue" || httpRedirectUrl == null || httpRedirectUrl == "") {
+  if (currentHttpRedirect == "currentHttpRedirectIsEmpty") {} else {
+   httpRedirect = "<httpRedirect><to>" + currentHttpRedirect + "</to></httpRedirect></applicationProfile>";
+   body = body.replace("</applicationProfile>", httpRedirect);
+  }
+ } else {
+
+  if (httpRedirectUrl == "RESET") {
+   httpRedirectUrl = httpRedirectUrl;
+  } else {
+   httpRedirect = "<httpRedirect><to>" + httpRedirectUrl + "</to></httpRedirect></applicationProfile>";
+   body = body.replace("</applicationProfile>", httpRedirect);
+  }
+ }
+}
+
+method = "PUT";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId;
+
+var request2 = nsxRestHost.createRequest("PUT", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId, body);
+
+// Execute the request
+request2.contentType = "application/xml";
+var response2 = request2.execute();
+var statusCode = response2.statusCode;
+
+//Error Handling
+
+if (statusCode == 204) {
+ System.log("Service Profile Updated Successfully!");
+} else {
+ errorContent = response2.contentAsString;
+ System.error("Application Profile Update Failed, cleaning up changes");
+ var request3 = nsxRestHost.createRequest("PUT", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId, rollbackVirtualServerConfig);
+ request3.contentType = "application/xml";
+ var response3 = request3.execute();
+ errorContent = response2.contentAsString;
+
+ if (response3.statusCode == 204) {
+  System.log("Rollback Virtual Server Changes done - no changes com,mitted");
+ } else {
+  System.log("Rollback Virtual Server failed, please contact operation");
+  errorContent = errorContent + " Rollback Virtual Server failed, please contact operation, more details: " + response3.contentAsString;
+ }
+ throw errorContent;
+}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="applicationProfileId" type="string" export-name="applicationProfileId"/>
+      <bind name="applicationProfileName" type="string" export-name="applicationProfileName"/>
+      <bind name="persistenceMethod" type="string" export-name="persistenceMethod"/>
+      <bind name="expires" type="number" export-name="expires"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="type" type="string" export-name="type"/>
+      <bind name="cookieMode" type="string" export-name="cookieMode"/>
+      <bind name="cookieName" type="string" export-name="cookieName"/>
+      <bind name="httpRedirectUrl" type="string" export-name="httpRedirectUrl"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+      <bind name="rollbackVirtualServerConfig" type="string" export-name="rollbackVirtualServerConfig"/>
+      <bind name="rollbackMonitorServiceConfig" type="string" export-name="rollbackMonitorServiceConfig"/>
+      <bind name="currentType" type="string" export-name="currentType"/>
+      <bind name="rollbackApplicationServiceConfig" type="string" export-name="rollbackApplicationServiceConfig"/>
+    </in-binding>
+    <out-binding>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="37.22727272727273" x="884.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item11" catch-name="item13" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Update Virtual Server]]></display-name>
+    <script encoded="false"><![CDATA[if (type == "keepExistingValue" || type == null || type == "") {
+ type = currentType;
+}
+
+System.log("Updating Virtual Server -> " + virtualServerName);
+method = "PUT";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+
+body = rollbackVirtualServerConfig.replace(currentProtocol, type.toLowerCase());
+
+System.log("New Body Virtual Server :" + body);
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+var response = request.execute();
+statusCode = response.statusCode;
+
+if (statusCode == 204) {
+ System.log("Virtual Server Updated Successfully!");
+} else {
+ System.error("Virtual Server Update Failed, cleaning up changes");
+ var request3 = nsxRestHost.createRequest("PUT", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId, rollbackApplicationServiceConfig);
+ request3.contentType = "application/xml";
+ var response3 = request3.execute();
+ errorContent = response.contentAsString;
+ if (response3.statusCode == 204) {
+  System.log("Rollback Application Service Changes done - no changes committed ");
+ } else {
+  System.log("Rollback Application Service failed, please contact operation");
+  errorContent = errorContent + " Rollback Application Service failed, please contact operation, more details: " + response3.contentAsString;
+ }
+ throw errorContent;
+}]]></script>
+    <in-binding>
+      <bind name="rollbackVirtualServerConfig" type="string" export-name="rollbackVirtualServerConfig"/>
+      <bind name="currentAccelerationEnabledValue" type="string" export-name="currentAccelerationEnabledValue"/>
+      <bind name="currentProtocol" type="string" export-name="currentProtocol"/>
+      <bind name="type" type="string" export-name="type"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+      <bind name="applicationProfileId" type="string" export-name="applicationProfileId"/>
+      <bind name="rollbackApplicationServiceConfig" type="string" export-name="rollbackApplicationServiceConfig"/>
+      <bind name="currentType" type="string" export-name="currentType"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="128.13636363636363" x="884.5"/>
+  </workflow-item>
+  <workflow-item name="item13" out-name="item8" type="task">
+    <display-name><![CDATA[Error Handling]]></display-name>
+    <script encoded="false"><![CDATA[errorContent=errorCode;]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="73.59090909090908" x="1164.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="edgeName">
+      <desc><![CDATA[edgeName]]></desc>
+    </p-param>
+    <p-param name="virtualServerName">
+      <desc><![CDATA[virtualServerName]]></desc>
+    </p-param>
+    <p-param name="type">
+      <desc><![CDATA[type]]></desc>
+      <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#keepExistingValue#;#string#TCP#;#string#HTTP#;#string#HTTPS#}#]]></p-qual>
+      <p-qual kind="static" name="defaultValue" type="string"><![CDATA[keepExistingValue]]></p-qual>
+    </p-param>
+    <p-param name="httpRedirectUrl">
+      <desc><![CDATA[HTTP Redirect URL]]></desc>
+      <p-qual kind="static" name="defaultValue" type="string"><![CDATA[keepExistingValue]]></p-qual>
+    </p-param>
+    <p-param name="persistenceMethod">
+      <desc><![CDATA[persistenceMethod]]></desc>
+      <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.nsx.apiselection","applicationProfileMethodList").call( #type )]]></p-qual>
+      <p-qual kind="static" name="defaultValue" type="string"><![CDATA[keepExistingValue]]></p-qual>
+    </p-param>
+    <p-param name="cookieMode">
+      <desc><![CDATA[cookieMode]]></desc>
+      <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.nsx.apiselection","cookieMode").call( #persistenceMethod )]]></p-qual>
+      <p-qual kind="static" name="defaultValue" type="string"><![CDATA[keepExistingValue]]></p-qual>
+    </p-param>
+    <p-param name="cookieName">
+      <desc><![CDATA[cookieName]]></desc>
+      <p-qual kind="static" name="defaultValue" type="string"><![CDATA[keepExistingValue]]></p-qual>
+    </p-param>
+    <p-param name="expires">
+      <desc><![CDATA[Expires in seconds]]></desc>
+      <p-qual kind="static" name="defaultValue" type="number"><![CDATA[-1.0]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

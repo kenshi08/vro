@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item5" object-name="workflow:name=generic" id="a088b9e6-e5a6-430b-843e-de04117c9ae4" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Download blueprint from sample exchange to vRO]]></display-name>
+  <description><![CDATA[Download blueprint from sample exchange to vRO resource element in /Blueprints category]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="blueprintName" type="string"/>
+  </input>
+  <attrib name="blueprintDownloadUrl" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="mimeAttachment" type="MimeAttachment" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="resourceElement" type="ResourceElement" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="resourceElementCategory" type="ResourceElementCategory" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Where to look for resource elements or create them]]></description>
+  </attrib>
+  <workflow-item name="item3" out-name="item0" type="task" script-module="com.vmware.coe.vra.content/getSampleExchangeBlueprintDownloadUrl">
+    <display-name><![CDATA[getSampleExchangeBlueprintDownloadUrl]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.coe.vra.content").getSampleExchangeBlueprintDownloadUrl(blueprintName) ;]]></script>
+    <in-binding>
+      <bind name="blueprintName" type="string" export-name="blueprintName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" export-name="blueprintDownloadUrl"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item2" type="task">
+    <display-name><![CDATA[Download as mime]]></display-name>
+    <script encoded="false"><![CDATA[mimeAttachment = DownloaderPluginDownloader.downloadUrlAsMimeAttachement(blueprintDownloadUrl, "zip");]]></script>
+    <in-binding>
+      <bind name="blueprintDownloadUrl" type="string" export-name="blueprintDownloadUrl"/>
+    </in-binding>
+    <out-binding>
+      <bind name="mimeAttachment" type="MimeAttachment" export-name="mimeAttachment"/>
+    </out-binding>
+    <position y="55.40909090909091" x="464.5"/>
+  </workflow-item>
+  <workflow-item name="item1" type="end" end-mode="0">
+    <position y="45.40909090909091" x="924.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item4" type="task" script-module="com.vmware.coe.library.resourceElements/getOrCreateResourceElement">
+    <display-name><![CDATA[getOrCreateResourceElement]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.coe.library.resourceElements").getOrCreateResourceElement(resourceElementCategory,name) ;]]></script>
+    <in-binding>
+      <bind name="name" type="string" export-name="blueprintName">
+        <description><![CDATA[The name of the resource element to get or create]]></description>
+      </bind>
+      <bind name="resourceElementCategory" type="ResourceElementCategory" export-name="resourceElementCategory">
+        <description><![CDATA[Where to look for resource elements or create them]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="ResourceElement" export-name="resourceElement"/>
+    </out-binding>
+    <description><![CDATA[Get a configuration element by name. If it is not found create an empty resource element]]></description>
+    <position y="55.40909090909091" x="604.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item1" type="task">
+    <display-name><![CDATA[Set mime]]></display-name>
+    <script encoded="false"><![CDATA[resourceElement.setContentFromMimeAttachment(mimeAttachment);]]></script>
+    <in-binding>
+      <bind name="mimeAttachment" type="MimeAttachment" export-name="mimeAttachment"/>
+      <bind name="resourceElement" type="ResourceElement" export-name="resourceElement"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="744.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item3" type="task">
+    <display-name><![CDATA[Set category]]></display-name>
+    <script encoded="false"><![CDATA[resourceElementCategory = Server.getResourceElementCategoryWithPath("Blueprints");]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="resourceElementCategory" type="ResourceElementCategory" export-name="resourceElementCategory"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="blueprintName">
+      <desc><![CDATA[Blueprint]]></desc>
+      <p-qual kind="ognl" name="genericEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.coe.vra.content","getSampleExchangeBlueprintNames").call()]]></p-qual>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

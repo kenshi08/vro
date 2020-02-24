@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="compositeTypeToProperties" result-type="Properties" api-version="6.0.0" id="9b0e185f-5c1a-404b-94c5-27e3a4edb4da" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.vcaccafe.util">
+  <description><![CDATA[Converts an array of composite types objects to a properties object.]]></description>
+  <param n="types" t="Array/CompositeType(name:string,value:string):Entries"><![CDATA[Entry pairs name/value]]></param>
+  <script encoded="false"><![CDATA[var properties = new Properties();
+
+if (types != null) {
+	for (var i = 0; i < types.length; i++) {
+		properties.put(types[i].name, types[i].value);
+	}
+}
+
+return properties;
+
+]]></script>
+</dunes-script-module>

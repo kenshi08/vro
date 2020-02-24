@@ -1,0 +1,376 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item4" object-name="workflow:name=generic" id="02a288cf-d8e3-409f-b31b-b9ec67dd45e2" version="0.0.24" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Update Pool Members]]></display-name>
+  <description><![CDATA[Update Pool Members
+
+VMware PSO I&A Selva 08/2015]]></description>
+  <position y="45.40909090909091" x="25.0"/>
+  <input>
+    <param name="edgeName" type="string">
+      <description><![CDATA[Edge Name]]></description>
+    </param>
+    <param name="virtualServerName" type="string">
+      <description><![CDATA[Virtual Server Name]]></description>
+    </param>
+    <param name="memberName" type="Array/CompositeType(ipAddress:string,weight:number,monitorPort:number,port:number,newPort:number,maxConn:number,minConn:number,condition:string):memberName">
+      <description><![CDATA[Member]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="error" type="string">
+      <description><![CDATA[Error Content]]></description>
+    </param>
+  </output>
+  <attrib name="method" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest Method]]></description>
+  </attrib>
+  <attrib name="uri" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest URL]]></description>
+  </attrib>
+  <attrib name="body" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest Body]]></description>
+  </attrib>
+  <attrib name="xmlContentObj" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest Body]]></description>
+  </attrib>
+  <attrib name="edgeId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge ID]]></description>
+  </attrib>
+  <attrib name="virtualServerId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Virtual Server ID]]></description>
+  </attrib>
+  <attrib name="poolName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Pool Name]]></description>
+  </attrib>
+  <attrib name="poolId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Pool ID]]></description>
+  </attrib>
+  <attrib name="monitorId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Monitor ID]]></description>
+  </attrib>
+  <attrib name="nsxRestHost" type="REST:RESTHost" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[NSX Rest Host]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Error Code]]></description>
+  </attrib>
+  <workflow-note x="100.0" y="36.363636363636374" w="980.0" h="66.0">
+    <description><![CDATA[Update a Pool]]></description>
+  </workflow-note>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="744.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item3" catch-name="item6" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get poolId and poolName]]></display-name>
+    <script encoded="false"><![CDATA[method = "GET";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+body = "";
+var VSIDUrl = uri;
+// Get the pool ID
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+var ind1 = response.indexOf("<defaultPoolId>") + "<defaultPoolId>".length;
+var ind2 = response.indexOf("</defaultPoolId>");
+
+poolId = response.substring(ind1, ind2);
+System.log("Pool : " + poolId);
+
+method = "GET";
+uri = "/api/4.0/edges/" + edgeId + "/loadbalancer/config/pools/" + poolId;
+body = "";
+
+request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+/*var response = request.execute(); */
+var response1 = request.execute().contentAsString;
+System.log(response1);
+
+ind1 = response1.indexOf("<name>") + "<name>".length;
+ind2 = response1.indexOf("</name>");
+
+var poolName = response1.substring(ind1, ind2);
+
+System.log("Pool Name is " + poolName);]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="poolName" type="string" export-name="poolName"/>
+      <bind name="poolId" type="string" export-name="poolId"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" catch-name="item6" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get EdgeId virtualServerId and monitorId]]></display-name>
+    <script encoded="false"><![CDATA[var virtualServerMatchCounter = 0;
+// Create a REST call to query all edges configured
+
+var request = nsxRestHost.createRequest("GET", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers");
+//System.log("Request URL: " + request.fullUrl);
+
+// Execute the request
+
+var response = request.execute();
+var foundRule = false;
+
+
+
+// Evaluate the Response
+
+if (response.statusCode == 200) {
+ // Get XML response from NSX
+ var responseXML = XMLManager.fromString(response.ContentAsString);
+ var virtualServerNameList = responseXML.documentElement.getElementsByTagName("name");
+ var virtualServerIdList = responseXML.documentElement.getElementsByTagName("virtualServerId");
+
+ // loop through list of edge names in the response. 
+ for (x = 0; x < virtualServerNameList.length; x++) {
+  if (virtualServerNameList.item(x).firstChild.textContent == virtualServerName) {
+   virtualServerId = virtualServerIdList.item(x).firstChild.textContent;
+   virtualServerID = virtualServerId;
+   //NSXurl = nsxConnectionList[v].url;
+   virtualServerMatchCounter++;
+   System.log("Virtual Server ID for " + virtualServerNameList.item(x).firstChild.textContent + " is >> " + virtualServerIdList.item(x).firstChild.textContent)
+   System.log("Virtual Server ID is " + virtualServerId);
+   // System.log("NSX URL for " +edgeNameList.item(x).firstChild.textContent + " is >> " + NSXurl)
+   if (virtualServerMatchCounter > 1) {
+    throw "Multiple virtualservers with the same virtual server name (" + virtualServerName + ") found";
+   }
+  }
+ }
+}
+if (virtualServerId == null) {
+ System.error("Virtual Server -> " + virtualServerName + " doesn't exist");
+ throw "Virtual Server -> " + virtualServerName + " doesn't exist";
+}
+/*
+var monitorMatchCounter=0;
+// var edgeId
+// Create a REST call to query all edges configured
+
+var request = nsxRestHost.createRequest("GET", "/api/4.0/edges/"+edgeId+"/loadbalancer/config/monitors");
+                //System.log("Request URL: " + request.fullUrl);
+ 
+                // Execute the request
+
+var response = request.execute();
+var foundRule = false;
+
+ 
+
+                // Evaluate the Response
+
+if (response.statusCode == 200) 
+{
+// Get XML response from NSX
+var responseXML = XMLManager.fromString(response.ContentAsString);
+var monitorNameList = responseXML.documentElement.getElementsByTagName("name");
+var monitorIdList = responseXML.documentElement.getElementsByTagName("monitorId");
+
+// loop through list of edge names in the response. 
+for (x=0; x < monitorNameList.length; x++)
+{
+if (monitorNameList.item(x).firstChild.textContent == monitorName) {
+monitorId = monitorIdList.item(x).firstChild.textContent; 
+monitorID = virtualServerId;
+//NSXurl = nsxConnectionList[v].url;
+monitorMatchCounter++;
+System.log("Monitor ID for " +monitorNameList.item(x).firstChild.textContent + " is >> " + monitorIdList.item(x).firstChild.textContent)
+System.log("Monitor ID is " +monitorId);
+// System.log("NSX URL for " +edgeNameList.item(x).firstChild.textContent + " is >> " + NSXurl)
+if ( monitorMatchCounter > 1 ){
+                             throw "Multiple monitors with the same monitor name ("+ monitorName + ") found";
+                            }
+                                                             }
+}
+}
+*/]]></script>
+    <in-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="monitorId" type="string" export-name="monitorId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="264.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" catch-name="item6" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Update Pool member]]></display-name>
+    <script encoded="false"><![CDATA[	var request = nsxRestHost.createRequest("GET", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/pools/" + poolId);
+	var response = request.execute();
+	var statusCode = response.statusCode;
+	System.log("Status code: " + statusCode);
+	var contentLength = response.contentLength;
+	var headers = response.getAllHeaders();
+	var contentAsString = response.contentAsString;
+
+	var xml_doc = new XML(contentAsString);
+	//var xml_doc = loadXMLDoc(contentAsString);
+	//Parser = new DOMParser();
+
+	default xml namespace = xml_doc.namespace();
+	var members = xml_doc.member;
+	System.log("Parsed XML, found this many pool members: " + members.name.length());
+	System.log(typeof(xml_doc));
+
+
+	var memberFound = false;
+	for (var x = 0; x < member.length; x++) {
+	 for each(var v in members) {
+	  //System.log (" Comparing Exisiting Pool memeber ("+ v.ipAddress.toString()+":"+v.port.toString()+") with supplied "+ member[x].ipAddress + ":"+ member[x].port+")");
+	  if (v.ipAddress.toString() == member[x].ipAddress && v.port.toString() == member[x].port) {
+	   memberFound = true;
+	  }
+	 }
+	 if (memberFound == false) {
+	  throw ("Pool memeber (" + member[x].ipAddress + ":" + member[x].port + ") does not exist in the pool");
+	 }
+	}
+
+	for (var i = 0; i < member.length; i++) {
+	 for each(var pool_member in members) {
+
+	  if (pool_member.ipAddress.toString().toLowerCase() == member[i].ipAddress.toLowerCase() && pool_member.port == member[i].port) {
+
+	   if (member[i].weight == undefined || member[i].weight == null) {
+	    pool_member.weight = pool_member.weight;
+	   } else {
+	    pool_member.weight = member[i].weight;
+	   }
+	   if (member[i].monitorPort == undefined || member[i].monitorPort == null) {
+	    pool_member.monitorPort = pool_member.monitorPort;
+	   } else {
+	    pool_member.monitorPort = member[i].monitorPort;
+	   }
+	   if (member[i].newPort != undefined || member[i].newPort != null) {
+	    pool_member.port = member[i].newPort;
+	    if (member[i].monitorPort == undefined || member[i].monitorPort == null) {
+	     pool_member.monitorPort = member[i].newPort;
+	    }
+	   }
+	   if (member[i].maxConn == undefined || member[i].maxConn == null) {
+	    pool_member.maxConn = pool_member.maxConn;
+	   } else {
+	    pool_member.maxConn = member[i].maxConn;
+	   }
+	   if (member[i].minConn == undefined || member[i].minConn == null) {
+	    pool_member.minConn = pool_member.minConn;
+	   } else {
+	    pool_member.minConn = member[i].minConn;
+	   }
+	   if (member[i].maxConn == undefined || member[i].maxConn == null) {
+	    pool_member.maxConn = pool_member.maxConn;
+	   } else {
+	    pool_member.maxConn = member[i].maxConn;
+	   }
+	   if (member[i].condition == "" || member[i].condition == null) {
+	    pool_member.condition = pool_member.condition;
+	   } else {
+	    pool_member.condition = member[i].condition;
+	   }
+	  }
+	 }
+	}
+	while (xml_doc.toString().indexOf("<member/>") > -1) {
+	 System.log(xml_doc.toString().indexOf("<member/>"));
+	 xml_doc = xml_doc.toString().replace("<member/>", "");
+	}
+	body = xml_doc;
+
+	System.log(body);
+	//body = xml_doc;
+
+	var request1 = nsxRestHost.createRequest("PUT", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/pools/" + poolId, body);
+	//System.log("Request URL: " + request.fullUrl);
+
+	// Execute the request
+	request1.contentType = "application/xml";
+	var response1 = request1.execute();
+	//prepare output parameters
+	//System.log("Response: " + response1);
+	var statusCode = response1.statusCode;
+	System.log("Status code: " + statusCode);
+
+
+	if (statusCode == 204) {
+	 System.log("Pool Members Updated Successfully");
+	} else {
+	 errorContent = response1.ContentAsString;
+	 throw errorContent;
+	} // end for loop]]></script>
+    <in-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="poolId" type="string" export-name="poolId"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="xmlContentObj" type="string" export-name="xmlContentObj"/>
+      <bind name="member" type="Array/CompositeType(ipAddress:string,weight:number,monitorPort:number,port:number,newPort:number,maxConn:number,minConn:number,condition:string):memberName" export-name="memberName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="55.40909090909091" x="564.5"/>
+  </workflow-item>
+  <workflow-item name="item5" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="199.95454545454544" x="365.0"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item5" type="task">
+    <display-name><![CDATA[Error Handling]]></display-name>
+    <script encoded="false"><![CDATA[errorContent = errorCode;]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="155.4090909090909" x="325.0"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item2" catch-name="item6" throw-bind-name="errorCode" type="link" linked-workflow-id="d02637fa-eb7c-4d09-8ccb-56f87715170d">
+    <display-name><![CDATA[Get NSX and EdgeId]]></display-name>
+    <in-binding>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </out-binding>
+    <position y="55.40909090909091" x="124.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="edgeName">
+      <desc><![CDATA[edgeName]]></desc>
+    </p-param>
+    <p-param name="virtualServerName">
+      <desc><![CDATA[virtualServerName]]></desc>
+    </p-param>
+    <p-param name="memberName">
+      <desc><![CDATA[Member]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

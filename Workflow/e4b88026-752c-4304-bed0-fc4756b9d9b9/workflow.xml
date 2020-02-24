@@ -1,0 +1,341 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="e4b88026-752c-4304-bed0-fc4756b9d9b9" version="0.0.6" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[PuppetAdd]]></display-name>
+  <description><![CDATA[Workflow used  for vCAC extensibility
+
+This workflow will call a script on the Puppet master using SSH to sign the certificate request, add the node to the group you specify in vCAC and start a Puppet run in the Guest to pull the new configuration. 
+
+Make sure you update the username and password for the Puppet master server using the attributes below. 
+
+Follow me on twitter @vmtocloud]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="requestId" type="string"/>
+    <param name="machine" type="Properties"/>
+    <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
+    <param name="virtualMachineEvent" type="string"/>
+    <param name="lifecycleState" type="Properties"/>
+    <param name="componentId" type="string"/>
+    <param name="blueprintName" type="string"/>
+    <param name="componentTypeId" type="string"/>
+    <param name="endpointId" type="string"/>
+    <param name="workflowNextState" type="string"/>
+    <param name="virtualMachineDeleteProperties" type="Properties"/>
+  </input>
+  <output>
+    <param name="result" type="number">
+      <description><![CDATA[0 = OK, Negative = Error, Positive = Number of values returned, after error text]]></description>
+    </param>
+    <param name="errorText" type="string">
+      <description><![CDATA[Error text, if any]]></description>
+    </param>
+    <param name="outputText" type="string">
+      <description><![CDATA[Result of running the SSH command]]></description>
+    </param>
+  </output>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+    <description><![CDATA[Puppet Master Username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[11BR4EX75N6CK6CZ70P68N61Q73O65G31M21XF41107FW4889681L1A85DFDN890ACD8WF1D2B1AS5C33741MD323D34Z73FC700R9C27F10Q8AAE038O7B0C5DCZE7FAA4FR604E0BBGB0EFEFBX3578830K4168F52XBFAD691W48709FCMF646D9SFCBA1E9N657CB07Z]]></value>
+    <description><![CDATA[PuppetMaster Password]]></description>
+  </attrib>
+  <attrib name="hostNameOrIP" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Hostname or IP address of the Puppet Master [puppet.master]]]></description>
+  </attrib>
+  <attrib name="cmd" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[The SSH command to run]]></description>
+  </attrib>
+  <attrib name="puppetaddscript" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="puppetgroup" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="domainname" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="path" type="Path" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Path to the private key]]></description>
+  </attrib>
+  <attrib name="passphrase" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Private key pass-phrase]]></description>
+  </attrib>
+  <attrib name="passwordAuthentication" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[Sets authentication to password or key file]]></description>
+  </attrib>
+  <attrib name="vmUsername" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+    <description><![CDATA[Username for the virtual machine]]></description>
+  </attrib>
+  <attrib name="vmPassword" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[11BI4EJ75I6CU6CT70R68V61W73H65N31G21N2C9B464Q2BCA703J3519E4BMAF4F6E9ME1513EBJ2F04C60SB2C5272NB5D2528W274A85EM88A82F9N6B4BECFP19F7DA2J2549736S9F31393O93FAE97P5A52C24M7F58B9FP5EDB2CBQ4C410C9Q1B5E686R4FB3FE2S]]></value>
+    <description><![CDATA[Password for the virtual machine]]></description>
+  </attrib>
+  <attrib name="interactiveSession" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+    <description><![CDATA[This is set to true if the client wants an interactive session in the guest.]]></description>
+  </attrib>
+  <attrib name="programPath" type="string" read-only="false">
+    <value encoded="n"><![CDATA[/opt/puppet/bin/puppet]]></value>
+    <description><![CDATA[The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. ]]></description>
+  </attrib>
+  <attrib name="arguments" type="string" read-only="false">
+    <value encoded="n"><![CDATA[agent -t &> /puppetrun.log]]></value>
+    <description><![CDATA[The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. ]]></description>
+  </attrib>
+  <attrib name="workingDirectory" type="string" read-only="false">
+    <value encoded="n"><![CDATA[/opt/puppet/bin]]></value>
+    <description><![CDATA[The absolute path of the working directory for the program to be run. VMware recommends explicitly setting the working directory for the program to be run. If this value is unset or is an empty string, the behavior depends on the guest operating system. For Linux guest operating systems, if this value is unset or is an empty string, the working directory will be the home directory of the user associated with the guest authentication. For other guest operating systems, if this value is unset, the behavior is unspecified. ]]></description>
+  </attrib>
+  <attrib name="environment" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[An array of environment variables, specified in the guest OS notation (eg PATH=c:\bin;c:\windows\system32 or LD_LIBRARY_PATH=/usr/lib:/lib), to be set for the program being run. Note that these are not additions to the default environment variables; they define the complete set available to the program. If none are specified the values are guest dependent. ]]></description>
+  </attrib>
+  <attrib name="vcVM" type="VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="vmProperties" type="Properties" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="port" type="number" read-only="false">
+    <value encoded="n"><![CDATA[22.0]]></value>
+  </attrib>
+  <attrib name="encoding" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="host" type="vCAC:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='62d9f53e-bb2e-44e3-8a2d-be0aba392cd9'&dunesName='vCAC:VCACHost']]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="804.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item3" type="task">
+    <display-name><![CDATA[Get Custom Props]]></display-name>
+    <script encoded="false"><![CDATA[System.log("------List Properties------");
+System.log("requestId: " + requestId);
+System.log("machine.id: " + machine.get("id"))
+System.log("machine.name: " + machine.get("name"))
+System.log("machine.type: " + machine.get("type"))
+System.log("machine.owner: " + machine.get("owner"))
+System.log("machine.externalReference: " + machine.get("externalReference"))
+//myprop = machine.get("properties");
+//System.log("MyProperties: " + myprop.length)
+System.log("virtualMachineEvent: " + virtualMachineEvent);
+System.log("lifecycleState.event: " + lifecycleState.get("event"))
+System.log("lifecycleState.phase: " + lifecycleState.get("phase"))
+System.log("lifecycleState.state: " + lifecycleState.get("state"))
+System.log("componentId: " + componentId);
+System.log("blueprintName: " + blueprintName );
+System.log("componentTypeId: " + componentTypeId);
+System.log("endpointId: " + endpointId);
+System.log("workflowNextState: " + workflowNextState);
+
+
+var properties = new Properties();
+properties.put("VirtualMachineID", machine.get("id"));
+
+var vmName = machine.get("name") ;
+var vmID = machine.get("id") ;
+var moref = machine.get("externalReference") ;
+
+System.log("VM id " + vmID) ;
+
+var sdkConnectionName = "https://vcsa-l-01b.nullphase.local:443/sdk";
+var managedObject = new VcManagedObjectReference();
+managedObject.type = "VirtualMachine";
+managedObject.value = moref;
+var sdkConnections = VcPlugin.allSdkConnections;
+for each (var sdkConnection in sdkConnections) {
+	System.log(sdkConnection);
+	if (sdkConnectionName == sdkConnection.name) {
+		vcVM = VcPlugin.convertToVimManagedObject(sdkConnection , managedObject);
+	}
+	if ( vcVM != null ) {
+		System.log("Found VM") ;
+		break ;
+	}
+}
+
+virtualMachineEntity = vCACEntityManager.readModelEntity(host.id, "ManagementModelEntities.svc", "VirtualMachines", properties, null);
+var vmProperties = new Properties();
+
+var virtualMachinePropertiesEntities = virtualMachineEntity.getLink(host, "VirtualMachineProperties");
+for each (var virtualMachinePropertiesEntity in virtualMachinePropertiesEntities) {
+	var propertyName = virtualMachinePropertiesEntity.getProperty("PropertyName");
+	var propertyValue = virtualMachinePropertiesEntity.getProperty("PropertyValue");
+	System.log("Found property " + propertyName + " = " + propertyValue);
+	vmProperties.put(propertyName, propertyValue);
+}
+hostNameOrIP = vmProperties.get('puppet.master');
+puppetaddscript = vmProperties.get('puppet.add.script');
+puppetgroup = vmProperties.get('puppet.group');
+domainname = vmProperties.get('VirtualMachine.Network0.DnsSuffix');
+]]></script>
+    <in-binding>
+      <bind name="externalWFStub" type="string" export-name="requestId"/>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP">
+        <description><![CDATA[Hostname or IP address of the SSH host]]></description>
+      </bind>
+      <bind name="puppetgroup" type="string" export-name="puppetgroup"/>
+      <bind name="domainname" type="string" export-name="domainname"/>
+      <bind name="puppetaddscript" type="string" export-name="puppetaddscript"/>
+      <bind name="machine" type="Properties" export-name="machine"/>
+      <bind name="requestId" type="string" export-name="requestId"/>
+      <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
+      <bind name="virtualMachineEvent" type="string" export-name="virtualMachineEvent"/>
+      <bind name="lifecycleState" type="Properties" export-name="lifecycleState"/>
+      <bind name="componentId" type="string" export-name="componentId"/>
+      <bind name="blueprintName" type="string" export-name="blueprintName"/>
+      <bind name="componentTypeId" type="string" export-name="componentTypeId"/>
+      <bind name="endpointId" type="string" export-name="endpointId"/>
+      <bind name="workflowNextState" type="string" export-name="workflowNextState"/>
+      <bind name="virtualMachineDeleteProperties" type="Properties" export-name="virtualMachineDeleteProperties"/>
+      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+    </in-binding>
+    <out-binding>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP"/>
+      <bind name="puppetgroup" type="string" export-name="puppetgroup"/>
+      <bind name="domainname" type="string" export-name="domainname"/>
+      <bind name="puppetaddscript" type="string" export-name="puppetaddscript"/>
+      <bind name="vcVM" type="VC:VirtualMachine" export-name="vcVM"/>
+      <bind name="vmProperties" type="Properties" export-name="vmProperties"/>
+    </out-binding>
+    <description><![CDATA[Get custom properties from vCAC and convert them into vCO Attributes]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item4" type="link" linked-workflow-id="90808080808080808080808080808080D28080800120523434428525559a3425f">
+    <display-name><![CDATA[Sign and add group]]></display-name>
+    <in-binding>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP">
+        <description><![CDATA[Hostname or IP address of the SSH host]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[Username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[Password]]></description>
+      </bind>
+      <bind name="cmd" type="string" export-name="cmd">
+        <description><![CDATA[The SSH command to run]]></description>
+      </bind>
+      <bind name="passwordAuthentication" type="boolean" export-name="passwordAuthentication">
+        <description><![CDATA[Sets authentication to password or key file]]></description>
+      </bind>
+      <bind name="path" type="Path" export-name="path">
+        <description><![CDATA[Path to the private key]]></description>
+      </bind>
+      <bind name="passphrase" type="SecureString" export-name="passphrase">
+        <description><![CDATA[Private key pass-phrase]]></description>
+      </bind>
+      <bind name="port" type="number" export-name="port"/>
+      <bind name="encoding" type="string" export-name="encoding"/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="number" export-name="result">
+        <description><![CDATA[0 = OK, Negative = Error, Positive = Number of values returned, after error text]]></description>
+      </bind>
+      <bind name="errorText" type="string" export-name="errorText">
+        <description><![CDATA[Error text, if any]]></description>
+      </bind>
+      <bind name="outputText" type="string" export-name="outputText">
+        <description><![CDATA[Result of running the SSH command]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Runs an SSH command.to sign Puppet Requst on Puppet Master and adds node to the group specified in the Blueprint]]></description>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item2" type="task">
+    <display-name><![CDATA[Create cmd]]></display-name>
+    <script encoded="false"><![CDATA[cmd = "sh" + " " + puppetaddscript + " " + machine.get("name") + "." + domainname + " " + puppetgroup;]]></script>
+    <in-binding>
+      <bind name="domainname" type="string" export-name="domainname"/>
+      <bind name="puppetgroup" type="string" export-name="puppetgroup"/>
+      <bind name="vcVM" type="VC:VirtualMachine" export-name="vcVM"/>
+      <bind name="puppetaddscript" type="string" export-name="puppetaddscript"/>
+      <bind name="machine" type="Properties" export-name="machine"/>
+    </in-binding>
+    <out-binding>
+      <bind name="cmd" type="string" export-name="cmd"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item0" type="link" linked-workflow-id="C98080808080808080808080808080805E80808001322751030482b80adf61e7c">
+    <display-name><![CDATA[Start Puppet Run in Guest]]></display-name>
+    <in-binding>
+      <bind name="vmUsername" type="string" export-name="vmUsername">
+        <description><![CDATA[Username for the virtual machine]]></description>
+      </bind>
+      <bind name="vmPassword" type="SecureString" export-name="vmPassword">
+        <description><![CDATA[Password for the virtual machine]]></description>
+      </bind>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vcVM">
+        <description><![CDATA[Virtual machine]]></description>
+      </bind>
+      <bind name="interactiveSession" type="boolean" export-name="interactiveSession">
+        <description><![CDATA[This is set to true if the client wants an interactive session in the guest.]]></description>
+      </bind>
+      <bind name="programPath" type="string" export-name="programPath">
+        <description><![CDATA[The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. ]]></description>
+      </bind>
+      <bind name="arguments" type="string" export-name="arguments">
+        <description><![CDATA[The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. ]]></description>
+      </bind>
+      <bind name="workingDirectory" type="string" export-name="workingDirectory">
+        <description><![CDATA[The absolute path of the working directory for the program to be run. VMware recommends explicitly setting the working directory for the program to be run. If this value is unset or is an empty string, the behavior depends on the guest operating system. For Linux guest operating systems, if this value is unset or is an empty string, the working directory will be the home directory of the user associated with the guest authentication. For other guest operating systems, if this value is unset, the behavior is unspecified. ]]></description>
+      </bind>
+      <bind name="environment" type="Array/string" export-name="environment">
+        <description><![CDATA[An array of environment variables, specified in the guest OS notation (eg PATH=c:\bin;c:\windows\system32 or LD_LIBRARY_PATH=/usr/lib:/lib), to be set for the program being run. Note that these are not additions to the default environment variables; they define the complete set available to the program. If none are specified the values are guest dependent. ]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="number" export-name="result">
+        <description><![CDATA[The pid of the program started.]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Starts a program in the guest operating system.
+A process started this way can have its status queried with this API. When the process completes, its exit code and end time will be available for 5 minutes after completion.]]></description>
+    <position y="55.40909090909091" x="624.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="requestId">
+      <desc><![CDATA[externalWFStub]]></desc>
+    </p-param>
+    <p-param name="machine">
+      <desc><![CDATA[vCACVmProperties]]></desc>
+    </p-param>
+    <p-param name="virtualMachineAddOrUpdateProperties">
+      <desc><![CDATA[virtualMachineAddOrUpdateProperties]]></desc>
+    </p-param>
+    <p-param name="virtualMachineEvent">
+      <desc><![CDATA[virtualMachineEvent]]></desc>
+    </p-param>
+    <p-param name="lifecycleState">
+      <desc><![CDATA[lifecycleState]]></desc>
+    </p-param>
+    <p-param name="componentId">
+      <desc><![CDATA[componentId]]></desc>
+    </p-param>
+    <p-param name="blueprintName">
+      <desc><![CDATA[blueprintName]]></desc>
+    </p-param>
+    <p-param name="componentTypeId">
+      <desc><![CDATA[componentTypeId]]></desc>
+    </p-param>
+    <p-param name="endpointId">
+      <desc><![CDATA[endpointId]]></desc>
+    </p-param>
+    <p-param name="workflowNextState">
+      <desc><![CDATA[workflowNextState]]></desc>
+    </p-param>
+    <p-param name="virtualMachineDeleteProperties">
+      <desc><![CDATA[virtualMachineDeleteProperties]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

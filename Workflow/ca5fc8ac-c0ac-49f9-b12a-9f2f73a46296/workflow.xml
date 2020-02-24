@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="ca5fc8ac-c0ac-49f9-b12a-9f2f73a46296" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Upload blueprint from vRO client desktop to vRO ]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="host" type="vCACCAFE:VCACHost"/>
+    <param name="mimeAttachment" type="MimeAttachment"/>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="364.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="task">
+    <display-name><![CDATA[Import package]]></display-name>
+    <script encoded="false"><![CDATA[
+var restClient = host.createRestClient('com.vmware.csp.core.content.service.api');
+
+
+var response = restClient.postFile("/packages/validate", mimeAttachment);
+System.log(response.getStatus());
+System.log(response.getBodyAsString());
+System.log(response.getHeaders());
+
+var response = restClient.postFile("/packages", mimeAttachment);
+System.log(response.getStatus());
+System.log(response.getBodyAsString());
+System.log(response.getHeaders());]]></script>
+    <in-binding>
+      <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
+      <bind name="mimeAttachment" type="MimeAttachment" export-name="mimeAttachment"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="184.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="mimeAttachment">
+      <desc><![CDATA[Blueprint]]></desc>
+    </p-param>
+    <p-param name="host">
+      <desc><![CDATA[Destination vRA host]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

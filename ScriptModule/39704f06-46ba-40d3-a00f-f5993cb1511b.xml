@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="executeOp" result-type="string" api-version="6.0.0" id="39704f06-46ba-40d3-a00f-f5993cb1511b" version="0.3.3" allowed-operations="evf" category-name="com.neetcloud.cs.example">
+  <param n="op" t="REST:RESTOperation"/>
+  <param n="params" t="Array/string"/>
+  <param n="postContent" t="string"/>
+  <param n="token" t="string"/>
+  <script encoded="false"><![CDATA[var attempts = [];
+var retryTriggered = false;
+var responseObj = {};
+var success = false;
+var retryOnError = true;
+var retryCount = 2;
+var retryInterval = 1000; //milliseconds
+var timesTried = 0
+
+do{
+	timesTried++
+	try{
+		var request = op.createRequest(params,postContent);
+		System.log("Request URL: "+request.fullUrl);
+		
+		if(token){
+			System.log("Setting Bearer Token in header");
+			request.setHeader("Authorization",token);
+		}
+			
+		var response = request.execute()
+		
+		var statusCode = response.statusCode;
+		var contentLength = response.contentLength;
+		var headers = response.getAllHeaders();
+
+		if ( statusCode >= 400 ) {
+	    	throw statusCode;	
+		}
+		var contentAsString = response.contentAsString;
+		if(contentAsString){
+			//System.debug("Content as string: " + contentAsString);
+			var responseObj = JSON.parse(contentAsString);
+			success = true
+			return contentAsString;
+		}
+		
+	} catch(ex) {
+		success = false
+		var contentAsString = "";
+		
+		if(response){
+			var contentAsString = response.contentAsString;
+		}
+		
+		var error = ex + ", Error Details: " + contentAsString;
+		if(statusCode){
+			error = "HTTPError: status code: " + statusCode + "," + ex + ", Error Details: " + contentAsString;
+			System.log("HTTPError: status code: " + statusCode + ", " + ex + ", Error Details: " + contentAsString);
+		} else {
+			System.log(ex + ", Error Details: " + contentAsString);
+		}
+		if(retryOnError){
+			retryTriggered = _evaluateRetry(timesTried, retryCount, retryInterval);
+		}
+		
+	} finally {
+		
+		var attempt = {};
+		attempt.error = error;
+		attempts.push(attempt);
+	
+	}
+	
+}while(retryTriggered);
+
+throw "API request failed. " + "\n" + "Last Error: " + attempts[attempts.length - 1].error + "\n" + "Retry Attempts: " + (attempts.length - 1)
+
+
+
+
+function _evaluateRetry(_timesTried, _maxRetries, _retryInterval){
+	if(_timesTried <= _maxRetries){
+		// do sleep
+		System.log("Retrying.. Attempt # " + _timesTried + " of " + _maxRetries);
+		System.sleep(_retryInterval);
+		return true;
+	}else{
+		return false;
+	}
+}]]></script>
+</dunes-script-module>

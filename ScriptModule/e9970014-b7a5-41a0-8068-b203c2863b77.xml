@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="requestCatalogItemOnBehalfOf" result-type="vCACCAFE:CatalogItemRequest" api-version="6.0.0" id="e9970014-b7a5-41a0-8068-b203c2863b77" version="1.0.3" allowed-operations="vf" category-name="com.vmware.library.vcaccafe.request">
+  <description><![CDATA[Sends a request for a catalog item on behalf of a user.]]></description>
+  <param n="item" t="vCACCAFE:CatalogItem"><![CDATA[Catalog item]]></param>
+  <param n="inputs" t="Properties"><![CDATA[Input values]]></param>
+  <param n="user" t="string"><![CDATA[User id]]></param>
+  <script encoded="false"><![CDATA[System.getModule("com.vmware.library.vcaccafe.util").validateObject(item, "Catalog item");
+if (user) {
+	inputs["requestedFor"] = user;
+}
+
+return System.getModule("com.vmware.library.vcaccafe.request").requestCatalogItem(item, inputs);]]></script>
+</dunes-script-module>

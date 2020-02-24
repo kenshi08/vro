@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="a860b2cd-9a9c-4afd-b83b-950d7f23dad0" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[getMachineCatalogResource]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="properties" type="Properties"/>
+  </input>
+  <output>
+    <param name="actionResult" type="vCACCAFE:CatalogResource"/>
+  </output>
+  <attrib name="machineId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task" script-module="com.vmware.coe.vra/getMachineCatalogResource">
+    <display-name><![CDATA[getMachineCatalogResource]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.coe.vra").getMachineCatalogResource(machineId) ;]]></script>
+    <in-binding>
+      <bind name="machineId" type="string" export-name="machineId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCACCAFE:CatalogResource" export-name="actionResult"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="task">
+    <display-name><![CDATA[Get machineId]]></display-name>
+    <script encoded="false"><![CDATA[machineId = properties.get("machineId");]]></script>
+    <in-binding>
+      <bind name="properties" type="Properties" export-name="properties"/>
+    </in-binding>
+    <out-binding>
+      <bind name="machineId" type="string" export-name="machineId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="properties">
+      <desc><![CDATA[properties]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

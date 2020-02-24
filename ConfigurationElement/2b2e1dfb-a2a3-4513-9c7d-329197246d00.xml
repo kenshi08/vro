@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="2b2e1dfb-a2a3-4513-9c7d-329197246d00" version="0.0.0">
+  <display-name><![CDATA[Endpoint Types]]></display-name>
+  <atts>
+    <att name="endpointAWS" type="string" read-only="false">
+      <value encoded="n"><![CDATA[AmazonEC2]]></value>
+      <description><![CDATA[Amazon EC2 Endpoint Type]]></description>
+    </att>
+    <att name="endpointVcloud" type="string" read-only="false">
+      <value encoded="n"><![CDATA[vCloud]]></value>
+      <description><![CDATA[vCloud Endpoint Type]]></description>
+    </att>
+    <att name="endpointVcenter" type="string" read-only="false">
+      <value encoded="n"><![CDATA[vCenter]]></value>
+      <description><![CDATA[vCenter Endpoint Type]]></description>
+    </att>
+  </atts>
+</config-element>

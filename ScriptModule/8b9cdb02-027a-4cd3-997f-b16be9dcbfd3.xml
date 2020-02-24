@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getUserEntityByName" result-type="vCAC:Entity" api-version="6.0.0" id="8b9cdb02-027a-4cd3-997f-b16be9dcbfd3" version="0.0.1" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <description><![CDATA[Given a vCAC Host and the name of a user, return the vCAC:Entity object]]></description>
+  <param n="vcacHost" t="vCAC:VCACHost"><![CDATA[vCAC Host to search]]></param>
+  <param n="userName" t="string"><![CDATA[User name]]></param>
+  <script encoded="false"><![CDATA[if (vcacHost == null) return null;
+var model = "ManagementModelEntities.svc";
+var entitySetName = "Users";
+
+var property = new Properties();
+property.put("UserName",userName);
+
+var entities = vCACEntityManager.readModelEntitiesByCustomFilter(vcacHost.id, model, entitySetName, property, null);
+if (entities != null){
+	return entities[0];
+}else{
+	System.warn("No User found with name: "+userName);
+	return null;
+}]]></script>
+</dunes-script-module>

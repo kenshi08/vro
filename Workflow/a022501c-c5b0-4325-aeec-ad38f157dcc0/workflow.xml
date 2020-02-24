@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="Workflow:name=generic" id="a022501c-c5b0-4325-aeec-ad38f157dcc0" version="1.1.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[HR offBoarding]]></display-name>
+  <description><![CDATA[Deletes a user from an Active Directory instance.]]></description>
+  <ref-types><![CDATA[>(AD:User)]]></ref-types>
+  <position y="10.0" x="280.0"/>
+  <input>
+    <param name="user" type="AD:User">
+      <description><![CDATA[User to destroy]]></description>
+    </param>
+  </input>
+  <attrib name="errorMessage" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Error message if any]]></description>
+  </attrib>
+  <workflow-note x="400.0" y="40.0" w="250.0" h="90.0" color="ffbfbfff">
+    <description><![CDATA[Change the error message to say that the error is about a user deletion]]></description>
+  </workflow-note>
+  <workflow-item name="item2" type="end" end-mode="0">
+    <position y="130.0" x="280.0"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item2" catch-name="item1" throw-bind-name="errorMessage" type="task" script-module="com.vmware.library.microsoft.activeDirectory/destroyElement">
+    <display-name><![CDATA[destroyElement]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.microsoft.activeDirectory").destroyElement(element) ;]]></script>
+    <in-binding>
+      <bind name="element" type="Any" export-name="user">
+        <description><![CDATA[Any valid element from Active Directoy to destroy]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Destroy an element from Active Directory.]]></description>
+    <position y="80.0" x="240.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item3" catch-name="" type="task">
+    <display-name><![CDATA[Error message for user]]></display-name>
+    <script encoded="false"><![CDATA[errorMessage = "Unable to delete user: " + errorMessage;]]></script>
+    <in-binding>
+      <bind name="errorMessage" type="string" export-name="errorMessage"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorMessage" type="string" export-name="errorMessage"/>
+    </out-binding>
+    <position y="80.0" x="420.0"/>
+  </workflow-item>
+  <workflow-item name="item3" throw-bind-name="errorMessage" type="end" end-mode="1">
+    <position y="70.0" x="600.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="user">
+      <desc><![CDATA[User to delete]]></desc>
+      <p-qual name="show-select-as"><![CDATA[live-search]]></p-qual>
+      <p-qual name="contextualParameter"><![CDATA[]]></p-qual>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

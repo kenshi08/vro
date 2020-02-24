@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="41bbcd0b-aecf-4166-8f3a-d1f0f272e7f3" version="0.0.0" api-version="6.0.0" allowed-operations="evf" editor-version="1.6" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[EBS - Create a snapshot]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="payload" type="Properties"/>
+  </input>
+  <output>
+    <param name="vmName" type="string"/>
+    <param name="snapshot" type="VC:VirtualMachineSnapshot">
+      <description><![CDATA[The snapshot created]]></description>
+    </param>
+  </output>
+  <attrib name="vcVM" type="VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="name" type="string" read-only="false">
+    <value encoded="n"><![CDATA[vra-ebs-ss]]></value>
+  </attrib>
+  <attrib name="description" type="string" read-only="false">
+    <value encoded="n"><![CDATA[vRA EBS Snapshot]]></value>
+  </attrib>
+  <attrib name="memory" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="quiesce" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[var executionContext = System.getContext();
+
+System.log(payload.get("requestId")) ;
+
+var machine = payload.get("machine") ;
+
+System.log(machine.get("name")) ;
+
+var vmName = machine.get("name") ;
+var vmID = machine.get("id") ;
+var moref = machine.get("externalReference") ;
+
+System.log("VM id " + vmID) ;
+
+var sdkConnectionName = "https://vcsa-01a.neetcloud.local:443/sdk";
+var managedObject = new VcManagedObjectReference();
+managedObject.type = "VirtualMachine";
+managedObject.value = moref;
+var sdkConnections = VcPlugin.allSdkConnections;
+for each (var sdkConnection in sdkConnections) {
+	System.log(sdkConnection);
+	if (sdkConnectionName == sdkConnection.name) {
+		vcVM = VcPlugin.convertToVimManagedObject(sdkConnection , managedObject);
+	}
+	if ( vcVM != null ) {
+		System.log("Found VM") ;
+		break ;
+	}
+}
+
+System.log(executionContext) ;]]></script>
+    <in-binding>
+      <bind name="payload" type="Properties" export-name="payload"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vmName" type="string" export-name="vmName"/>
+      <bind name="vcVM" type="VC:VirtualMachine" export-name="vcVM"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="BD80808080808080808080808080808053C180800122528313869552e41805bb1">
+    <display-name><![CDATA[Create a snapshot]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vcVM">
+        <description><![CDATA[Virtual machine of which to create a snapshot]]></description>
+      </bind>
+      <bind name="name" type="string" export-name="name">
+        <description><![CDATA[Snapshot name. The name need not be unique for this virtual machine.]]></description>
+      </bind>
+      <bind name="description" type="string" export-name="description">
+        <description><![CDATA[Snapshot description.]]></description>
+      </bind>
+      <bind name="memory" type="boolean" export-name="memory">
+        <description><![CDATA[If TRUE, the snapshot includes a dump of the internal state of the virtual machine (a memory dump). ]]></description>
+      </bind>
+      <bind name="quiesce" type="boolean" export-name="quiesce">
+        <description><![CDATA[If TRUE and the virtual machine is powered on when the snapshot is taken, VMware Tools are used to quiesce the file system in the virtual machine.]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="snapshot" type="VC:VirtualMachineSnapshot" export-name="snapshot">
+        <description><![CDATA[The snapshot created]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Creates a snapshot.]]></description>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="payload">
+      <desc><![CDATA[payload]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

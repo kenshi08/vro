@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="exportBlueprintAsPackageResource" result-type="void" api-version="6.0.0" id="aa17d1be-c674-4431-afd1-656246ea3e53" version="0.0.2" allowed-operations="evf" category-name="com.vmware.coe.vra.content">
+  <param n="host" t="vCACCAFE:VCACHost"/>
+  <param n="name" t="string"/>
+  <param n="resourceElementCategory" t="ResourceElementCategory"/>
+  <script encoded="false"><![CDATA[var restClient = host.createRestClient('com.vmware.csp.core.content.service.api');
+
+System.log("REST client URL : " + restClient.getUrl());
+
+
+var response = restClient.get('/contents?$filter=name eq \''+name + '\' and contentTypeId eq \'composite-blueprint\'');
+//var object = response.getBodyAsJson(); // fails
+var objectJson = response.getBodyAsString().split("\\"); // For some reasons the JSON is coming back with a \ that messes up JSON parsing whether using getBodyAsJson or JSON.parse
+var object = JSON.parse(objectJson);
+
+var contentItems = object.content;
+var contentItem = contentItems[0];
+
+var object = {
+  "name": name,
+  "tenantId": host.tenant,
+  "contents": [
+    contentItem.id
+  ]
+}
+
+System.log("Added " + name + " with ID " + contentItem.id + " to package");
+	
+//Create the package	
+var response = restClient.post('packages/', object);
+
+
+
+if (response.getStatus() == "201") {
+
+	var location = response.getHeadersProperty("location")[0];
+	var url = location.substring(location.indexOf("packages"), location.length);
+	System.log("Package url " + url);
+
+
+	
+	//Check content
+	var response = restClient.get(url + "/contents");
+	System.log("Package content : \n" + JSON.stringify(response.getBodyAsJson()));
+
+	
+
+	// Validate
+	var response = restClient.get(url + "/validate");
+	var object = response.getBodyAsJson();
+	var operationStatus = object.operationStatus;
+
+	if (operationStatus != "SUCCESS") {
+		restClient.delete(url);
+		var errorDetails = "";
+		for each (var operationResult in object.operstionResults) {
+			errorDetails = errorDetails + operationResult.name + " : " + operationResult.messages + " - " + operationResult.operationErrors + "\n";
+		}
+		throw errorDetails;	
+	}
+	System.log("Package validation : \n" + JSON.stringify(response.getBodyAsJson()));
+	
+
+
+	//Downlaod the package
+	System.log("Getting file " + url);
+	try {
+		var mimeAttachment = restClient.getFileWithAcceptHeader(url, "application/zip");
+//var mimeAttachment = restClient.getFile(url);
+	mimeAttachment.mimeType == "application/zip";
+	var resourceElement = System.getModule("com.vmware.coe.library.resourceElements").getOrCreateResourceElement(resourceElementCategory,name + ".zip");
+	var exportDate = new Date();
+	resourceElement.description = "Blueprint last updated on " + contentItem.lastUpdated + " and exported on " + exportDate.toString(); 
+	resourceElement.setContentFromMimeAttachment(mimeAttachment);
+	
+	} catch(e) {var errorMessage = e.message};
+	
+	// Deleting created package
+	System.log("Delete created package");
+	restClient.delete(url);
+	
+	if (errorMessage != undefined) throw errorMessage;
+}]]></script>
+</dunes-script-module>

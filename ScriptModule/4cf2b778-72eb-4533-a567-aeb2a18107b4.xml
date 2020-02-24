@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVCACVirtualMachineState" result-type="string" api-version="6.0.0" id="4cf2b778-72eb-4533-a567-aeb2a18107b4" version="0.0.1" allowed-operations="evf" category-name="com.vmware.pso.vcac">
+  <description><![CDATA[Get current state of the vCAC:VirtualMachine.
+
+Input: vCAC:VirtualMachine
+Return: string]]></description>
+  <param n="vCACVm" t="vCAC:VirtualMachine"><![CDATA[vCAC Virtual Machine]]></param>
+  <script encoded="false"><![CDATA[if (vCACVm == null) { throw 'VM not provided'; }
+virtualMachineEntity = vCACVm.getEntity();
+vCACHost = Server.findForType("vCAC:VCACHost", virtualMachineEntity.hostId);
+// Is it a Component VM or vApp?
+isComponent = virtualMachineEntity.getProperty("IsComponent");
+if (isComponent) {
+	vAppID = virtualMachineEntity.getProperty("ParentMachineID");
+	System.log("vAppID = "+vAppID);
+	vApp = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineById(vAppID);
+	vAppEntity = vApp.getEntity();
+	state = vAppEntity.getProperty("VirtualMachineState");
+} else {
+	state = virtualMachineEntity.getProperty("VirtualMachineState");
+}
+return state;]]></script>
+</dunes-script-module>

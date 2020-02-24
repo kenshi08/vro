@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="df40b78a-093a-44eb-b158-47a24ed42ac4" version="0.0.15" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[MachineProvisioned]]></display-name>
+  <position y="45.90909090909091" x="25.0"/>
+  <input>
+    <param name="requestId" type="string"/>
+    <param name="machine" type="Properties"/>
+    <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
+    <param name="virtualMachineEvent" type="string"/>
+    <param name="lifecycleState" type="Properties"/>
+    <param name="componentId" type="string"/>
+    <param name="blueprintName" type="string"/>
+    <param name="componentTypeId" type="string"/>
+    <param name="endpointId" type="string"/>
+    <param name="workflowNextState" type="string"/>
+    <param name="virtualMachineDeleteProperties" type="Properties"/>
+  </input>
+  <attrib name="vmProperties" type="Properties" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="hostname" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="ipaddress" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="gateway" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="netmask" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="nodeName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="host" type="vCAC:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='63fd66f7-c2c3-4b40-9a55-dff2004420f1'&dunesName='vCAC:VCACHost']]></value>
+  </attrib>
+  <attrib name="master" type="Puppet:Master" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='bb75ad48-97ae-4011-b801-3e3182d99199'&dunesName='Puppet:Master']]></value>
+    <description><![CDATA[Puppet master]]></description>
+  </attrib>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+    <description><![CDATA[Node username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[8BJ56L4DQ77V61S72I65H31J21JD45A0F6L5EDE6DBN935030FJEA11809OE8DB26BK97B2A0CM4D2D8C9N3CE56AENDFF8951X3CD3F86N1A6E00BMFAA7E5DXD025990RC1F4AF3O29D3223M24B748OD214F86T459D7C7XCC72CC4K8D9407AV9427328P475949ET52C5FB2L60B79BFU]]></value>
+    <description><![CDATA[Node password]]></description>
+  </attrib>
+  <attrib name="installerBaseUrl" type="string" read-only="false">
+    <value encoded="n"><![CDATA[https://puppet-01a.corp.local:8140/packages]]></value>
+    <description><![CDATA[Installer base url]]></description>
+  </attrib>
+  <attrib name="environment" type="string" read-only="false">
+    <value encoded="n"><![CDATA[production]]></value>
+    <description><![CDATA[Puppet environment (e.g. PROD, QE etc)]]></description>
+  </attrib>
+  <attrib name="registerMasterInHostsFile" type="boolean" read-only="false">
+    <description><![CDATA[Register Puppet master in node's hosts file]]></description>
+  </attrib>
+  <attrib name="certName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Certificate name]]></description>
+  </attrib>
+  <attrib name="lastRunReport" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Agent last run report]]></description>
+  </attrib>
+  <attrib name="lastRunSummary" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Agent last run summary]]></description>
+  </attrib>
+  <attrib name="retry" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[Retry]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="324.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[System.log("------List Properties------");
+System.log("requestId: " + requestId);
+System.log("machine.id: " + machine.get("id"))
+System.log("machine.name: " + machine.get("name"))
+System.log("machine.type: " + machine.get("type"))
+System.log("machine.owner: " + machine.get("owner"))
+System.log("machine.externalReference: " + machine.get("externalReference"))
+//myprop = machine.get("properties");
+//System.log("MyProperties: " + myprop.length)
+System.log("virtualMachineEvent: " + virtualMachineEvent);
+System.log("lifecycleState.event: " + lifecycleState.get("event"))
+System.log("lifecycleState.phase: " + lifecycleState.get("phase"))
+System.log("lifecycleState.state: " + lifecycleState.get("state"))
+System.log("componentId: " + componentId);
+System.log("blueprintName: " + blueprintName );
+System.log("componentTypeId: " + componentTypeId);
+System.log("endpointId: " + endpointId);
+System.log("workflowNextState: " + workflowNextState);
+
+
+var properties = new Properties();
+properties.put("VirtualMachineID", machine.get("id"));
+
+
+var virtualMachineEntity = vCACEntityManager.readModelEntity(host.id, "ManagementModelEntities.svc", "VirtualMachines", properties, null);
+var vmProperties = new Properties();
+
+var virtualMachinePropertiesEntities = virtualMachineEntity.getLink(host, "VirtualMachineProperties");
+for each (var virtualMachinePropertiesEntity in virtualMachinePropertiesEntities) {
+	var propertyName = virtualMachinePropertiesEntity.getProperty("PropertyName");
+	var propertyValue = virtualMachinePropertiesEntity.getProperty("PropertyValue");
+	System.log("Found property " + propertyName + " = " + propertyValue);
+	vmProperties.put(propertyName, propertyValue);
+}
+nodeName = machine.get("name");
+hostname = machine.get("name") + "." + vmProperties.get("VirtualMachine.Network0.DnsSuffix");
+ipaddress = vmProperties.get("VirtualMachine.Network0.Address");
+netmask = vmProperties.get("VirtualMachine.Network0.SubnetMask");
+gateway = vmProperties.get("VirtualMachine.Network0.Gateway");
+]]></script>
+    <in-binding>
+      <bind name="requestId" type="string" export-name="requestId"/>
+      <bind name="machine" type="Properties" export-name="machine"/>
+      <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
+      <bind name="virtualMachineEvent" type="string" export-name="virtualMachineEvent"/>
+      <bind name="lifecycleState" type="Properties" export-name="lifecycleState"/>
+      <bind name="componentId" type="string" export-name="componentId"/>
+      <bind name="blueprintName" type="string" export-name="blueprintName"/>
+      <bind name="componentTypeId" type="string" export-name="componentTypeId"/>
+      <bind name="endpointId" type="string" export-name="endpointId"/>
+      <bind name="workflowNextState" type="string" export-name="workflowNextState"/>
+      <bind name="virtualMachineDeleteProperties" type="Properties" export-name="virtualMachineDeleteProperties"/>
+      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+      <bind name="vmProperties" type="Properties" export-name="vmProperties"/>
+    </in-binding>
+    <out-binding>
+      <bind name="hostname" type="string" export-name="hostname"/>
+      <bind name="ipaddress" type="string" export-name="ipaddress"/>
+      <bind name="gateway" type="string" export-name="gateway"/>
+      <bind name="nodeName" type="string" export-name="nodeName"/>
+      <bind name="netmask" type="string" export-name="netmask"/>
+    </out-binding>
+    <position y="55.40909090909091" x="124.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="requestId">
+      <desc><![CDATA[requestId]]></desc>
+    </p-param>
+    <p-param name="machine">
+      <desc><![CDATA[machine]]></desc>
+    </p-param>
+    <p-param name="virtualMachineAddOrUpdateProperties">
+      <desc><![CDATA[virtualMachineAddOrUpdateProperties]]></desc>
+    </p-param>
+    <p-param name="virtualMachineEvent">
+      <desc><![CDATA[virtualMachineEvent]]></desc>
+    </p-param>
+    <p-param name="lifecycleState">
+      <desc><![CDATA[lifecycleState]]></desc>
+    </p-param>
+    <p-param name="componentId">
+      <desc><![CDATA[componentId]]></desc>
+    </p-param>
+    <p-param name="blueprintName">
+      <desc><![CDATA[blueprintName]]></desc>
+    </p-param>
+    <p-param name="componentTypeId">
+      <desc><![CDATA[componentTypeId]]></desc>
+    </p-param>
+    <p-param name="endpointId">
+      <desc><![CDATA[endpointId]]></desc>
+    </p-param>
+    <p-param name="workflowNextState">
+      <desc><![CDATA[workflowNextState]]></desc>
+    </p-param>
+    <p-param name="virtualMachineDeleteProperties">
+      <desc><![CDATA[virtualMachineDeleteProperties]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

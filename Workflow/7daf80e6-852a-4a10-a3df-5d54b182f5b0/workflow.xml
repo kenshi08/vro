@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="7daf80e6-852a-4a10-a3df-5d54b182f5b0" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Scale Down vRA Deployment based on LB Load - SNMP]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="lbName" type="string"/>
+  </input>
+  <attrib name="host" type="vCACCAFE:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='86324f9f-7b62-4866-a074-1d7b268dd551'&dunesName='vCACCAFE:VCACHost']]></value>
+  </attrib>
+  <attrib name="nsxConnection" type="NSX:Connection" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='76101eba-05ef-404b-9b3c-15d0beaf836d'&dunesName='NSX:Connection']]></value>
+  </attrib>
+  <attrib name="memberVMName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="vmMoref" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="664.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[Get VM from LB name]]></display-name>
+    <script encoded="false"><![CDATA[System.log("LB name: "+lbName);
+
+var resources = vCACCAFEEntitiesFinder.findCatalogResources(host , lbName);
+
+System.log("Resouces: "+resources[0].parentResourceRef.id);
+
+if(resources != null) {
+	var lbResource = resources[0];
+	
+	var deploymentId = lbResource.parentResourceRef.id;
+	//System.log("resourceData: "+lbResource.resourceData.get("NsxId"));
+	
+	var deployment = vCACCAFEEntitiesFinder.getCatalogResource(host , deploymentId);
+	
+	var nsxEdgeId = lbResource.resourceData.get("NsxId");
+	
+	var edge = NSXEdgeManager.getEdge(nsxConnection , nsxEdgeId);
+	
+	System.log("Edge: "+edge.lbAsJson+ "vmName: "+edge.vmHostName);
+	
+	/*var pool = new NSXPool();
+	pool.objectId="1";
+	*/
+	var nsxPool = NSXAdvancedEdgeLBManager.getLBPoolFromEdgeIdPoolId(nsxConnection , nsxEdgeId, "pool-1") ;
+	//var vs = NSXAdvancedEdgeLBManager.getLBPool(nsxConnection , edge, pool) ;
+
+	
+	System.log("member size: "+nsxPool.members.length);
+	
+	var member = nsxPool.members[0];
+	
+	System.log("member ip: "+member.ipAddress);
+	
+	var items = vCACCAFEEntitiesFinder.getCatalogResources(host);
+	System.log("items: "+items.length);
+	
+	var memberVM;
+	
+	for each (var item in items)
+	{
+		if(item.resourceTypeRef.label == "Virtual Machine" && item.parentResourceRef.id == deploymentId) {
+			//System.log("item.requestId: "+item.requestId);
+			//System.log("item.parentResourceRef: "+item.parentResourceRef);
+			//System.log("item.resourceData: "+item.resourceData.get("NETWORK_LIST").getValue()[0].getValue().get("NETWORK_ADDRESS"));
+			var vmIP = item.resourceData.get("NETWORK_LIST").getValue()[0].getValue().get("NETWORK_ADDRESS");
+			System.log("vmIP: "+vmIP.getValue());
+			if(member.ipAddress == vmIP.getValue()) {
+				System.log("Member VM located. VM ID: "+item.id+"VM name: "+item.name);
+				memberVM = item;
+				memberVMName = item.name;
+				break;
+			}
+			//System.log("item.resourceTypeRef: "+item.resourceTypeRef.label);
+		} else {
+			continue;
+		}
+	}
+	//scaleOut(deployment);
+}
+
+
+function scaleOut(resource) {
+		
+		var operations = resource.getOperations();
+			
+		/*var actionInput = new Properties();
+		actionInput.put("description","Destroy container from serverless build pipeline");
+		actionInput.put("reasons","Destroy container from serverless build pipeline");*/
+		
+		for each(var operation in operations){
+			System.log("operations "+operation.getName());
+			if(operation.getName() == "Scale Out") {
+				System.log("Operation 'Scale Out' found.");
+				//System.getModule("com.vmware.library.vcaccafe.request").requestResourceAction(operation,actionInput);
+				break;
+			}
+		}
+}
+
+
+]]></script>
+    <in-binding>
+      <bind name="lbName" type="string" export-name="lbName"/>
+      <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
+      <bind name="nsxConnection" type="NSX:Connection" export-name="nsxConnection"/>
+    </in-binding>
+    <out-binding>
+      <bind name="memberVMName" type="string" export-name="memberVMName"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item3" type="task">
+    <display-name><![CDATA[Get VM Moref from VM Name]]></display-name>
+    <script encoded="false"><![CDATA[var vm = findVms(vmName);
+if(vm instanceof VcVirtualMachine) 
+{
+	System.log("Sucessfully located the vm object " + vm.name);
+}
+var vmMoref = vm.id;
+System.log("VM Moref is: " + vmMoref);
+
+
+
+function findVms(vmName) 
+{
+    var vms = VcPlugin.getAllVirtualMachines()
+    var vmResult = null;
+    for(var b=0; b<vms.length; b++)
+    { 
+       if(vmName == vms[b].name)
+       { 
+         vmResult = vms[b];
+         break;
+       }
+    } 
+    return vmResult;
+}]]></script>
+    <in-binding>
+      <bind name="vmName" type="string" export-name="memberVMName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vmMoref" type="string" export-name="vmMoref"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="link" linked-workflow-id="2e8e822b-f919-4453-97e8-ce5dacd816f4">
+    <display-name><![CDATA[Scale Down Blueprint Layer based on VM MOID]]></display-name>
+    <in-binding>
+      <bind name="targetId" type="string" export-name="vmMoref"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="lbName">
+      <desc><![CDATA[lbName]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

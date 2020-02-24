@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="d02637fa-eb7c-4d09-8ccb-56f87715170d" version="0.0.8" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Get NSX and EdgeId]]></display-name>
+  <description><![CDATA[
+VMware PSO I&A Selva 08/2015]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="edgeName" type="string"/>
+  </input>
+  <output>
+    <param name="edgeId" type="string"/>
+    <param name="nsxRestHost" type="REST:RESTHost"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Get NSX and EdgeId]]></display-name>
+    <script encoded="false"><![CDATA[var nsxConnectionList = Server.findAllForType("NSX:Connection");
+
+var vcoRestHostList = Server.findAllForType("REST:RESTHost");
+
+var nsxRestHostMatched;
+
+var edgeMatchCounter = 0;
+
+edgeId = "";
+
+
+
+System.debug("There are (" + nsxConnectionList.length + ") NSX connection configured in vCO");
+
+
+
+//Loop through available NSX connections configured in vCO. 
+
+for (v in nsxConnectionList) {
+
+
+
+ System.debug("Searching through NSX connection (" + v + ") = " + nsxConnectionList[v].url);
+
+ // Find NSX connection corresponding REST host by matching the url
+
+ for (i in vcoRestHostList) {
+
+  if (vcoRestHostList[i].url == nsxConnectionList[v].url) {
+
+   nsxRestHostMatched = vcoRestHostList[i];
+
+   //System.log ( "REST host ID for NSX connection (" + v + ") = " + vcoRestHostList[i].id);
+
+   break;
+
+  }
+
+ }
+
+
+
+ // Create a REST call to query all edges configured
+
+ var request = nsxRestHostMatched.createRequest("GET", "/api/4.0/edges/");
+
+ //System.log("Request URL: " + request.fullUrl);
+
+
+
+ // Execute the request
+
+ var response = request.execute();
+
+ var foundRule = false;
+
+
+
+ // Evaluate the Response
+
+ if (response.statusCode == 200) {
+
+  // Get XML response from NSX
+
+  var responseXML = XMLManager.fromString(response.ContentAsString);
+
+  var edgeNameList = responseXML.documentElement.getElementsByTagName("name");
+
+  var edgeIdList = responseXML.documentElement.getElementsByTagName("objectId");
+
+
+
+  // loop through list of edge names in the response. 
+
+  for (x = 0; x < edgeNameList.length; x++) {
+
+   if (edgeNameList.item(x).firstChild.textContent == edgeName) {
+
+    edgeId = edgeIdList.item(x).firstChild.textContent;
+
+    EdgeID = edgeId;
+
+    NSXconnection = nsxConnectionList[v];
+
+    nsxUrl = nsxConnectionList[v].url;
+
+    nsxRestHost = nsxRestHostMatched;
+
+    edgeMatchCounter++;
+
+    System.log("Edge ID for " + edgeNameList.item(x).firstChild.textContent + " : " + edgeIdList.item(x).firstChild.textContent)
+
+    System.log("NSX endpoint URL for " + edgeNameList.item(x).firstChild.textContent + " : " + nsxUrl)
+
+    System.log("NSX Rest Host for " + edgeNameList.item(x).firstChild.textContent + " : " + nsxRestHost)
+    System.log(nsxRestHost);
+
+
+    if (edgeMatchCounter > 1) {
+
+     throw "Multiple edges with the same edge name (" + edgeName + ") found";
+
+    }
+
+   }
+
+  }
+
+ } else {
+
+  throw "request to NSX connection failed";
+
+ }
+
+}
+
+
+
+if (edgeId == "") {
+
+ throw edgeName + " was not found"
+
+}]]></script>
+    <in-binding>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="edgeName">
+      <desc><![CDATA[edgeName]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

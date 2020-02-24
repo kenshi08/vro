@@ -1,0 +1,482 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="e96c8c20-f84b-4171-9653-1c63b7942b92" version="0.0.5" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Launch EC2 With Load Balancer]]></display-name>
+  <position y="45.40909090909091" x="105.0"/>
+  <input>
+    <param name="client" type="AWS:AWSClient">
+      <description><![CDATA[AWS client]]></description>
+    </param>
+    <param name="name" type="string">
+      <description><![CDATA[Name of the instance]]></description>
+    </param>
+    <param name="name1" type="string">
+      <description><![CDATA[Name of the instance]]></description>
+    </param>
+    <param name="LoadBalancerName" type="string">
+      <description><![CDATA[Name of the Load Balancer]]></description>
+    </param>
+    <param name="LoadBalancerPort" type="string"/>
+  </input>
+  <output>
+    <param name="instance" type="AWS:EC2Instance">
+      <description><![CDATA[Instance]]></description>
+    </param>
+  </output>
+  <attrib name="key" type="string" read-only="false">
+    <value encoded="n"><![CDATA[vRO-AWS]]></value>
+    <description><![CDATA[Tag key]]></description>
+  </attrib>
+  <attrib name="resourceId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[The IDs of the resource to tag]]></description>
+  </attrib>
+  <attrib name="vmUsername" type="string" read-only="false">
+    <value encoded="n"><![CDATA[nullphase\clementwong]]></value>
+    <description><![CDATA[Username for the virtual machine]]></description>
+  </attrib>
+  <attrib name="vmPassword" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[8A356F4D977561072F65931D21DB595C46CC2CBAAF8222FCCBB352B05FEE25BEE3B0782FEBDF18D46823E5B75F5B586887]]></value>
+    <description><![CDATA[Password for the virtual machine]]></description>
+  </attrib>
+  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='vcsa-l-01a.nullphase.local/vm-238'&dunesName='VC:VirtualMachine']]></value>
+    <description><![CDATA[Virtual machine]]></description>
+  </attrib>
+  <attrib name="interactiveSession" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[This is set to true if the client wants an interactive session in the guest.]]></description>
+  </attrib>
+  <attrib name="programPath" type="string" read-only="false">
+    <value encoded="n"><![CDATA[C:\Windows\System32\WindowsPowershell\v1.0\powershell.exe]]></value>
+    <description><![CDATA[The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. ]]></description>
+  </attrib>
+  <attrib name="arguments" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. ]]></description>
+  </attrib>
+  <attrib name="workingDirectory" type="string" read-only="false">
+    <value encoded="n"><![CDATA[C:\Windows\System32\WindowsPowershell\v1.0]]></value>
+    <description><![CDATA[The absolute path of the working directory for the program to be run. VMware recommends explicitly setting the working directory for the program to be run. If this value is unset or is an empty string, the behavior depends on the guest operating system. For Linux guest operating systems, if this value is unset or is an empty string, the working directory will be the home directory of the user associated with the guest authentication. For other guest operating systems, if this value is unset, the behavior is unspecified. ]]></description>
+  </attrib>
+  <attrib name="environment" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[An array of environment variables, specified in the guest OS notation (eg PATH=c:\bin;c:\windows\system32 or LD_LIBRARY_PATH=/usr/lib:/lib), to be set for the program being run. Note that these are not additions to the default environment variables; they define the complete set available to the program. If none are specified the values are guest dependent. ]]></description>
+  </attrib>
+  <attrib name="awsAccessKey" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="awsSecretKey" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="instanceID" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="instanceType" type="AWS:EC2InstanceType" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='t1.micro'&dunesName='AWS:EC2InstanceType']]></value>
+    <description><![CDATA[Specifies the instance type for the launched instances]]></description>
+  </attrib>
+  <attrib name="minCount" type="number" read-only="false">
+    <value encoded="n"><![CDATA[1.0]]></value>
+    <description><![CDATA[Minimum number of instances to launch]]></description>
+  </attrib>
+  <attrib name="maxCount" type="number" read-only="false">
+    <value encoded="n"><![CDATA[1.0]]></value>
+    <description><![CDATA[Maximum number of instances to launch]]></description>
+  </attrib>
+  <attrib name="securityGroups" type="Array/AWS:EC2SecurityGroup" read-only="false">
+    <value encoded="n"><![CDATA[#{#AWS:EC2SecurityGroup#dunes://service.dunes.ch/CustomSDKObject?id='ec85c506-694d-44e2-a87a-d87fcb230a6e/us-west-1/sg-39f0285c'&dunesName='AWS:EC2SecurityGroup'#}#]]></value>
+    <description><![CDATA[Security groups in which the instance is launched]]></description>
+  </attrib>
+  <attrib name="availabilityZone" type="AWS:EC2AvailabilityZone" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='ec85c506-694d-44e2-a87a-d87fcb230a6e/us-west-1/us-west-1a'&dunesName='AWS:EC2AvailabilityZone']]></value>
+    <description><![CDATA[EC2 availability zone]]></description>
+  </attrib>
+  <attrib name="keyPair" type="AWS:EC2KeyPair" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='ec85c506-694d-44e2-a87a-d87fcb230a6e/us-west-1/AWS-Key-West'&dunesName='AWS:EC2KeyPair']]></value>
+    <description><![CDATA[The key pair to connect to the instance with]]></description>
+  </attrib>
+  <attrib name="subnet" type="AWS:EC2Subnet" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='ec85c506-694d-44e2-a87a-d87fcb230a6e/us-west-1/subnet-0536eb60'&dunesName='AWS:EC2Subnet']]></value>
+    <description><![CDATA[Subnet to launch the instance into]]></description>
+  </attrib>
+  <attrib name="ami" type="AWS:EC2Image" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='ec85c506-694d-44e2-a87a-d87fcb230a6e/us-west-1/ami-0dbe4449'&dunesName='AWS:EC2Image']]></value>
+    <description><![CDATA[Amazon Machine Image]]></description>
+  </attrib>
+  <workflow-note x="258.0" y="21.36363636363636" w="804.0" h="130.0">
+    <description><![CDATA[Multiple Launch Instance for AWS.]]></description>
+  </workflow-note>
+  <workflow-note x="1118.0" y="21.22727272727272" w="104.0" h="103.0">
+    <description><![CDATA[Check for Instance State]]></description>
+  </workflow-note>
+  <workflow-note x="1238.0" y="23.636363636363633" w="124.0" h="80.0">
+    <description><![CDATA[Create a Load Balancer and Attached Instance.]]></description>
+  </workflow-note>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="1424.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item3" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[//Get the AmazonEC2 client 
+var ec2Client = client.getAmazonEC2Client();
+
+//Initiate the RinInstancesRequest
+var request = new EC2RunInstancesRequest();
+request.setMinCount(minCount);
+request.setMaxCount(maxCount);
+request.setInstanceType(instanceType);
+
+var securityGroupIds = new Array();
+
+if (securityGroups != null) {
+	//Set the security group ids
+	for (var i = 0; i < securityGroups.length; i++) {
+		var groupId = securityGroups[i].getGroupId();
+		securityGroupIds.push(groupId);
+	}
+	System.log("Setting security group ids: " + securityGroupIds);
+	request.withSecurityGroupIds(securityGroupIds);
+}
+
+//Set the availability zone
+var placement = new EC2Placement(availabilityZone.getZoneName());
+System.log("Setting availability zone: " + availabilityZone.getZoneName());
+request.setPlacement(placement);
+
+//Set the subnet
+if (subnet != null) {
+	request.setSubnetId(subnet.getSubnetId());
+}
+
+//Set the AMI
+request.setImageId(ami.getImageId());
+
+//Set the key pair
+request.setKeyName(keyPair.getKeyName());
+
+//Send the request 
+System.log("Request: " + request);
+var response = ec2Client.runInstances(request);
+System.log("Response: " + response);
+
+resourceId = response.getReservation().getInstances()[0].getInstanceId();
+instance = response.getReservation().getInstances()[0];]]></script>
+    <in-binding>
+      <bind name="client" type="AWS:AWSClient" export-name="client"/>
+      <bind name="instanceType" type="AWS:EC2InstanceType" export-name="instanceType"/>
+      <bind name="minCount" type="number" export-name="minCount">
+        <description><![CDATA[Minimum number of instances to launch]]></description>
+      </bind>
+      <bind name="maxCount" type="number" export-name="maxCount">
+        <description><![CDATA[Maximum number of instances to launch]]></description>
+      </bind>
+      <bind name="securityGroups" type="Array/AWS:EC2SecurityGroup" export-name="securityGroups">
+        <description><![CDATA[Security groups in which the instance is launched]]></description>
+      </bind>
+      <bind name="availabilityZone" type="AWS:EC2AvailabilityZone" export-name="availabilityZone">
+        <description><![CDATA[EC2 availability zone]]></description>
+      </bind>
+      <bind name="ami" type="AWS:EC2Image" export-name="ami">
+        <description><![CDATA[Amazon Machine Image]]></description>
+      </bind>
+      <bind name="keyPair" type="AWS:EC2KeyPair" export-name="keyPair">
+        <description><![CDATA[The key pair to connect to the instance with]]></description>
+      </bind>
+      <bind name="subnet" type="AWS:EC2Subnet" export-name="subnet">
+        <description><![CDATA[Subnet to launch the instance into]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="resourceId" type="string" export-name="resourceId">
+        <description><![CDATA[The IDs of the resource to tag]]></description>
+      </bind>
+      <bind name="instance" type="AWS:EC2Instance" export-name="instance">
+        <description><![CDATA[Instance]]></description>
+      </bind>
+    </out-binding>
+    <position y="55.40909090909091" x="264.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item5" type="task" script-module="com.vmware.library.aws/createTag">
+    <display-name><![CDATA[createTag]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.aws").createTag(account,resourceId,key,value) ;]]></script>
+    <in-binding>
+      <bind name="account" type="AWS:AWSClient" export-name="client">
+        <description><![CDATA[AWS account]]></description>
+      </bind>
+      <bind name="resourceId" type="string" export-name="resourceId">
+        <description><![CDATA[The IDs of the resource to tag]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="key">
+        <description><![CDATA[Tag key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="name">
+        <description><![CDATA[Tag value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Adds or overwrites one or more tags for the specified resource or resources. Each resource can have a maximum of 10 tags. Each tag consists of a key and optional value. Tag keys must be unique per resource.]]></description>
+    <position y="55.40909090909091" x="544.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item2" type="custom-condition" alt-out-name="item4">
+    <display-name><![CDATA[Custom decision]]></display-name>
+    <script encoded="false"><![CDATA[name != '';]]></script>
+    <in-binding>
+      <bind name="name" type="string" export-name="name"/>
+    </in-binding>
+    <position y="45.40909090909091" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item4" type="end" end-mode="0">
+    <position y="109.04545454545453" x="444.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item6" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[//Get the AmazonEC2 client 
+var ec2Client = client.getAmazonEC2Client();
+
+//Initiate the RinInstancesRequest
+var request = new EC2RunInstancesRequest();
+request.setMinCount(minCount);
+request.setMaxCount(maxCount);
+request.setInstanceType(instanceType);
+
+var securityGroupIds = new Array();
+
+if (securityGroups != null) {
+	//Set the security group ids
+	for (var i = 0; i < securityGroups.length; i++) {
+		var groupId = securityGroups[i].getGroupId();
+		securityGroupIds.push(groupId);
+	}
+	System.log("Setting security group ids: " + securityGroupIds);
+	request.withSecurityGroupIds(securityGroupIds);
+}
+
+//Set the availability zone
+var placement = new EC2Placement(availabilityZone.getZoneName());
+System.log("Setting availability zone: " + availabilityZone.getZoneName());
+request.setPlacement(placement);
+
+//Set the subnet
+if (subnet != null) {
+	request.setSubnetId(subnet.getSubnetId());
+}
+
+//Set the AMI
+request.setImageId(ami.getImageId());
+
+//Set the key pair
+request.setKeyName(keyPair.getKeyName());
+
+//Send the request 
+System.log("Request: " + request);
+var response = ec2Client.runInstances(request);
+System.log("Response: " + response);
+
+resourceId = response.getReservation().getInstances()[0].getInstanceId();
+instance = response.getReservation().getInstances()[0];]]></script>
+    <in-binding>
+      <bind name="client" type="AWS:AWSClient" export-name="client"/>
+      <bind name="instanceType" type="AWS:EC2InstanceType" export-name="instanceType"/>
+      <bind name="minCount" type="number" export-name="minCount">
+        <description><![CDATA[Minimum number of instances to launch]]></description>
+      </bind>
+      <bind name="maxCount" type="number" export-name="maxCount">
+        <description><![CDATA[Maximum number of instances to launch]]></description>
+      </bind>
+      <bind name="securityGroups" type="Array/AWS:EC2SecurityGroup" export-name="securityGroups">
+        <description><![CDATA[Security groups in which the instance is launched]]></description>
+      </bind>
+      <bind name="availabilityZone" type="AWS:EC2AvailabilityZone" export-name="availabilityZone">
+        <description><![CDATA[EC2 availability zone]]></description>
+      </bind>
+      <bind name="ami" type="AWS:EC2Image" export-name="ami">
+        <description><![CDATA[Amazon Machine Image]]></description>
+      </bind>
+      <bind name="keyPair" type="AWS:EC2KeyPair" export-name="keyPair">
+        <description><![CDATA[The key pair to connect to the instance with]]></description>
+      </bind>
+      <bind name="subnet" type="AWS:EC2Subnet" export-name="subnet">
+        <description><![CDATA[Subnet to launch the instance into]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="resourceId" type="string" export-name="resourceId">
+        <description><![CDATA[The IDs of the resource to tag]]></description>
+      </bind>
+      <bind name="instance" type="AWS:EC2Instance" export-name="instance">
+        <description><![CDATA[Instance]]></description>
+      </bind>
+    </out-binding>
+    <position y="55.40909090909091" x="684.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item8" type="custom-condition" alt-out-name="item7">
+    <display-name><![CDATA[Custom decision]]></display-name>
+    <script encoded="false"><![CDATA[name != '';]]></script>
+    <in-binding>
+      <bind name="name" type="string" export-name="name1"/>
+    </in-binding>
+    <position y="45.40909090909091" x="824.5"/>
+  </workflow-item>
+  <workflow-item name="item7" type="end" end-mode="0">
+    <position y="109.04545454545453" x="864.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item10" type="task" script-module="com.vmware.library.aws/createTag">
+    <display-name><![CDATA[createTag]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.aws").createTag(account,resourceId,key,value) ;]]></script>
+    <in-binding>
+      <bind name="account" type="AWS:AWSClient" export-name="client">
+        <description><![CDATA[AWS account]]></description>
+      </bind>
+      <bind name="resourceId" type="string" export-name="resourceId">
+        <description><![CDATA[The IDs of the resource to tag]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="key">
+        <description><![CDATA[Tag key]]></description>
+      </bind>
+      <bind name="value" type="string" export-name="name1">
+        <description><![CDATA[Tag value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Adds or overwrites one or more tags for the specified resource or resources. Each resource can have a maximum of 10 tags. Each tag consists of a key and optional value. Tag keys must be unique per resource.]]></description>
+    <position y="55.40909090909091" x="964.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item0" type="task">
+    <display-name><![CDATA[Create Load balancer]]></display-name>
+    <script encoded="false"><![CDATA[var host = vm.sdkConnection;
+var awsRegion = client.Region.name;
+var awszone = availabilityZone.getZoneName();
+
+
+var firstinstanceid  = System.getModule("com.nullphase.local").getinstanceID(client,name) ;
+var secondinstanceid  = System.getModule("com.nullphase.local").getinstanceID(client,name1) ;
+
+var lbprotocol;
+var guestOperationsManager = host.guestOperationsManager;
+var guestAuth = new VcNamePasswordAuthentication();
+guestAuth.username = vmUsername;
+guestAuth.password = vmPassword;
+guestAuth.interactiveSession = interactiveSession;
+//System.log("LoadBalancerPort" + LoadBalancerPort);
+if(LoadBalancerPort == 80)lbprotocol="http";
+else if(LoadBalancerPort == 443)lbprotocol="https";
+//arguments='$awsmodule="C:\\Program Files (x86)\\AWS Tools\\PowerShell\\AWSPowerShell\\AWSPowerShell.psd1"'+'\n';
+arguments+='Import-Module \'C:\\Program Files (x86)\\AWS Tools\\PowerShell\\AWSPowerShell\\AWSPowerShell.psd1\''+'\n';
+arguments+="Initialize-AWSDefaults -Region "+awsRegion+" -AccessKey "+awsAccessKey+"  -SecretKey "+awsSecretKey+"\n";
+//arguments+="Register-ELBInstanceWithLoadBalancer -LoadBalancerName "+LoadBalancerName+" -Instance "+instanceID+"\n";
+arguments+= '$HTTPListener = New-Object -TypeName \‘Amazon.ElasticLoadBalancing.Model.Listener\’\n'
+arguments+= '$HTTPListener.Protocol =\''+lbprotocol+'\'\n'
+arguments+= '$HTTPListener.InstancePort ='+LoadBalancerPort+'\n'
+arguments+= '$HTTPListener.LoadBalancerPort ='+LoadBalancerPort+'\n'
+arguments+= 'New-ELBLoadBalancer -LoadBalancerName '+LoadBalancerName+' -AvailabilityZone '+awszone+' -Listener @($HTTPListener)\n'
+arguments+='Start-Sleep -s 60 \n';
+arguments+="Register-ELBInstanceWithLoadBalancer -LoadBalancerName "+LoadBalancerName+" -Instance "+firstinstanceid.toString().trim()+"\n";
+arguments+='Start-Sleep -s 20 \n';
+arguments+="Register-ELBInstanceWithLoadBalancer -LoadBalancerName "+LoadBalancerName+" -Instance "+secondinstanceid.toString().trim()+"\n";
+//arguments+='Start-Sleep -s 60 \n';
+System.log("\n\n"+arguments);
+var guestProgramSpec = new VcGuestProgramSpec();
+guestProgramSpec.programPath = programPath;
+guestProgramSpec.arguments = arguments;
+guestProgramSpec.workingDirectory = workingDirectory;
+guestProgramSpec.envVariables = environment;
+
+var processManager = guestOperationsManager.processManager;
+processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);
+]]></script>
+    <in-binding>
+      <bind name="client" type="AWS:AWSClient" export-name="client"/>
+      <bind name="availabilityZone" type="AWS:EC2AvailabilityZone" export-name="availabilityZone"/>
+      <bind name="vmUsername" type="string" export-name="vmUsername"/>
+      <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+      <bind name="interactiveSession" type="boolean" export-name="interactiveSession"/>
+      <bind name="programPath" type="string" export-name="programPath"/>
+      <bind name="arguments" type="string" export-name="arguments"/>
+      <bind name="workingDirectory" type="string" export-name="workingDirectory"/>
+      <bind name="environment" type="Array/string" export-name="environment"/>
+      <bind name="awsAccessKey" type="string" export-name="awsAccessKey"/>
+      <bind name="awsSecretKey" type="string" export-name="awsSecretKey"/>
+      <bind name="instanceID" type="string" export-name="instanceID"/>
+      <bind name="name" type="string" export-name="name"/>
+      <bind name="name1" type="string" export-name="name1"/>
+      <bind name="LoadBalancerName" type="string" export-name="LoadBalancerName"/>
+      <bind name="LoadBalancerPort" type="string" export-name="LoadBalancerPort"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="1244.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item9" type="task">
+    <display-name><![CDATA[Check Instance State]]></display-name>
+    <script encoded="false"><![CDATA[//"stopped"
+
+var yay = true;
+for (; yay;) {
+var firstinstancestate  = System.getModule("com.nullphase.local").getInstanceStatus(client,name) ;
+var secondinstancestate  = System.getModule("com.nullphase.local").getInstanceStatus(client,name1) ;
+if(firstinstancestate.toString().trim() === "running" || firstinstancestate.toString().trim() === "stopped" && secondinstancestate.toString().trim() === "running" || secondinstancestate.toString().trim() === "stopped")
+{
+//System.log("Loop" + "\n" + secondinstancestate + "\n" + firstinstancestate);
+break;
+}
+else
+{
+System.sleep(30*1000);
+
+}
+}
+]]></script>
+    <in-binding>
+      <bind name="name" type="string" export-name="name"/>
+      <bind name="name1" type="string" export-name="name1"/>
+      <bind name="client" type="AWS:AWSClient" export-name="client"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="1104.5"/>
+  </workflow-item>
+  <presentation>
+    <p-group>
+      <title><![CDATA[Account]]></title>
+      <p-param name="client">
+        <desc><![CDATA[AWS client]]></desc>
+      </p-param>
+    </p-group>
+    <p-step>
+      <title><![CDATA[First Instance]]></title>
+      <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#client!=null]]></p-qual>
+      <p-group>
+        <title><![CDATA[Name of Instance]]></title>
+        <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#client!=null]]></p-qual>
+        <p-param name="name">
+          <desc><![CDATA[Name of the instance]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+        </p-param>
+      </p-group>
+    </p-step>
+    <p-step>
+      <title><![CDATA[Second Instance]]></title>
+      <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#client!=null]]></p-qual>
+      <p-group>
+        <title><![CDATA[Name of Instance]]></title>
+        <p-param name="name1">
+          <desc><![CDATA[Name of the instance]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+        </p-param>
+      </p-group>
+    </p-step>
+    <p-step>
+      <title><![CDATA[Load Balancer]]></title>
+      <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#client!=null]]></p-qual>
+      <p-param name="LoadBalancerName">
+        <desc><![CDATA[Name of the Load Balancer]]></desc>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      </p-param>
+      <p-param name="LoadBalancerPort">
+        <desc><![CDATA[LoadBalancerPort]]></desc>
+        <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#80#;#string#443#}#]]></p-qual>
+      </p-param>
+    </p-step>
+  </presentation>
+</workflow>

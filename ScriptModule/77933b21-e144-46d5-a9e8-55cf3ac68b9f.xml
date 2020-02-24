@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCatalogResourceDeployment" result-type="vCACCAFE:CatalogResource" api-version="6.0.0" id="77933b21-e144-46d5-a9e8-55cf3ac68b9f" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.vra">
+  <param n="catalogResource" t="vCACCAFE:CatalogResource"/>
+  <script encoded="false"><![CDATA[var deploymentId = catalogResource.parentResourceRef.getId();
+var host = vCACCAFEEntitiesFinder.getHostForEntity(catalogResource);
+return vCACCAFEEntitiesFinder.getCatalogResource(host, deploymentId);]]></script>
+</dunes-script-module>

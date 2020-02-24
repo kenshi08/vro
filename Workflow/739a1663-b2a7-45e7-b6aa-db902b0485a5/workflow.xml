@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="739a1663-b2a7-45e7-b6aa-db902b0485a5" version="0.0.3" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Import blueprint from vRO to vRA ]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="host" type="vCACCAFE:VCACHost"/>
+    <param name="resource" type="ResourceElement"/>
+  </input>
+  <output>
+    <param name="compositeBlueprint" type="vCACCAFE:CompositeBlueprint"/>
+  </output>
+  <attrib name="mimeAttachment" type="MimeAttachment" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[Get mime attachment]]></display-name>
+    <script encoded="false"><![CDATA[mimeAttachment = resource.getContentAsMimeAttachment();]]></script>
+    <in-binding>
+      <bind name="resource" type="ResourceElement" export-name="resource"/>
+    </in-binding>
+    <out-binding>
+      <bind name="mimeAttachment" type="MimeAttachment" export-name="mimeAttachment"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="task">
+    <display-name><![CDATA[Import package]]></display-name>
+    <script encoded="false"><![CDATA[
+var restClient = host.createRestClient('com.vmware.csp.core.content.service.api');
+
+
+var response = restClient.postFile("/packages/validate", mimeAttachment);
+System.log(response.getStatus());
+System.log(response.getBodyAsString());
+System.log(response.getHeaders());
+
+var response = restClient.postFile("/packages", mimeAttachment);
+
+
+if (response.getStatus() == "200") {
+	var responseObject = JSON.parse(response.getBodyAsString());
+	var operationStatus = responseObject.operationStatus;
+	if (operationStatus == "SUCCESS" || operationStatus == "WARNING") {
+		var operationResults = responseObject.operationResults;
+		for each (var operationResult in operationResults) {
+		
+			if (operationResult.contentTypeId == "composite-blueprint") {
+				var contentId = operationResult.contentId;
+				compositeBlueprint = vCACCAFEEntitiesFinder.getCompositeBlueprint(host, contentId);
+				break;
+			}
+		}
+	
+	}
+}
+System.log(response.getStatus());
+System.log(response.getBodyAsString());
+System.log(response.getHeaders());]]></script>
+    <in-binding>
+      <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
+      <bind name="mimeAttachment" type="MimeAttachment" export-name="mimeAttachment"/>
+    </in-binding>
+    <out-binding>
+      <bind name="compositeBlueprint" type="vCACCAFE:CompositeBlueprint" export-name="compositeBlueprint"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="resource">
+      <desc><![CDATA[Blueprint to import]]></desc>
+      <p-qual kind="ognl" name="linkedEnumeration" type="Array/ResourceElement"><![CDATA[GetAction("com.vmware.coe.vra.content","getBlueprintResources").call()]]></p-qual>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="host">
+      <desc><![CDATA[Destination vRA host]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

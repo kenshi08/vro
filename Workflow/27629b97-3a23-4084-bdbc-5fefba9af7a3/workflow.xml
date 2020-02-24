@@ -1,0 +1,405 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item15" object-name="workflow:name=generic" id="27629b97-3a23-4084-bdbc-5fefba9af7a3" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Run Program In Guest]]></display-name>
+  <description><![CDATA[Executes a local program in the target GuestOS.  
+
+Leverages the vSphere 5.x GuestOperationsManager object and is not backwards compatible with previous versions of vSphere.]]></description>
+  <position y="10.0" x="20.0"/>
+  <input>
+    <param name="vm" type="VC:VirtualMachine">
+      <description><![CDATA[VirtualMachine GuestOS]]></description>
+    </param>
+    <param name="programPath" type="string">
+      <description><![CDATA[GuestOS executable path]]></description>
+    </param>
+    <param name="programArguments" type="string">
+      <description><![CDATA[GuestOS program arguments]]></description>
+    </param>
+    <param name="programEnvironVars" type="Array/string">
+      <description><![CDATA[GuestOS environment variables for program (optional)]]></description>
+    </param>
+    <param name="programWorkingDir" type="string">
+      <description><![CDATA[GuestOS program working directory (optional)]]></description>
+    </param>
+    <param name="timeout" type="number">
+      <description><![CDATA[Timeout for program execution (in seconds)]]></description>
+    </param>
+    <param name="username" type="string">
+      <description><![CDATA[GuestOS username]]></description>
+    </param>
+    <param name="password" type="SecureString">
+      <description><![CDATA[GuestOS password]]></description>
+    </param>
+    <param name="interval" type="number">
+      <description><![CDATA[Interval (seconds) between process information queries]]></description>
+    </param>
+    <param name="killOnTimeout" type="boolean">
+      <description><![CDATA[Terminte GuestOS program when timeout is exceeded]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="exitCode" type="number">
+      <description><![CDATA[GuestOS program exit code]]></description>
+    </param>
+  </output>
+  <attrib name="programPID" type="number" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Program PID in GuestOS]]></description>
+  </attrib>
+  <attrib name="lasterror" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="pids" type="Array/number" read-only="false">
+    <description><![CDATA[Array of program PIDs for listProcessesInGuest action]]></description>
+  </attrib>
+  <attrib name="procs" type="Array/Any" read-only="false">
+    <description><![CDATA[Array of GuestProcessInfo objects]]></description>
+  </attrib>
+  <attrib name="startTime" type="Date" read-only="false"/>
+  <attrib name="programProcInfo" type="Any" read-only="false">
+    <value encoded="n"><![CDATA[string#]]></value>
+    <description><![CDATA[Program ProcessInfo object]]></description>
+  </attrib>
+  <workflow-item name="item2" out-name="item0" type="task">
+    <display-name><![CDATA[Set variables]]></display-name>
+    <script encoded="false"><![CDATA[// Set program start time.  Use local Orchestrator time, can't assume time is synchronized with GuestOS.
+startTime = new Date();
+
+// Create pids array & populate it with programPID
+pids = new Array();
+
+if (programPID != null) {
+	pids.push(programPID);
+} else {
+	throw "Program PID not defined!";
+}
+
+]]></script>
+    <in-binding>
+      <bind name="programPID" type="number" export-name="programPID"/>
+    </in-binding>
+    <out-binding>
+      <bind name="pids" type="Array/number" export-name="pids"/>
+      <bind name="startTime" type="Date" export-name="startTime"/>
+    </out-binding>
+    <position y="73.59090909090908" x="184.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" type="task">
+    <display-name><![CDATA[Get programProcInfo]]></display-name>
+    <script encoded="false"><![CDATA[for (var i in procs) {
+	if (procs[i].pid == programPID) {
+		programProcInfo = procs[i];
+	}
+}
+
+var cmd = programProcInfo.cmdLine;
+var pid	= programProcInfo.pid
+var vmname = vm.name;
+System.log("Program running (vm=" + vmname + "; cmd='" + cmd + "'; pid=" + pid + "; timeout=" + timeout + "; interval=" + interval + ")");]]></script>
+    <in-binding>
+      <bind name="programPID" type="number" export-name="programPID"/>
+      <bind name="procs" type="Array/Any" export-name="procs"/>
+      <bind name="interval" type="number" export-name="interval"/>
+      <bind name="timeout" type="number" export-name="timeout"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding>
+      <bind name="programProcInfo" type="Any" export-name="programProcInfo"/>
+    </out-binding>
+    <position y="228.13636363636363" x="424.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item10" type="custom-condition" alt-out-name="item7">
+    <display-name><![CDATA[Program Done?]]></display-name>
+    <script encoded="false"><![CDATA[// Test is program endTime is set
+
+if (programProcInfo.endTime != null ) {
+	return true;
+} else {
+	return false;
+}]]></script>
+    <in-binding>
+      <bind name="programProcInfo" type="Any" export-name="programProcInfo"/>
+    </in-binding>
+    <position y="218.13636363636363" x="584.5"/>
+  </workflow-item>
+  <workflow-item name="item5" type="end" end-mode="0">
+    <position y="318.1363636363636" x="624.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item0" type="task">
+    <display-name><![CDATA[Sleep interval]]></display-name>
+    <script encoded="false"><![CDATA[if (interval > 0 ) {
+	System.sleep(interval);
+}]]></script>
+    <in-binding>
+      <bind name="interval" type="number" export-name="interval"/>
+    </in-binding>
+    <out-binding/>
+    <position y="146.3181818181818" x="584.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item12" type="custom-condition" alt-out-name="item6">
+    <display-name><![CDATA[Timeout?]]></display-name>
+    <script encoded="false"><![CDATA[// If timeout == 0, wait indefinitely
+if (timeout == null || timeout == 0) {
+	return false;
+}
+
+
+// Test number of seconds elapsed
+var now = new Date();
+if ( (now.getTime() - startTime.getTime()) > (1000 * timeout) ) {
+	return true;
+} else {
+	return false;
+}]]></script>
+    <in-binding>
+      <bind name="timeout" type="number" export-name="timeout"/>
+      <bind name="startTime" type="Date" export-name="startTime"/>
+    </in-binding>
+    <position y="172.68181818181816" x="704.5"/>
+  </workflow-item>
+  <workflow-item name="item8" throw-bind-name="lasterror" type="end" end-mode="1">
+    <position y="318.1363636363636" x="924.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item8" throw-bind-name="lasterror" type="task">
+    <display-name><![CDATA[Timeout exceeded]]></display-name>
+    <script encoded="false"><![CDATA[lasterror = "Timeout exceeded (timeout=" + timeout + ")";]]></script>
+    <in-binding>
+      <bind name="timeout" type="number" export-name="timeout"/>
+    </in-binding>
+    <out-binding>
+      <bind name="lasterror" type="string" export-name="lasterror"/>
+    </out-binding>
+    <position y="282.68181818181813" x="884.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item5" throw-bind-name="lasterror" type="task">
+    <display-name><![CDATA[Set exitCode]]></display-name>
+    <script encoded="false"><![CDATA[try {
+	exitCode = programProcInfo.exitCode;
+} catch (e) {
+	lasterror = e.message;
+	throw "Error fetching program exit code: " + e.message;
+}
+
+if (exitCode == null) {
+	lasterror = "Program exit code value not set (null)";
+	throw lasterror;
+}
+
+
+var cmd 	= programProcInfo.cmdLine;
+var pid		= programProcInfo.pid;
+var vmname 	= vm.name;
+System.log("Program finished (vm=" + vmname + "; cmd='" + cmd + "'; pid=" + pid + "; timeout=" + timeout + "; interval=" + interval + ") (ExitCode=" + exitCode + ")");]]></script>
+    <in-binding>
+      <bind name="programProcInfo" type="Any" export-name="programProcInfo"/>
+      <bind name="interval" type="number" export-name="interval"/>
+      <bind name="timeout" type="number" export-name="timeout"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding>
+      <bind name="exitCode" type="number" export-name="exitCode"/>
+    </out-binding>
+    <position y="282.68181818181813" x="584.5"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item1" type="condition" alt-out-name="item9" comparator="0">
+    <display-name><![CDATA[Terminate?]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (killOnTimeout == true) ;]]></script>
+    <in-binding>
+      <bind name="killOnTimeout" type="boolean" export-name="killOnTimeout"/>
+    </in-binding>
+    <condition name="killOnTimeout" type="boolean" comparator="0" label="null">false</condition>
+    <position y="136.3181818181818" x="824.5"/>
+  </workflow-item>
+  <workflow-item name="item13" out-name="item9" content-mode="y" type="task" interaction="l">
+    <display-name><![CDATA[System log]]></display-name>
+    <script encoded="false"><![CDATA[var cmd 	= programProcInfo.cmdLine;
+var pid		= programProcInfo.pid;
+var vmname 	= vm.name;
+
+System.log("Program terminated (vm=" + vmname + "; cmd='" + cmd + "'; pid=" + pid + "; timeout=" + timeout + "; interval=" + interval + ")");
+
+]]></script>
+    <in-binding>
+      <bind name="programProcInfo" type="Any" export-name="programProcInfo"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+      <bind name="interval" type="number" export-name="interval"/>
+      <bind name="timeout" type="number" export-name="timeout"/>
+      <bind name="lasterror" type="string" export-name="lasterror"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Log the input text to the console log with level 'log']]></description>
+    <position y="282.68181818181813" x="1104.5"/>
+  </workflow-item>
+  <workflow-item name="item14" out-name="item9" content-mode="y" type="task" interaction="l">
+    <display-name><![CDATA[System log]]></display-name>
+    <script encoded="false"><![CDATA[var cmd 	= programProcInfo.cmdLine;
+var pid		= programProcInfo.pid;
+var vmname 	= vm.name;
+
+System.log("Error terminating program: " + lasterror + "(vm=" + vmname + "; cmd='" + cmd + "'; pid=" + pid + "; timeout=" + timeout + "; interval=" + interval + ")");
+
+]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+      <bind name="lasterror" type="string" export-name="lasterror"/>
+      <bind name="programProcInfo" type="Any" export-name="programProcInfo"/>
+      <bind name="interval" type="number" export-name="interval"/>
+      <bind name="timeout" type="number" export-name="timeout"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Log the input text to the console log with level 'log']]></description>
+    <position y="228.13636363636363" x="984.5"/>
+  </workflow-item>
+  <workflow-item name="item15" out-name="item2" throw-bind-name="lasterror" type="task" script-module="com.vmware.tmm.guestops/startProgramInGuest">
+    <display-name><![CDATA[startProgramInGuest]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.tmm.guestops").startProgramInGuest(vm,username,password,arguments,envVariables,programPath,workingDirectory) ;]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="arguments" type="string" export-name="programArguments">
+        <description><![CDATA[Arguments to the program]]></description>
+      </bind>
+      <bind name="envVariables" type="Array/string" export-name="programEnvironVars">
+        <description><![CDATA[Environment variables (optional; array)]]></description>
+      </bind>
+      <bind name="programPath" type="string" export-name="programPath">
+        <description><![CDATA[Absolute path to the program to start]]></description>
+      </bind>
+      <bind name="workingDirectory" type="string" export-name="programWorkingDir">
+        <description><![CDATA[Absolute path to the program working directory (optional)]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="number" export-name="programPID"/>
+    </out-binding>
+    <description><![CDATA[Invoke StartProgramInGuest in GuestProcessManager.  Only available in version 5 or later of the vSphere API.
+
+Returns the PID of the program started.]]></description>
+    <position y="19.045454545454543" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item3" throw-bind-name="lasterror" type="task" script-module="com.vmware.tmm.guestops/listProcessesInGuest">
+    <display-name><![CDATA[listProcessesInGuest]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.tmm.guestops").listProcessesInGuest(vm,username,password,pids) ;]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="pids" type="Array/number" export-name="pids">
+        <description><![CDATA[GuestOS PIDs to limit process information on]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Array/Any" export-name="procs"/>
+    </out-binding>
+    <description><![CDATA[Invoke ListProcessesInGuest in GuestProcessManager.  Only available in version 5 or later of the vSphere API.
+
+Returns an array of GuestProcessInfo objects.]]></description>
+    <position y="109.95454545454544" x="304.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item13" catch-name="item14" throw-bind-name="lasterror" type="task" script-module="com.vmware.tmm.guestops/terminateProcessInGuest">
+    <display-name><![CDATA[terminateProcessInGuest]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.tmm.guestops").terminateProcessInGuest(vm,username,password,pid) ;]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="pid" type="number" export-name="programPID">
+        <description><![CDATA[GuestOS process PID]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Invoke TerminateProcessInGuest in GuestProcessManager.  Only available in version 5 or later of the vSphere API.]]></description>
+    <position y="137.22727272727272" x="1045.0"/>
+  </workflow-item>
+  <presentation>
+    <desc><![CDATA[Run Program In Guest]]></desc>
+    <p-step>
+      <title><![CDATA[Run Program In Guest]]></title>
+      <p-group>
+        <title><![CDATA[Virtual Machine]]></title>
+        <desc><![CDATA[Select a VirtualMachine inventory object.
+
+Login information must be valid credentials in the GuestOS of the VirtualMachine.]]></desc>
+        <p-param name="vm">
+          <desc><![CDATA[Virtual Machine]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+        </p-param>
+        <p-param name="username">
+          <desc><![CDATA[GuestOS Username]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+        </p-param>
+        <p-param name="password">
+          <desc><![CDATA[GuestOS Password]]></desc>
+        </p-param>
+      </p-group>
+      <p-group>
+        <title><![CDATA[GuestOS Program]]></title>
+        <desc><![CDATA[Program Path specifies the full program path in the Guest OS (Required).
+
+Arguments specifies the program's command line parameters (Required).
+
+Working Directory sets the program's working directory (Optional).
+
+Environment Variables sets the program's environment variables (Optional).]]></desc>
+        <p-param name="programPath">
+          <desc><![CDATA[Path]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+        </p-param>
+        <p-param name="programArguments">
+          <desc><![CDATA[Arguments]]></desc>
+        </p-param>
+        <p-param name="programWorkingDir">
+          <desc><![CDATA[Working Directory]]></desc>
+        </p-param>
+        <p-param name="programEnvironVars">
+          <desc><![CDATA[Environment Variables]]></desc>
+        </p-param>
+      </p-group>
+      <p-group>
+        <title><![CDATA[Options]]></title>
+        <desc><![CDATA[Set 'Timeout' to specify a maximum program execution time (in seconds).
+
+Set 'Interval' to specify the sleep delay between program process query updates (in seconds).
+
+When 'Terminate On Timeout' is true, attempt to terminate the running  program when Timeout is exceeded.]]></desc>
+        <p-param name="timeout">
+          <desc><![CDATA[Timeout]]></desc>
+          <p-qual kind="static" name="defaultValue" type="number"><![CDATA[120.0]]></p-qual>
+          <p-qual kind="static" name="minNumberValue" type="Number"><![CDATA[0]]></p-qual>
+        </p-param>
+        <p-param name="interval">
+          <desc><![CDATA[Interval]]></desc>
+          <p-qual kind="static" name="minNumberValue" type="Number"><![CDATA[0]]></p-qual>
+          <p-qual kind="static" name="defaultValue" type="number"><![CDATA[1.0]]></p-qual>
+        </p-param>
+        <p-param name="killOnTimeout">
+          <desc><![CDATA[Terminate On Timeout]]></desc>
+          <p-qual kind="static" name="defaultValue" type="boolean"><![CDATA[true]]></p-qual>
+        </p-param>
+      </p-group>
+    </p-step>
+  </presentation>
+</workflow>

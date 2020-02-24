@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="startProgramInGuest" result-type="number" api-version="6.0.0" id="ca52f76a-3cc9-4d02-bca5-39b9750944a9" version="0.0.1" allowed-operations="evf" category-name="com.vmware.tmm.guestops">
+  <description><![CDATA[Invoke StartProgramInGuest in GuestProcessManager.  Only available in version 5 or later of the vSphere API.
+
+Returns the PID of the program started.]]></description>
+  <param n="vm" t="VC:VirtualMachine"><![CDATA[VirtualMachine GuestOS]]></param>
+  <param n="username" t="string"><![CDATA[GuestOS username]]></param>
+  <param n="password" t="SecureString"><![CDATA[GuestOS password]]></param>
+  <param n="arguments" t="string"><![CDATA[Arguments to the program]]></param>
+  <param n="envVariables" t="Array/string"><![CDATA[Environment variables (optional; array)]]></param>
+  <param n="programPath" t="string"><![CDATA[Absolute path to the program to start]]></param>
+  <param n="workingDirectory" t="string"><![CDATA[Absolute path to the program working directory (optional)]]></param>
+  <script encoded="false"><![CDATA[// Validate inputs
+
+if ( vm == null ) {
+	throw "Input 'vm' not specified!";
+}
+
+if ( ! typeof vm == "VcVirtualMachine" ) {
+	throw "Input 'vm' not a VcVirtualMachine!";
+}
+
+if ( password == null) {
+	password = "";
+}
+
+if (username == null || username == "") {
+	throw "Input 'username' not specified!";
+}
+
+if (programPath == null || programPath == "") {
+	throw "Input 'programPath not specified!";
+}
+
+if (arguments == null) {
+	arguments = "";
+}
+
+
+// GuestOperationsManager : GuestProcessManager
+var GuestProcessManager = null;
+try {
+	GuestProcessManager = vm.sdkConnection.guestOperationsManager.processManager;
+} catch(e) {
+	throw e.message;	
+}
+
+
+// GuestAuthentication : NamePasswordAuthentication
+var GuestAuthentication = new VcNamePasswordAuthentication();
+GuestAuthentication.username = username;
+GuestAuthentication.password = password;
+GuestAuthentication.interactiveSession = false;
+
+
+// GuestProgramSpec
+var GuestProgramSpec = new VcGuestProgramSpec();
+GuestProgramSpec.programPath		= programPath;
+GuestProgramSpec.arguments			= arguments;
+if ( envVariables != null ) {
+	GuestProgramSpec.envVariables		= envVariables;
+}
+if ( workingDirectory != null && workingDirectory != "") {
+	GuestProgramSpec.workingDirectory = workingDirectory;
+}
+
+
+// StartProgramInGuest()
+var pid = null;
+try {
+	pid = GuestProcessManager.startProgramInGuest(vm, GuestAuthentication, GuestProgramSpec);
+} catch(e) {
+	throw e.message;
+}
+
+return pid;]]></script>
+</dunes-script-module>

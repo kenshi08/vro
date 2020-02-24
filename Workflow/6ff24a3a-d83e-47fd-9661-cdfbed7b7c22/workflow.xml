@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="workflow:name=generic" id="6ff24a3a-d83e-47fd-9661-cdfbed7b7c22" version="0.0.8" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Find VM by MOID]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="targetId" type="string"/>
+    <param name="CorrelationId" type="string"/>
+    <param name="targetvCenteruuid" type="string">
+      <description><![CDATA[UUID of the vCenter where the target VM is located]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="statusOut" type="boolean"/>
+    <param name="targetVM" type="VC:VirtualMachine"/>
+    <param name="targetVmName" type="string"/>
+  </output>
+  <attrib name="event" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Find VM by MOID]]></value>
+  </attrib>
+  <attrib name="eventDetails" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="status" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+  </attrib>
+  <attrib name="eventStart" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Starting]]></value>
+  </attrib>
+  <attrib name="severity" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="foundTargetVM" type="VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item1" out-name="item5" type="task">
+    <display-name><![CDATA[Determine VM by Uuid]]></display-name>
+    <script encoded="false"><![CDATA[connections = VcPlugin.allSdkConnections
+System.log("Entering Search for VM by MOID");
+status = true;
+targetVM = null;
+targetVmName = null;
+eventDetails = "";
+System.log("vcenter:"+targetvCenteruuid+":");
+System.log("moid:"+targetId+":");
+for (i = 0; i < connections.length; i ++) {
+   System.log("Now searching vCenter: ["+ connections[i].name) + "]";;
+   vcSearchIndex = connections[i].searchIndex; 
+   if ( vcSearchIndex == null) {
+ 		System.log("Null vcSearchIndex");
+   } 
+   else {
+     System.log("Now searching vCenter: ["+ connections[i].name + "]");
+     System.log("uuid: "+ connections[i].about.instanceUuid);
+      if (connections[i].about.instanceUuid == targetvCenteruuid) {
+         //get the list of vms for this vcenter
+         var allVirtualMachines = connections[i].getAllVirtualMachines(null,null);
+         // Iterate over the list of Virtual Machines looking for the match
+         for (j = 0; j < allVirtualMachines.length; j ++){
+             vm = allVirtualMachines[j];
+             if (vm.id == targetId) {
+                 targetVM = vm;
+                 targetVmName = vm.name;
+                 eventDetails = "Found VM target by MOID  Value=" + targetId + " VM Target Name="+targetVmName;
+                 severity = "info";
+                 break;
+             }
+          }
+	   }
+	}
+}
+if (eventDetails == ""){
+  eventDetails="There was no configured vCenter that contains "+targetId+" Verify that vCenter Server Host has been added to VMware vCenter Orchestrator Configuration vCenter Server."; 
+  severity = "error";
+}
+if (targetVM == null){
+  status = false;
+} else {
+  foundTargetVM = targetVM;
+  virtualMachineSummary = targetVM.summary;
+  guestSummary = virtualMachineSummary.guest;
+  toolsStatus = guestSummary.toolsStatus;
+  System.log("tools not installed?: "+toolsStatus.toolsNotInstalled);
+  System.log("tools not running?: "+toolsStatus.toolsNotRunning);
+  System.log("tools value?: "+toolsStatus.value);
+}
+
+
+statusOut = status;
+
+]]></script>
+    <in-binding>
+      <bind name="targetId" type="string" export-name="targetId"/>
+      <bind name="targetvCenteruuid" type="string" export-name="targetvCenteruuid"/>
+    </in-binding>
+    <out-binding>
+      <bind name="status" type="boolean" export-name="status"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="statusOut" type="boolean" export-name="statusOut"/>
+      <bind name="targetVM" type="VC:VirtualMachine" export-name="targetVM"/>
+      <bind name="targetVmName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="foundTargetVM" type="VC:VirtualMachine" export-name="foundTargetVM"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item4" type="end" end-mode="0">
+    <position y="199.95454545454544" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item4" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="event"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="CorrelationId"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="targetVMName" type="string" explicitly-not-bound="true" export-name="NULL"/>
+    </in-binding>
+    <out-binding/>
+    <position y="119.04545454545453" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item1" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="event"/>
+      <bind name="eventDetails" type="string" export-name="eventStart"/>
+      <bind name="CorrelationId" type="string" export-name="CorrelationId"/>
+      <bind name="severity" type="string" explicitly-not-bound="true" export-name="NULL"/>
+      <bind name="targetVMName" type="string" explicitly-not-bound="true" export-name="NULL"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="targetId">
+      <desc><![CDATA[targetId]]></desc>
+    </p-param>
+    <p-param name="CorrelationId">
+      <desc><![CDATA[CorrelationId]]></desc>
+    </p-param>
+    <p-param name="targetvCenteruuid">
+      <desc><![CDATA[UUID of the vCenter where the target VM is located]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

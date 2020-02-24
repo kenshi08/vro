@@ -1,0 +1,286 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item5" object-name="workflow:name=generic" id="750f1f21-a4da-407d-a583-a86520981dc0" version="0.0.9" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Delete Application Rule]]></display-name>
+  <description><![CDATA[Add members to a Pool.
+
+VMware PSO I&A Selva 08/2015]]></description>
+  <position y="45.40909090909091" x="25.0"/>
+  <input>
+    <param name="edgeName" type="string">
+      <description><![CDATA[Edge Name]]></description>
+    </param>
+    <param name="virtualServerName" type="string"/>
+    <param name="applicationRuleName" type="string">
+      <description><![CDATA[Application Rule Name]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="error" type="string"/>
+  </output>
+  <attrib name="edgeId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge ID]]></description>
+  </attrib>
+  <attrib name="nsxRestHost" type="REST:RESTHost" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[NSX Rest Host]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Error Code]]></description>
+  </attrib>
+  <attrib name="errorContent" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Error Content]]></description>
+  </attrib>
+  <attrib name="applicationRuleId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Application Rule Id]]></description>
+  </attrib>
+  <attrib name="virtualServerId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="method" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="uri" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="body" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="864.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item2" catch-name="item8" throw-bind-name="errorCode" type="link" linked-workflow-id="d02637fa-eb7c-4d09-8ccb-56f87715170d">
+    <display-name><![CDATA[Get NSX and EdgeId]]></display-name>
+    <in-binding>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </out-binding>
+    <position y="55.40909090909091" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item7" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="181.77272727272725" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item7" type="task">
+    <display-name><![CDATA[Error Handling]]></display-name>
+    <script encoded="false"><![CDATA[errorContent = errorCode;
+]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="128.13636363636363" x="444.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Delete Application Rule]]></display-name>
+    <script encoded="false"><![CDATA[var request1 = nsxRestHost.createRequest("DELETE", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationrules/" + applicationRuleId, "");
+
+request1.contentType = "application/xml";
+var response1 = request1.execute();
+//prepare output parameters
+//System.log("Response: " + response);
+var statusCode = response1.statusCode;
+var statusCodeAttribute = statusCode;
+System.log("Status code: " + statusCode);
+
+if (statusCode == 204) {
+ System.log("Application Rule Name -> " + applicationRuleName + " Deleted Successfully!");
+} else {
+ errorContent = response1.ContentAsString;
+ throw errorContent;
+}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="applicationRuleName" type="string" export-name="applicationRuleName"/>
+      <bind name="errorContent" type="string" export-name="errorContent"/>
+      <bind name="applicationRuleId" type="string" export-name="applicationRuleId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="applicationRuleId" type="string" export-name="applicationRuleId"/>
+      <bind name="errorContent" type="string" export-name="errorContent"/>
+    </out-binding>
+    <position y="55.40909090909091" x="684.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item4" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get virtualServerId]]></display-name>
+    <script encoded="false"><![CDATA[var virtualServerMatchCounter = 0;
+// Create a REST call to query all edges configured
+System.log("Get RestHost :" + nsxRestHost);
+System.log("Get edgeId :" + edgeId);
+var request = nsxRestHost.createRequest("GET", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers");
+//System.log("Request URL: " + request.fullUrl);
+
+// Execute the request
+System.log("EdgeID :" + edgeId);
+System.log("NSX Host :" + nsxRestHost);
+var response = request.execute();
+var foundRule = false;
+
+
+
+// Evaluate the Response
+
+if (response.statusCode == 200) {
+ // Get XML response from NSX
+ var responseXML = XMLManager.fromString(response.ContentAsString);
+ var virtualServerNameList = responseXML.documentElement.getElementsByTagName("name");
+ var virtualServerIdList = responseXML.documentElement.getElementsByTagName("virtualServerId");
+
+ // loop through list of edge names in the response. 
+ for (x = 0; x < virtualServerNameList.length; x++) {
+  if (virtualServerNameList.item(x).firstChild.textContent == virtualServerName) {
+   virtualServerId = virtualServerIdList.item(x).firstChild.textContent;
+   virtualServerID = virtualServerId;
+   //NSXurl = nsxConnectionList[v].url;
+   virtualServerMatchCounter++;
+   //System.log("Virtual Server ID for " +virtualServerNameList.item(x).firstChild.textContent + " is >> " + virtualServerIdList.item(x).firstChild.textContent)
+   System.log("Virtual Server ID : " + virtualServerId);
+   // System.log("NSX URL for " +edgeNameList.item(x).firstChild.textContent + " is >> " + NSXurl)
+   if (virtualServerMatchCounter > 1) {
+    throw "Multiple virtualservers with the same virtual server name (" + virtualServerName + ") found";
+   }
+  }
+ }
+}
+if (virtualServerId == null) {
+ System.error("Virtual Server -> " + virtualServerName + " doesn't exist");
+ throw "Virtual Server -> " + virtualServerName + " doesn't exist";
+}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="264.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item3" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get applicationRuleId]]></display-name>
+    <script encoded="false"><![CDATA[var applicationRuleMatchCounter = 0;
+// Create a REST call to query all edges configured
+
+var request = nsxRestHost.createRequest("GET", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationrules");
+//System.log("Request URL: " + request.fullUrl);
+
+// Execute the request
+
+var response = request.execute();
+var foundRule = false;
+
+var contentAsString = response.contentAsString;
+
+
+//var xml_doc = loadXMLDoc(contentAsString);
+//Parser = new DOMParser();
+
+var n = contentAsString.search(applicationRuleName);
+if (n == "-1") {
+ throw "Application Name -> " + applicationRuleName + " doesn't exist";
+}
+
+// Evaluate the Response
+
+if (response.statusCode == 200) {
+
+ // Get XML response from NSX
+ var responseXML = XMLManager.fromString(response.ContentAsString);
+ var applicationRuleNameList = responseXML.documentElement.getElementsByTagName("name");
+ var applicationRuleIdList = responseXML.documentElement.getElementsByTagName("applicationRuleId");
+
+ // loop through list of edge names in the response. 
+ for (x = 0; x < applicationRuleNameList.length; x++) {
+  if (applicationRuleNameList.item(x).firstChild.textContent == applicationRuleName) {
+   applicationRuleId = applicationRuleIdList.item(x).firstChild.textContent;
+   applicationRuleID = applicationRuleId;
+   //NSXurl = nsxConnectionList[v].url;
+   applicationRuleMatchCounter++;
+   //System.log("Virtual Server ID for " +virtualServerNameList.item(x).firstChild.textContent + " is >> " + virtualServerIdList.item(x).firstChild.textContent)
+   System.log("Application Rule ID : " + applicationRuleId);
+  }
+ }
+}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="applicationRuleName" type="string" export-name="applicationRuleName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="applicationRuleId" type="string" export-name="applicationRuleId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item1" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Update virtualServer]]></display-name>
+    <script encoded="false"><![CDATA[//Get Virtual Servr Config
+
+method = "GET";
+uri = "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+body = "";
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+response = request.execute().contentAsString;
+
+response = response.substring("<?xml version='1.0' encoding='UTF-8'?>".length, response.length);
+virtualServerConfig = response;
+
+
+body = virtualServerConfig.replace("<applicationRuleId>" + applicationRuleId + "</applicationRuleId>", "");
+
+System.log("Virtual Server Body : " + body);
+var request = nsxRestHost.createRequest("PUT", uri, body);
+request.contentType = "application/xml";
+var response = request.execute();
+statusCode = response.statusCode;
+
+
+if (statusCode == 204) {
+ System.log("Virtual Server Updated Successfully!");
+} else {
+ errorContent = response.contentAsString;
+ throw errorContent;
+}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="applicationRuleId" type="string" export-name="applicationRuleId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="errorContent"/>
+    </out-binding>
+    <position y="55.40909090909091" x="544.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="edgeName">
+      <desc><![CDATA[edgeName]]></desc>
+    </p-param>
+    <p-param name="virtualServerName">
+      <desc><![CDATA[virtualServerName]]></desc>
+    </p-param>
+    <p-param name="applicationRuleName">
+      <desc><![CDATA[applicationRule]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

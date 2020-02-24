@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getParentObject" result-type="Any" api-version="6.0.0" id="87f268e9-94ef-4513-ac82-25dddf223dac" version="0.0.2" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes.sql">
+  <description><![CDATA[Get the parent object of a given object. Slow since it has to get all the parent objects and search for a matching children]]></description>
+  <param n="object" t="Any"><![CDATA[Object to get parent of]]></param>
+  <script encoded="false"><![CDATA[if (object == null) return null;
+var parentObject = System.getModule("com.vmware.coe.dynamicTypes").getFromCache(object.namespace + "." + object.type + "." + object.id + ".parent", 30);
+System.debug("parent object from cache: "+parentObject);
+if (parentObject != null) return parentObject;
+
+var dynamicTypeDefinition = DynamicTypesManager.getType(object.namespace , object.type);
+var parentTypeDefinition = System.getModule("com.vmware.coe.dynamicTypes").getParentTypeDefinition(dynamicTypeDefinition) ;
+var parentTypeDefinitionType = parentTypeDefinition.namespace + "." + parentTypeDefinition.type;
+var parentObject = DynamicTypesManager.getObject(object.namespace, parentTypeDefinition.name, parentTypeDefinition.id);
+
+// Now that object is found, place in cache:
+var objectId = object.namespace + "." + object.type + "." + object.id + ".parent";
+
+DynamicTypesManager.putInCache(objectId, parentObject);
+if (parentObject != "Populating") {
+	System.log("Put in cache object " + objectId + " (" + System.getObjectClassName(parentObject) + ")");
+	DynamicTypesManager.putInCache(objectId + "-timestamp", new Date());
+}
+System.debug("Returning: "+parentObject);
+return parentObject;]]></script>
+</dunes-script-module>

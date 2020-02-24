@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCatalogResourceByName" result-type="void" api-version="6.0.0" id="b1d0116f-1878-4b6d-8853-1b606014378c" version="0.0.0" allowed-operations="evf" category-name="com.vmware.pso.vcac">
+  <param n="vCACCAFEHost" t="vCACCAFE:VCACHost"/>
+  <param n="vmHostname" t="string"/>
+  <script encoded="false"><![CDATA[var items = new Array();
+var catalogResource;
+var query = vmHostname;
+items = vCACCAFEEntitiesFinder.findCatalogResources(vCACCAFEHost,query);
+
+for each (var resource in items)
+{
+	if(resource.name == vmHostname)
+	{
+		System.log("MATCH: " + resource.name);
+		var catalogResource = resource;
+		break;
+    }
+}
+return catalogResource;]]></script>
+</dunes-script-module>

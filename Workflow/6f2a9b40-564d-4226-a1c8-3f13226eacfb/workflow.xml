@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="6f2a9b40-564d-4226-a1c8-3f13226eacfb" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Submitt to vRA]]></display-name>
+  <description><![CDATA[Updated the values to suit to vRA 7.3 environment
+
+Hard coded the clusterNodeCount value to 1]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="operation" type="vCACCAFE:ConsumerResourceOperation">
+      <description><![CDATA[Resource operation]]></description>
+    </param>
+    <param name="BlueprintId" type="string">
+      <description><![CDATA[Property VirtualMachine.Cafe.Blueprint.Id]]></description>
+    </param>
+    <param name="componentId" type="string">
+      <description><![CDATA[Property VirtualMachine.Cafe.Blueprint.Component.Id]]></description>
+    </param>
+    <param name="clusterNodeCount" type="number">
+      <description><![CDATA[New Node Cluser Size]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="actionResult" type="vCACCAFE:ResourceActionRequest"/>
+  </output>
+  <attrib name="componentTypeId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[com.vmware.csp.iaas.blueprint.service]]></value>
+  </attrib>
+  <attrib name="classId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Blueprint.Node]]></value>
+  </attrib>
+  <attrib name="typeFilter" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="props" type="Properties" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[Prepare Properties]]></display-name>
+    <script encoded="false"><![CDATA[var myvCACCAFELiteralMap = new vCACCAFELiteralMap()
+
+System.log("Cluster Node Count/Layer Count:: Submit to vRA:: "+clusterNodeCount);
+myvCACCAFELiteralMap.put("_cluster", new vCACCAFEIntegerLiteral(clusterNodeCount));
+
+typeFilter = BlueprintId + "*" + componentId;
+
+var myvCACCAFEComplexLiteral = new vCACCAFEComplexLiteral(
+										componentTypeId,
+										null,
+										classId,
+										typeFilter,
+										myvCACCAFELiteralMap);
+
+props = new Properties();
+props.put(("provider-" + componentId), myvCACCAFEComplexLiteral);
+
+System.log(props)]]></script>
+    <in-binding>
+      <bind name="componentTypeId" type="string" export-name="componentTypeId"/>
+      <bind name="componentId" type="string" export-name="componentId"/>
+      <bind name="classId" type="string" export-name="classId"/>
+      <bind name="clusterNodeCount" type="number" export-name="clusterNodeCount"/>
+      <bind name="BlueprintId" type="string" export-name="BlueprintId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="typeFilter" type="string" export-name="typeFilter"/>
+      <bind name="props" type="Properties" export-name="props"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="task" script-module="com.vmware.library.vcaccafe.request/requestResourceAction">
+    <display-name><![CDATA[requestResourceAction]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vcaccafe.request").requestResourceAction(operation,inputs) ;]]></script>
+    <in-binding>
+      <bind name="operation" type="vCACCAFE:ConsumerResourceOperation" export-name="operation">
+        <description><![CDATA[Resource operation]]></description>
+      </bind>
+      <bind name="inputs" type="Properties" export-name="props">
+        <description><![CDATA[Input values]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCACCAFE:ResourceActionRequest" export-name="actionResult"/>
+    </out-binding>
+    <description><![CDATA[Sends a request for a resource action.]]></description>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="componentId">
+      <desc><![CDATA[Property VirtualMachine.Cafe.Blueprint.Component.Id]]></desc>
+    </p-param>
+    <p-param name="clusterNodeCount">
+      <desc><![CDATA[New Node Cluser Size]]></desc>
+    </p-param>
+    <p-param name="BlueprintId">
+      <desc><![CDATA[Property VirtualMachine.Cafe.Blueprint.Id]]></desc>
+    </p-param>
+    <p-param name="operation">
+      <desc><![CDATA[Resource operation]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

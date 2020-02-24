@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getReservation" result-type="vCACCAFE:Reservation" api-version="6.0.0" id="a506f559-3413-4dd9-8d79-b1ac5e280161" version="0.0.0" allowed-operations="vfe" category-name="com.nullphase.local">
+  <param n="cafeHost" t="vCAC:VCACHost"/>
+  <param n="name" t="string"/>
+  <script encoded="false"><![CDATA[// VMware vRealize Orchestrator action sample
+//
+// Get a vRA reservation object given its name
+// 
+// For vRO/VRA 7.0+
+//
+// Action Inputs:
+// cafeHost - vCACCAFE:VCACHost - vRA host
+// name - string - Name of a Reservation
+//
+// Return type: vCACCAFE:Reservation - vRA reservation
+
+var client = cafeHost.createReservationClient();
+var rsvService = client.getReservationReservationService();
+var reservations = rsvService.getAllReservations().getContent(); //Array, vCACCAFE:vCACCAFEReservation
+
+for each (var reservation in reservations) {
+	if (reservation.getName() === name) return reservation;
+}
+
+return null;]]></script>
+</dunes-script-module>

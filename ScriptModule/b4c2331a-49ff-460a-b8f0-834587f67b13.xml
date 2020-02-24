@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getInstanceStatus" result-type="void" api-version="6.0.0" id="b4c2331a-49ff-460a-b8f0-834587f67b13" version="0.0.0" allowed-operations="evf" category-name="com.nullphase.local">
+  <param n="Client" t="AWS:AWSClient"/>
+  <param n="Name" t="string"/>
+  <script encoded="false"><![CDATA[
+var myAmazonEC2Client =Client.getAmazonEC2Client() ;
+var request = new EC2DescribeInstancesRequest() ;
+var   str = myAmazonEC2Client.describeInstances(request);
+
+var array = [];
+var arrayval = [];
+var arrayidval = [];
+
+var power = [];
+var state = null;
+var instanceid= new Array();
+var val = new String(str);
+array =val.split('Value:');
+//System.log("\n\n array: \t" +  array[0].toString() + "\n\n");
+arrayval = array[1].split('}]')
+
+//System.log("\n\n split: \t" +  arrayval[0].toString() + "\n\n");
+
+power = val.split('Name:');
+
+for(var i =0; i < array.length; i++)
+{
+if(i != 0)
+{
+arrayval = array[i].split('}]');
+
+//System.log("\n\n arrayvalues: \t" +  arrayval[0].toString().trim() + "\n\n");
+//vmname.push(arrayval[0].toString().trim());
+if(arrayval[0].toString().trim() == Name)
+{
+arrayidval = array[i-1].split('InstanceId:')[1];
+var poweroff = [];
+poweroff = arrayidval.split('Name:')[1];
+state = poweroff.split('},')[0];
+System.log(Name + " Instance State is "+state);
+
+//System.log("Name value is "+state.split('},')[0]);
+
+}
+}
+}
+
+
+
+
+
+
+return state;
+]]></script>
+</dunes-script-module>

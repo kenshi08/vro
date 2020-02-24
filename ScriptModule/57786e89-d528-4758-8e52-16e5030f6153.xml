@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCertName" result-type="string" api-version="6.0.0" id="57786e89-d528-4758-8e52-16e5030f6153" version="0.0.0" allowed-operations="evf" category-name="com.vmware.o11n.plugin.puppet">
+  <param n="master" t="Puppet:Master"/>
+  <script encoded="false"><![CDATA[System.log("Get Puppet Master certname");
+
+var result = System.getModule("com.vmware.o11n.plugin.puppet").executeCommand(master, "puppet", ["config", "print", "certname", "--color=false"]);
+if (result.exitCode !== 0) {
+	throw "Failed to get certname, exitCode=" + result.exitCode + " output=" + result.output + " error=" + result.error;
+}
+
+return result.output.trim();]]></script>
+</dunes-script-module>

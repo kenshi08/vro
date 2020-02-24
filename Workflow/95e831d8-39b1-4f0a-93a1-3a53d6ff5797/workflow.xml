@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="95e831d8-39b1-4f0a-93a1-3a53d6ff5797" version="0.0.18" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Change vRA VM Reservation]]></display-name>
+  <description><![CDATA[This workflow will change the vRA Reservation of a provisioned VM
+
+Caveats:
+1. The vCACHost and vCAC:CAFEHost are set by retrieving the host objects from the attribute constants (ResourceConstants). 
+2. The hardcoded attribute value at start time is only for the presentation layer, if this workflow is executed as a day 2 operation.
+2. The executing credentials are required to have entitlement to the "Edit" resource action in the originating business group entitlement for the VM. If you use a shared connection back to vRA, it is this (service) account that requires entitlement.
+3. It is valid to change just the Owner or just the vRA reservation.
+]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="vmHostname" type="string"/>
+    <param name="newReservationName" type="string"/>
+  </input>
+  <attrib name="vCACHost" type="vCAC:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='26f615c2-deaf-49db-a40e-fa0fe007e042'&dunesName='vCAC:VCACHost']]></value>
+  </attrib>
+  <attrib name="actionResult" type="boolean" read-only="false"/>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="task" script-module="com.vmware.pso.vcac/changeVMvRAReservation">
+    <display-name><![CDATA[changeVMvRAReservation]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.pso.vcac").changeVMvRAReservation(vmHostname,newReservationName) ;]]></script>
+    <in-binding>
+      <bind name="vmHostname" type="string" export-name="vmHostname"/>
+      <bind name="newReservationName" type="string" export-name="newReservationName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="boolean" export-name="actionResult"/>
+    </out-binding>
+    <description><![CDATA[This action changes the vRA reservation of the vm to the supplied reservation name]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vmHostname">
+      <desc><![CDATA[vmHostname]]></desc>
+    </p-param>
+    <p-param name="newReservationName">
+      <desc><![CDATA[newReservationName]]></desc>
+      <p-qual kind="ognl" name="genericEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.library.vcac","getReservationNames").call( #vCACHost )]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

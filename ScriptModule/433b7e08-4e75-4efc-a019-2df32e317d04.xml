@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="isFolder" result-type="boolean" api-version="6.0.0" id="433b7e08-4e75-4efc-a019-2df32e317d04" version="1.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes">
+  <param n="namespace" t="string"/>
+  <param n="type" t="string"/>
+  <script encoded="false"><![CDATA[var childTypeDefinition = DynamicTypesManager.getType(namespace , type);
+if (childTypeDefinition == null) throw "No type definition for " + namespace + "." + type;
+if (isInArray("isFolder", childTypeDefinition.properties)) return true;
+return false;
+
+function isInArray(element, array) {
+	for each (var e in array) {
+		if (e == element) return true;
+	}
+	return false;
+}
+]]></script>
+</dunes-script-module>

@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="4c0175e9-3446-440b-8380-153c1daa66c1" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Remediate Linux Node with SSH]]></display-name>
+  <description><![CDATA[Runs the remediation on node using SSH]]></description>
+  <position y="45.40909090909091" x="65.0"/>
+  <input>
+    <param name="hostname" type="string">
+      <description><![CDATA[Node hostname]]></description>
+    </param>
+    <param name="username" type="string">
+      <description><![CDATA[Node username]]></description>
+    </param>
+    <param name="password" type="SecureString">
+      <description><![CDATA[Node password]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="lastRunReport" type="string">
+      <description><![CDATA[Agent last run report]]></description>
+    </param>
+    <param name="lastRunSummary" type="string">
+      <description><![CDATA[Agent last run summary]]></description>
+    </param>
+  </output>
+  <attrib name="remediateScript" type="Text" read-only="true">
+    <value encoded="n"><![CDATA[#! /bin/bash
+
+export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+function fail() {
+   echo "==={{ ERROR BEGIN }}==="
+   echo "$1"
+   echo "==={{ ERROR END }}==="
+
+   exit 1
+}
+
+function get_puppet_file() {
+  config_name=$1
+  section_name=`echo "$config_name" | tr "[:lower:]" "[:upper:]"`
+
+  echo "==={{ $section_name BEGIN }}==="
+  cat `puppet config print "$config_name" --color=false` 2>/dev/null
+  status=$?
+  echo "==={{ $section_name END }}==="
+
+  # Warn if failed to read file. On new agent installation the file will not exist.
+  [[ $status -ne 0 ]] && echo "Warning: Can't read $config_name file"
+}
+
+# Check if puppet installed
+version=`puppet --version --color=false 2>&1`
+if [[ $? -ne 0 ]]; then
+   fail "Puppet is not installed."
+fi
+
+echo "Puppet version: $version"
+
+error=""
+tempfile=`mktemp`
+
+while [[ 1 ]]; do
+  # Do a Puppet run, and redirect output to a temp file.
+  # Not using 'puppet agent -t | tie $tempfile', since we need to read the exit code.
+  puppet agent -t --color=false >"$tempfile" 2>&1
+  status=$?
+
+  cat "$tempfile"
+
+  if [[ $status -ne 0 && $status -ne 2 ]]; then
+    retry=0
+    while read line; do
+      if [[ $line =~ ^'Notice: Run of Puppet configuration client already in progress;' ]]; then
+        retry=1
+        break
+      elif [[ $line =~ ^'Error: ' ]]; then
+        error=`echo "$line" | sed 's/^Error: //'`
+        break
+      elif [[ $line  =~ ^'Exiting; ' ]]; then
+        error=`echo "$line" | sed 's/^Exiting; //'`
+        break
+      fi
+    done < "$tempfile"
+
+    if [[ $retry -eq 1 ]]; then
+      echo "Agent busy, retrying."
+      sleep 5
+      continue
+    fi
+
+    [[ ! $error ]] && error="Failed to do Puppet run. Unknown exitCode=$status"
+  fi
+
+  break
+done
+
+rm "$tempfile"
+
+get_puppet_file lastrunfile
+get_puppet_file lastrunreport
+
+[[ $error ]] && fail "$error"
+
+exit 0]]></value>
+    <description><![CDATA[Puppet remediate script]]></description>
+  </attrib>
+  <workflow-item name="item2" out-name="item4" type="task">
+    <display-name><![CDATA[Remediate]]></display-name>
+    <script encoded="false"><![CDATA[var remediateScriptPath = "/tmp/puppet_remediate.sh";
+var session;
+try {
+	// ssh session to node
+	session = new SSHSession(hostname, username);
+	session.connectWithPassword(password);
+
+	// create tmp file
+	var localFile = System.createTempFile();
+	var localFilePath = localFile.path;
+
+	// copy content to tmp file
+	localFile.write(remediateScript);
+
+	// copy file to node
+	System.log("Copying puppet agent remediate script, file=" + remediateScriptPath);
+
+	var exitCode = session.putFile(localFilePath, remediateScriptPath);
+	localFile.deleteFile();
+	if (exitCode !== 0) {
+	    throw "Failed to create puppet agent configuration script. exitCode=" + exitCode;
+	}
+
+	// execute the copied script file
+	System.log("Running remediate script");
+
+	var command = "bash " + remediateScriptPath;
+
+	session.executeCommand(command, true);
+
+	System.log("Remediate Puppet agent result. exitCode=" + session.exitCode + " output=" + session.output + " error=" + session.error);
+
+	lastRunReport = System.getModule("com.vmware.o11n.plugin.puppet.node").getSectionText("LASTRUNREPORT", session.output);
+	lastRunSummary = System.getModule("com.vmware.o11n.plugin.puppet.node").getSectionText("LASTRUNFILE", session.output);
+
+	if (session.exitCode !== 0) {
+		var error = System.getModule("com.vmware.o11n.plugin.puppet.node").getSectionText("ERROR", session.output);
+		if (!error) {
+			error = "Failed to remediate agent. exitCode=" + session.exitCode;
+		}
+
+		System.error(error);
+
+		throw error;
+	}
+}
+finally {
+	if (session) {
+		try {
+			session.disconnect();
+		}
+		catch(e) {
+		}
+	}
+}
+]]></script>
+    <in-binding>
+      <bind name="hostname" type="string" export-name="hostname"/>
+      <bind name="username" type="string" export-name="username"/>
+      <bind name="password" type="SecureString" export-name="password"/>
+      <bind name="remediateScript" type="Text" export-name="remediateScript"/>
+    </in-binding>
+    <out-binding>
+      <bind name="lastRunReport" type="string" export-name="lastRunReport"/>
+      <bind name="lastRunSummary" type="string" export-name="lastRunSummary"/>
+    </out-binding>
+    <description><![CDATA[Remediate node]]></description>
+    <position y="55.40909090909091" x="164.5"/>
+  </workflow-item>
+  <workflow-item name="item4" type="end" end-mode="0">
+    <position y="45.40909090909091" x="364.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="hostname">
+      <desc><![CDATA[Hostname]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual kind="static" name="inetAddress" type="String"><![CDATA[Host name or IP address]]></p-qual>
+    </p-param>
+    <p-param name="username">
+      <desc><![CDATA[Username]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="password">
+      <desc><![CDATA[Password]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

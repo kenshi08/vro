@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getMachineCatalogResource" result-type="vCACCAFE:CatalogResource" api-version="6.0.0" id="7263be9e-209d-4b29-bb08-fdbc9260b673" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.vra">
+  <param n="machineId" t="string"/>
+  <script encoded="false"><![CDATA[// Creating vRA host for tenant and curent user
+var hostProp = {
+	name: "name",
+	url: "url",
+	tenant: "tenant",
+	sessionMode: "sessionMode",
+	connectionTimeout: 30,
+	operationTimeout: 60
+};
+
+var host = vCACCAFEHostManager.createHost(hostProp).getHostForCurrentUser();
+var providerBindingId = machineId;
+var service = host.createCatalogClient().getCatalogConsumerResourceService();
+var filter = new Array();
+filter[0] = vCACCAFEFilterParam.equal("providerBinding/bindingId", vCACCAFEFilterParam.string(providerBindingId));
+var query = vCACCAFEOdataQuery.query().addFilter(filter);
+var catalogResourceVms = service.getResourcesList(new vCACCAFEPageOdataRequest(query));
+
+var hosts = Server.findAllForType("vCACCAFE:VCACHost");
+
+if (catalogResourceVms.length >0) {
+	var organization = catalogResourceVms[0].getOrganization().getTenantLabel();
+	for each (var host in hosts) {
+		if (host.tenant == organization) {
+			var resource = vCACCAFEEntitiesFinder.getCatalogResource(host , catalogResourceVms[0].id);
+			//System.log("Host : " + host.name);
+			//System.log("Resource : " + resource);
+			if (resource != null) return resource;
+		}		
+	}			
+}
+
+return null;]]></script>
+</dunes-script-module>

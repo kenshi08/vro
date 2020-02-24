@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item11" object-name="workflow:name=generic" id="47ad10dd-9f5d-4148-99f9-0840c7a870ac" version="0.0.13" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Puppet Node Classification]]></display-name>
+  <description><![CDATA[A workflow that can perform node classification with multiple classes and parameters. The workflow also performs on-demand node remediation.]]></description>
+  <position y="9.045454545454543" x="65.0"/>
+  <input>
+    <param name="environment" type="string">
+      <description><![CDATA[Environment]]></description>
+    </param>
+    <param name="classParameters" type="Array/CompositeType(name:string,value:string):PuppetClassParameters">
+      <description><![CDATA[Class parameters]]></description>
+    </param>
+    <param name="replaceAssignedClasses" type="boolean">
+      <description><![CDATA[Replace Assigned Classes]]></description>
+    </param>
+    <param name="classNames" type="Array/string"/>
+    <param name="vm" type="string"/>
+  </input>
+  <output>
+    <param name="lastRunReport" type="string">
+      <description><![CDATA[Agent last run report]]></description>
+    </param>
+    <param name="lastRunSummary" type="string">
+      <description><![CDATA[Agent last run summary]]></description>
+    </param>
+  </output>
+  <attrib name="tempClassParameters" type="Array/CompositeType(name:string,value:string):PuppetClassParameters" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Class parameters]]></description>
+  </attrib>
+  <attrib name="tempNodeName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[
+		]]></value>
+    <description><![CDATA[Node name]]></description>
+  </attrib>
+  <attrib name="tempClasses" type="Properties" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Class list]]></description>
+  </attrib>
+  <attrib name="master" type="Puppet:Master" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='f4e332f9-6178-4b93-886b-e2dc989b7b26'&dunesName='Puppet:Master']]></value>
+    <description><![CDATA[Puppet master]]></description>
+  </attrib>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+    <description><![CDATA[Node username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[11BP4ET75K6CN6CX70V68G61V73T65H31V21V8B8EEF2P5C12D00O65A367AL8AA153ES62C2914T15DC852PD7038A7Z9338565L7811B27Q3B9A0BCWF720C28PB2EE0CAJ2D032EAR2E9FD53KDE57130N76CBEFDQD23E317Q491E180G8A59C30S1ECBEBFL170B226T]]></value>
+    <description><![CDATA[Node password]]></description>
+  </attrib>
+  <attrib name="manifestDataDir" type="string" read-only="false">
+    <value encoded="n"><![CDATA[/etc/puppetlabs/puppet/environments/production/manifests]]></value>
+    <description><![CDATA[Manifest Data Directory]]></description>
+  </attrib>
+  <attrib name="nodeName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Node name]]></description>
+  </attrib>
+  <attrib name="hostname" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="9.045454545454543" x="924.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item0" type="link" linked-workflow-id="4c0175e9-3446-440b-8380-153c1daa66c1">
+    <display-name><![CDATA[Remediate Linux Node with SSH]]></display-name>
+    <in-binding>
+      <bind name="hostname" type="string" export-name="hostname"/>
+      <bind name="username" type="string" export-name="username"/>
+      <bind name="password" type="SecureString" export-name="password"/>
+    </in-binding>
+    <out-binding>
+      <bind name="lastRunReport" type="string" export-name="lastRunReport"/>
+      <bind name="lastRunSummary" type="string" export-name="lastRunSummary"/>
+    </out-binding>
+    <description><![CDATA[Remediate Linux node]]></description>
+    <position y="19.045454545454543" x="764.5"/>
+  </workflow-item>
+  <workflow-item name="item11" out-name="item9" type="task">
+    <display-name><![CDATA[Init]]></display-name>
+    <script encoded="false"><![CDATA[// Assign default node name from input parameters
+// If configuraing node, then use output parameter 'certName' as the node name
+vm = vm.split("\"");
+tempNodeName = vm[1];
+hostname = vm[1];
+nodeName = vm[1];]]></script>
+    <in-binding>
+      <bind name="nodeName" type="string" export-name="nodeName"/>
+      <bind name="classNames" type="Array/string" export-name="classNames"/>
+      <bind name="classParameters" type="Array/CompositeType(name:string,value:string):PuppetClassParameters" export-name="classParameters"/>
+      <bind name="vm" type="string" export-name="vm"/>
+    </in-binding>
+    <out-binding>
+      <bind name="tempClassParameters" type="Array/CompositeType(name:string,value:string):PuppetClassParameters" export-name="tempClassParameters"/>
+      <bind name="tempNodeName" type="string" export-name="tempNodeName"/>
+      <bind name="tempClasses" type="Properties" export-name="tempClasses"/>
+      <bind name="hostname" type="string" export-name="hostname"/>
+      <bind name="nodeName" type="string" export-name="nodeName"/>
+    </out-binding>
+    <position y="19.045454545454543" x="144.5"/>
+  </workflow-item>
+  <workflow-item name="item21" out-name="item7" type="task" script-module="com.vmware.o11n.plugin.puppet.manifest/classifyWithManifest">
+    <display-name><![CDATA[classifyWithManifest]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.o11n.plugin.puppet.manifest").classifyWithManifest(master,dataDir,nodeName,classes,replaceAssignedClasses) ;]]></script>
+    <in-binding>
+      <bind name="master" type="Puppet:Master" export-name="master"/>
+      <bind name="dataDir" type="string" export-name="manifestDataDir"/>
+      <bind name="nodeName" type="string" export-name="hostname"/>
+      <bind name="classes" type="Properties" export-name="tempClasses"/>
+      <bind name="replaceAssignedClasses" type="boolean" export-name="replaceAssignedClasses"/>
+    </in-binding>
+    <out-binding/>
+    <position y="19.045454545454543" x="424.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item4" type="task" script-module="com.vmware.o11n.plugin.puppet.manifest/triggerManifestReload">
+    <display-name><![CDATA[triggerManifestReload]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.o11n.plugin.puppet.manifest").triggerManifestReload(master,environment,dataDir) ;]]></script>
+    <in-binding>
+      <bind name="master" type="Puppet:Master" export-name="master"/>
+      <bind name="environment" type="string" export-name="environment"/>
+      <bind name="dataDir" type="string" export-name="manifestDataDir"/>
+    </in-binding>
+    <out-binding/>
+    <position y="19.045454545454543" x="584.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item21" type="task" script-module="com.vmware.o11n.plugin.puppet/convertMultiClassFlatToClassesObject">
+    <display-name><![CDATA[convertMultiClassFlatToClassesObject]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.o11n.plugin.puppet").convertMultiClassFlatToClassesObject(classNames,classParameters) ;]]></script>
+    <in-binding>
+      <bind name="classNames" type="Array/string" export-name="classNames"/>
+      <bind name="classParameters" type="Array/CompositeType(name:string,value:string):PuppetClassParameters" export-name="classParameters"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Properties" export-name="tempClasses"/>
+    </out-binding>
+    <position y="19.045454545454543" x="284.5"/>
+  </workflow-item>
+  <presentation>
+    <p-step>
+      <title><![CDATA[Classification Information]]></title>
+      <desc><![CDATA[
+]]></desc>
+      <p-param name="vm">
+        <desc><![CDATA[vm]]></desc>
+      </p-param>
+      <p-param name="environment">
+        <desc><![CDATA[Environment]]></desc>
+        <p-qual kind="static" name="defaultValue" type="string"><![CDATA[production]]></p-qual>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+        <p-qual kind="static" name="regexp" type="Regexp"><![CDATA[^((?!^main$|^master$|^agent$|^user$)\S)+$]]></p-qual>
+      </p-param>
+      <p-param name="classNames">
+        <desc><![CDATA[classNames]]></desc>
+      </p-param>
+      <p-param name="classParameters">
+        <desc><![CDATA[Class Parameters]]></desc>
+      </p-param>
+      <p-param name="replaceAssignedClasses">
+        <desc><![CDATA[Replace Assigned Classes]]></desc>
+        <p-qual kind="static" name="defaultValue" type="boolean"><![CDATA[__NULL__]]></p-qual>
+      </p-param>
+    </p-step>
+  </presentation>
+</workflow>

@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="updateEntity" result-type="void" api-version="6.0.0" id="184e3df0-6c41-4b3b-a5a4-8f8e86ff1fa2" version="0.0.1" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <description><![CDATA[Updates a vCAC entity with the provided properties and links.]]></description>
+  <param n="entity" t="vCAC:Entity"><![CDATA[vCAC entity]]></param>
+  <param n="inputProperties" t="Properties"><![CDATA[Input properties to update]]></param>
+  <param n="links" t="Properties"><![CDATA[Links to update]]></param>
+  <script encoded="false"><![CDATA[hostId = entity.hostId;
+modelName = entity.modelName;
+entitySetName = entity.entitySetName;
+entityIdString = entity.keyString;
+var entityKey = entity.entityKey;
+
+System.log("hostId : " + hostId);
+System.log("modelName : " + modelName);
+System.log("entitySetName : " + entitySetName);
+System.log("entityIdString : " + entityIdString);
+System.log("entityKey : " + entityKey);
+
+vCACEntityManager.updateModelEntity(hostId, modelName, entitySetName, entityKey, inputProperties, links, null);	
+]]></script>
+</dunes-script-module>

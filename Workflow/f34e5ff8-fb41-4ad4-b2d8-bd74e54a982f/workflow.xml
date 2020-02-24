@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="f34e5ff8-fb41-4ad4-b2d8-bd74e54a982f" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Test findById]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="type" type="string"/>
+    <param name="id" type="string"/>
+  </input>
+  <attrib name="foundObject" type="Any" read-only="false">
+    <value encoded="n"><![CDATA[Any#__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[var startDate = new Date();
+System.debug("com.vmware.coe.dynamicTypes.sql/findById - type :" + type + " id : "+ id);
+
+var namespace = type.split(".")[0];
+var class = type.split(".")[1];
+
+//Determine if the child is a folder
+var isFolder = System.getModule("com.vmware.coe.dynamicTypes").isFolder(namespace , class);
+if (isFolder == true) {
+	// Create a folder
+	var id = parentObject.id + "-" + type;
+	System.debug("Create folder of type " + type + " with name " + type + " and ID " + id);  
+	var foundObject = DynamicTypesManager.makeObject(namespace, type, id, type);
+	foundObject.setProperty(isFolder,true);
+	//return foundObject;
+}
+else {
+	var namespace = type.split(".")[0];
+	type = type.split(".")[1];
+	var ns = DynamicTypesManager.getNamespace(namespace);
+	var typeObj = DynamicTypesManager.getType(namespace,type);
+	
+	var sqlDb = System.getModule("com.vmware.library.customProperties").getCustomProperty(ns,"sqlDb");
+	var sqlTableName = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"tableName");
+	var idField = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"idField");
+	var nameField = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"nameField");
+	
+	var sqlTables = sqlDb.getTables();
+	for each (table in sqlTables){
+		if (table.name == sqlTableName){
+			var sqlTable = table;
+			break;
+		}
+	}
+	if (!sqlTable) throw "cannot get table: " + sqlTableName;
+	var columns = System.getModule("com.vmware.coe.sql").getTableColumnNames(sqlTableName,sqlDb);
+	System.debug("Columns found: "+columns);
+	var params = new Object();
+	params[idField] = id;
+
+	var records = sqlTable.readRecords(params,true);
+	System.debug("Records found: "+records.length);
+	var foundObject = null; // Initialize the return object
+	if (records.length == 1){ // There should be only a single item returned from the queyr
+		var record = records[0];
+		var objProps = new Properties();
+		for each (field in columns){
+			if (field == idField){
+				objProps.put("id", record.getProperty(field));
+			}else if (field == nameField){
+				objProps.put("name", record.getProperty(field));
+			} else {
+				objProps.put(field, record.getProperty(field));
+			}
+		}
+		foundObject = System.getModule("com.vmware.coe.dynamicTypes").makeDynamicObjectFromProperties(namespace, type, objProps);
+	}
+	System.debug("Completed query in " + ((new Date()).getTime() - startDate.getTime()) / 1000 + " seconds");
+	//return foundObject;
+	System.debug("Found Object: "+foundObject);
+}]]></script>
+    <in-binding>
+      <bind name="type" type="string" export-name="type"/>
+      <bind name="id" type="string" export-name="id"/>
+    </in-binding>
+    <out-binding>
+      <bind name="foundObject" type="Any" export-name="foundObject"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="type">
+      <desc><![CDATA[type]]></desc>
+    </p-param>
+    <p-param name="id">
+      <desc><![CDATA[id]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

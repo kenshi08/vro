@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="b9c5f744-e902-4684-aeea-b9293135cbfb" version="1.0.2" api-version="6.0.0" allowed-operations="vf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Change reservation of an IaaS Virtual Machine]]></display-name>
+  <description><![CDATA[Changes the reservation of a managed virtual machine.]]></description>
+  <position y="27.227272727272727" x="45.0"/>
+  <input>
+    <param name="host" type="vCAC:VCACHost">
+      <description><![CDATA[vCAC host]]></description>
+    </param>
+    <param name="vm" type="vCAC:VirtualMachine">
+      <description><![CDATA[A virtual machine]]></description>
+    </param>
+    <param name="hostReservation" type="vCAC:Reservation">
+      <description><![CDATA[Host reservation]]></description>
+    </param>
+  </input>
+  <attrib name="hostReservationToStorage" type="vCAC:Entity" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[A mapping between the storage and reservation]]></description>
+  </attrib>
+  <attrib name="templateId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Id of the blueprint]]></description>
+  </attrib>
+  <attrib name="virtualMachineId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Id of the vcac virtual machine]]></description>
+  </attrib>
+  <attrib name="hostReservationId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Id of the host reservation]]></description>
+  </attrib>
+  <attrib name="hostStorageReservationId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Mapping of the storage and host reservation]]></description>
+  </attrib>
+  <attrib name="storagePath" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Storage path]]></description>
+  </attrib>
+  <attrib name="systemBlueprint" type="vCAC:Entity" read-only="false"/>
+  <attrib name="vmOwner" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[The new virtual machine owner]]></description>
+  </attrib>
+  <attrib name="userForTheLogs" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Username used in IaaS logs]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="27.227272727272727" x="864.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item0" type="task">
+    <display-name><![CDATA[Start register workflow]]></display-name>
+    <script encoded="false"><![CDATA[if (!vm) throw "Virtual machine should not be null.";
+if (!hostReservation) throw "Host reservation should not be null.";
+if (!hostReservationToStorage) throw "Host reservation to storage should not be null. Is the VM storage " + storagePath + " part of the reservation " + hostReservation.displayName;
+
+templateId = systemBlueprint.getProperty("VirtualMachineTemplateID");
+virtualMachineId = vm.virtualMachineID;
+hostReservationId = hostReservation.hostReservationID;
+hostStorageReservationId = hostReservationToStorage.getProperty("HostReservationToStorageID");
+
+System.log("templateId: " + templateId);
+System.log("virtualMachineId: " + virtualMachineId);
+System.log("hostReservationId: " + hostReservationId);
+System.log("hostStorageReservationId: " + hostStorageReservationId);
+
+var arguments = {
+	user: vmOwner,
+	identityUser:identityUser,
+	templateId:templateId,
+	hostReservationId:hostReservationId,
+	hostStorageReservationId:hostStorageReservationId
+};
+
+vm.registerVm(arguments, null);]]></script>
+    <in-binding>
+      <bind name="hostReservation" type="vCAC:Reservation" export-name="hostReservation"/>
+      <bind name="hostReservationToStorage" type="vCAC:Entity" export-name="hostReservationToStorage"/>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[A virtual machine]]></description>
+      </bind>
+      <bind name="storagePath" type="string" export-name="storagePath">
+        <description><![CDATA[Storage path]]></description>
+      </bind>
+      <bind name="identityUser" type="string" export-name="userForTheLogs">
+        <description><![CDATA[Identity user]]></description>
+      </bind>
+      <bind name="systemBlueprint" type="vCAC:Entity" export-name="systemBlueprint"/>
+      <bind name="vmOwner" type="string" export-name="vmOwner"/>
+    </in-binding>
+    <out-binding>
+      <bind name="templateId" type="string" export-name="templateId"/>
+      <bind name="virtualMachineId" type="string" export-name="virtualMachineId"/>
+      <bind name="hostReservationId" type="string" export-name="hostReservationId"/>
+      <bind name="hostStorageReservationId" type="string" export-name="hostStorageReservationId"/>
+    </out-binding>
+    <position y="37.22727272727273" x="704.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item1" type="task">
+    <display-name><![CDATA[Get Host to Storage]]></display-name>
+    <script encoded="false"><![CDATA[storagePath = vm.storagePath;
+hostReservationToStorage = System.getModule("com.vmware.library.vcac").getHostReservationToStorageFromStoragePath(host, hostReservation, storagePath);
+if (hostReservationToStorage == null) throw "Cannot find host to storage reservation. Is the storage of the VM part of the reservation?";
+links = new Properties();
+var links = new Properties();
+links.put("HostReservationToStorage", [hostReservationToStorage]);
+var vmEntity = vm.getEntity();
+System.getModule("com.vmware.library.vcac").updateEntity(vmEntity,new Properties(),links);]]></script>
+    <in-binding>
+      <bind name="host" type="vCAC:VCACHost" export-name="host">
+        <description><![CDATA[vCAC host]]></description>
+      </bind>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[A virtual machine]]></description>
+      </bind>
+      <bind name="hostReservation" type="vCAC:Reservation" export-name="hostReservation">
+        <description><![CDATA[Host reservation]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="hostReservationToStorage" type="vCAC:Entity" export-name="hostReservationToStorage">
+        <description><![CDATA[A mapping between the storage and reservation]]></description>
+      </bind>
+      <bind name="storagePath" type="string" export-name="storagePath">
+        <description><![CDATA[Storage path]]></description>
+      </bind>
+    </out-binding>
+    <position y="37.22727272727273" x="424.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item5" type="task" script-module="com.vmware.library.vcac/getSystemBlueprintByVirtualMachine">
+    <display-name><![CDATA[getSystemBlueprintByVirtualMachine]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vcac").getSystemBlueprintByVirtualMachine(host,vm) ;]]></script>
+    <in-binding>
+      <bind name="host" type="vCAC:VCACHost" export-name="host">
+        <description><![CDATA[vCAC host]]></description>
+      </bind>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[vCAC virtual machine]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCAC:Entity" export-name="systemBlueprint"/>
+    </out-binding>
+    <position y="37.22727272727273" x="564.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item3" type="task">
+    <display-name><![CDATA[Check for managed VM]]></display-name>
+    <script encoded="false"><![CDATA[if (! vm.isManaged) {
+	throw "Reservation can be changed for managed virtual machines only"
+}]]></script>
+    <in-binding>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding/>
+    <position y="37.22727272727273" x="144.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item6" type="task">
+    <display-name><![CDATA[Get identity user]]></display-name>
+    <script encoded="false"><![CDATA[userForTheLogs = Server.getCurrentLdapUser().commonName;
+try {
+	var owner = vm.getEntity().getLink(host, "Owner")[0].getProperty("UserName");
+	System.log("Current VM owner is: " + owner);
+	vmOwner = owner
+} catch (e) {
+	throw "Unable to change VM reservation: VM current owner can not found. "
+}
+]]></script>
+    <in-binding>
+      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding>
+      <bind name="userForTheLogs" type="string" export-name="userForTheLogs"/>
+      <bind name="vmOwner" type="string" export-name="vmOwner"/>
+    </out-binding>
+    <position y="37.22727272727273" x="284.5"/>
+  </workflow-item>
+  <presentation>
+    <p-step>
+      <title><![CDATA[Organizer]]></title>
+      <p-param name="host">
+        <desc><![CDATA[vCAC host]]></desc>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      </p-param>
+      <p-param name="vm">
+        <desc><![CDATA[A managed virtual machine]]></desc>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+        <p-qual kind="ognl" name="linkedEnumeration" type="Array/vCAC:VirtualMachine"><![CDATA[GetAction("com.vmware.library.vcac","getManagedVirtualMachines").call( #host )]]></p-qual>
+        <p-qual kind="static" name="show-select-as" type="string"><![CDATA[list]]></p-qual>
+      </p-param>
+      <p-param name="hostReservation">
+        <desc><![CDATA[Host reservation]]></desc>
+        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      </p-param>
+    </p-step>
+    <p-step>
+      <title><![CDATA[Component mapping]]></title>
+      <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[GetAction("com.vmware.library.vcac","isMultiMachine").call( #host , #vm )]]></p-qual>
+    </p-step>
+  </presentation>
+</workflow>

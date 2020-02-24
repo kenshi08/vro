@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getSectionText" result-type="string" api-version="6.0.0" id="6e277043-a9de-4c6e-8801-04f47eb21f85" version="0.0.0" allowed-operations="evf" category-name="com.vmware.o11n.plugin.puppet.node">
+  <param n="name" t="string"/>
+  <param n="content" t="string"/>
+  <script encoded="false"><![CDATA[var value = "";
+var pattern = new RegExp("==={{ " + name + " BEGIN }}===\\s*([\\s\\S]+)\\s*==={{ " + name + " END }}===", "img");
+var matches;
+
+while (matches = pattern.exec(content)) {
+	if (value !== "") {
+		value += "\n";
+	}
+
+	value += matches[1].trim();
+}
+
+return value;
+]]></script>
+</dunes-script-module>

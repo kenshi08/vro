@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="workflow:name=generic" id="8b965fb9-44c3-4a8c-b30d-734acca54416" version="0.4.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Migrate virtual machine]]></display-name>
+  <description><![CDATA[Migrates a virtual machine from one host to another by using MigrateVM_Task from the vSphere API.]]></description>
+  <ref-types><![CDATA[>(VC:VirtualMachine)]]></ref-types>
+  <position y="20.0" x="180.0"/>
+  <input>
+    <param name="vm" type="VC:VirtualMachine">
+      <description><![CDATA[Virtual machine to migrate]]></description>
+    </param>
+    <param name="host" type="VC:HostSystem">
+      <description><![CDATA[Destination host to which to migrate the virtual machine]]></description>
+    </param>
+  </input>
+  <attrib name="task" type="VC:Task" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Task to await]]></description>
+  </attrib>
+  <attrib name="progress" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+    <description><![CDATA[Log progress while waiting for the task]]></description>
+  </attrib>
+  <attrib name="pollRate" type="number" read-only="false">
+    <value encoded="n"><![CDATA[1.0]]></value>
+    <description><![CDATA[Polling rate for the task state, in seconds]]></description>
+  </attrib>
+  <attrib name="priority" type="VC:VirtualMachineMovePriority" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='highPriority'&dunesName='VC:VirtualMachineMovePriority']]></value>
+    <description><![CDATA[Priority of the migration task]]></description>
+  </attrib>
+  <attrib name="state" type="VC:VirtualMachinePowerState" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='poweredOn'&dunesName='VC:VirtualMachinePowerState']]></value>
+    <description><![CDATA[(Optional) Only migrate the virtual machine if its power on state matches the specified state]]></description>
+  </attrib>
+  <attrib name="pool" type="VC:ResourcePool" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='vcsa-l-01b.nullphase.local/resgroup-42'&dunesName='VC:ResourcePool']]></value>
+    <description><![CDATA[Destination resource pool for the virtual machine. If you do not set the resource pool parameter, the current resource pool is used as the destination pool]]></description>
+  </attrib>
+  <workflow-item name="item0" out-name="item1" type="task">
+    <display-name><![CDATA[Migrate VM]]></display-name>
+    <script encoded="false"><![CDATA[var movePriority = null
+if (priority != null) {
+	movePriority = VcVirtualMachineMovePriority.fromString(priority.name);
+}
+
+var exState = null
+if (state != null) {
+	exState = VcVirtualMachinePowerState.fromString(state.name);
+}
+
+task = vm.migrateVM_Task(pool, host, movePriority, exState);]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+      <bind name="state" type="VC:VirtualMachinePowerState" export-name="state"/>
+      <bind name="priority" type="VC:VirtualMachineMovePriority" export-name="priority"/>
+      <bind name="pool" type="VC:ResourcePool" export-name="pool"/>
+      <bind name="host" type="VC:HostSystem" export-name="host"/>
+    </in-binding>
+    <out-binding>
+      <bind name="task" type="VC:Task" export-name="task"/>
+    </out-binding>
+    <position y="80.0" x="140.0"/>
+  </workflow-item>
+  <workflow-item name="item2" type="end" end-mode="0">
+    <position y="190.0" x="180.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.library.vc.basic/vim3WaitTaskEnd">
+    <display-name><![CDATA[vim3WaitTaskEnd]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vc.basic").vim3WaitTaskEnd(task,progress,pollRate) ;]]></script>
+    <in-binding>
+      <bind name="task" type="VC:Task" export-name="task">
+        <description><![CDATA[Task to Wait for]]></description>
+      </bind>
+      <bind name="progress" type="boolean" export-name="progress">
+        <description><![CDATA[Log progess while waiting for the task]]></description>
+      </bind>
+      <bind name="pollRate" type="number" export-name="pollRate">
+        <description><![CDATA[Polling rate for the task state [seconds]]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Any" explicitly-not-bound="true" export-name="NULL"/>
+    </out-binding>
+    <description><![CDATA[Wait a VIM 3 Task to end.
+When task ended, return the ]]></description>
+    <position y="140.0" x="140.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vm">
+      <desc><![CDATA[Virtual machine to migrate]]></desc>
+      <p-qual name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual name="contextualParameter" type="Void"><![CDATA[]]></p-qual>
+    </p-param>
+    <p-param name="host">
+      <desc><![CDATA[Destination host to which to migrate the virtual machine]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

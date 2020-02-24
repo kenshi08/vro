@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getvCenterVMFromCAS" result-type="VC:VirtualMachine" api-version="6.0.0" id="64dce33b-04d3-4071-a894-f3f1a0c72bdd" version="0.0.0" allowed-operations="evf" category-name="com.neetcloud.cas">
+  <param n="inputProperties" t="Properties"/>
+  <script encoded="false"><![CDATA[if(inputProperties["customProperties"]["vcUuid"]){
+	var sdkConnection = VcPlugin.findSdkConnectionForUUID(inputProperties["customProperties"]["vcUuid"]);
+	var vCenterVM = sdkConnection.searchIndex.findByUuid(null, inputProperties["externalIds"][0], true, true);
+	//var vCenterVM = sdkConnection.searchIndex.findByUuid(null, inputProperties["customProperties"]["vcUuid"], true, true);
+}
+return vCenterVM;]]></script>
+</dunes-script-module>

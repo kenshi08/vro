@@ -1,0 +1,1 @@
+{"schema":{"ipaddr":{"id":"ipaddr","type":{"dataType":"string"},"label":"ipaddr","constraints":{"required":false}}},"layout":{"pages":[{"id":"page_u5kndl1k","title":"General","sections":[{"id":"section_995pb0jy","fields":[{"id":"ipaddr","display":"textField"}]}]}]},"itemId":""}

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createOrUpdateNetworkInterface" result-type="Azure:NetworkInterface" api-version="6.0.0" id="1b331ded-43f7-4d48-85d8-d1d81b47b45e" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.azure">
+  <param n="connection" t="Azure:Connection"><![CDATA[Azure connection]]></param>
+  <param n="location" t="Azure:Location"><![CDATA[Azure location]]></param>
+  <param n="virtualNetwork" t="Azure:VirtualNetwork"><![CDATA[Virtual network]]></param>
+  <param n="publicIp" t="Azure:PublicIpAddress"><![CDATA[Public IP address]]></param>
+  <param n="resourceGroup" t="Azure:ResourceGroupExtended"><![CDATA[Resource group]]></param>
+  <param n="nicName" t="string"><![CDATA[Network interface name]]></param>
+  <param n="ipConfigName" t="string"><![CDATA[IP config name]]></param>
+  <script encoded="false"><![CDATA[if (!connection) {
+	throw "Connection cannot be null.";
+}
+if (!location) {
+	throw "Location cannot be null.";
+}
+
+var nic = new AzureNetworkInterface(location.name);
+nic.name = nicName;
+
+//set ipconfiguration
+var nicConfig = new AzureNetworkInterfaceIpConfiguration();
+nicConfig.name = ipConfigName;
+nicConfig.privateIpAllocationMethod = "Dynamic";
+nicConfig.subnet = virtualNetwork.subnets[0];
+
+nic.ipConfigurations = [nicConfig];
+
+if (publicIp) {
+	var publicIpAddressId = new AzureResourceId();
+	publicIpAddressId.id = publicIp.id;
+	nic.ipConfigurations[0].publicIpAddress = publicIpAddressId;
+}
+
+connection.networkClient.networkInterfacesOperations.createOrUpdate(resourceGroup.name, nicName, nic);
+
+return resourceGroup.getNetworkInterfaceByName(nicName);]]></script>
+</dunes-script-module>

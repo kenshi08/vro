@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="makeDynamicObjectFromProperties" result-type="Any" api-version="6.0.0" id="5fa66c2a-3905-4fed-a8e5-566282fdd9c9" version="0.0.5" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes">
+  <param n="namespace" t="string"/>
+  <param n="type" t="string"/>
+  <param n="properties" t="Properties"/>
+  <script encoded="false"><![CDATA[var objectProperties = System.getModule("com.vmware.coe.dynamicTypes").getObjectProperties(namespace , type);
+var id = properties.get("id");
+var name = properties.get("name");
+
+System.log("Making object " + type + " with id " + id + " and name " + name);
+var dynamicObject = DynamicTypesManager.makeObject(namespace, type, id, name);
+
+for each (var property in objectProperties) {
+
+	var propertyValue = properties.get(property);
+	//System.log("\t Setting property " + property + " to " + properties.get(property) + " (" + System.getObjectType(properties.get(property)) + ")");
+		
+	if (propertyValue != null) {
+		propertyValueClassName = System.getObjectClassName(propertyValue);
+		//dynamicObject.setProperty(property, propertyValue); //fail with some objects
+		switch (propertyValueClassName) {
+			case "Object": dynamicObject.setProperty(property, JSON.stringify(propertyValue))
+			break;
+			
+			case "Array": dynamicObject.setProperty(property, JSON.stringify(propertyValue))
+			break;
+			
+			default: dynamicObject.setProperty(property, propertyValue.toString()); // Not taking any risk
+		
+		}
+	}
+}
+
+dynamicObject.setProperty("type", type); // In case a property from the object overrides type
+
+return dynamicObject;]]></script>
+</dunes-script-module>

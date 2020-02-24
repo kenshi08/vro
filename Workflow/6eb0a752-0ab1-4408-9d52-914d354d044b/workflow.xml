@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="6eb0a752-0ab1-4408-9d52-914d354d044b" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Get VM Name from vROps REST Notification]]></display-name>
+  <description><![CDATA[Gets the VM Name from the REST Notification sent by vROps server 
+
+You will need to create 2 REST Operations for your vR Ops REST host.
+
+GET /api/alerts/{alertid}
+GET /api/resources/{resourceId}
+]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="alertId" type="string"/>
+    <param name="param_1" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_2" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_3" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_4" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_5" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_6" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_7" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_8" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_9" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_10" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_11" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_12" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_13" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_14" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="defaultContentType" type="string">
+      <description><![CDATA[Input content type]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="vmName" type="string"/>
+  </output>
+  <attrib name="getAlert" type="REST:RESTOperation" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='c8134021-7eab-4a23-b357-2f1293c98ab6:831f9e1c-ea77-4ee9-857c-770e290e5707'&dunesName='REST:RESTOperation']]></value>
+    <description><![CDATA[Get Alert Information from Alert ID]]></description>
+  </attrib>
+  <attrib name="resourceId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="contentAsString" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Response content as string]]></description>
+  </attrib>
+  <attrib name="getVmName" type="REST:RESTOperation" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='c8134021-7eab-4a23-b357-2f1293c98ab6:fd0455ec-f46e-4248-bfc5-7adc79b55ac1'&dunesName='REST:RESTOperation']]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="1264.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item3" type="task">
+    <display-name><![CDATA[Find Resource ID]]></display-name>
+    <script encoded="false"><![CDATA[response = JSON.parse(contentAsString);
+
+//System.log("Total Response:" + response);
+resourceId = response["resourceId"];
+
+System.log("ResourceId: "+ resourceId);
+
+]]></script>
+    <in-binding>
+      <bind name="contentAsString" type="string" export-name="contentAsString"/>
+    </in-binding>
+    <out-binding>
+      <bind name="resourceId" type="string" export-name="resourceId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="364.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="link" linked-workflow-id="44786098-b29f-45df-ba4e-dc3cca6eeb7d">
+    <display-name><![CDATA[Get Alert from ID]]></display-name>
+    <in-binding>
+      <bind name="restOperation" type="REST:RESTOperation" export-name="getAlert">
+        <description><![CDATA[REST operation to be used for the call]]></description>
+      </bind>
+      <bind name="param_0" type="string" export-name="alertId">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_1" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_2" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_3" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_4" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_5" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_6" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_7" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_8" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_9" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_10" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_11" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_12" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_13" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_14" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="content" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input content]]></description>
+      </bind>
+      <bind name="defaultContentType" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Input content type]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="statusCode" type="number" explicitly-not-bound="true">
+        <description><![CDATA[Status code of the HTTP request]]></description>
+      </bind>
+      <bind name="contentLength" type="number" explicitly-not-bound="true">
+        <description><![CDATA[Length of the request response]]></description>
+      </bind>
+      <bind name="headers" type="Properties" explicitly-not-bound="true">
+        <description><![CDATA[Response headers]]></description>
+      </bind>
+      <bind name="contentAsString" type="string" export-name="contentAsString">
+        <description><![CDATA[Response content as string]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Invokes a REST operation.]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" type="link" linked-workflow-id="44786098-b29f-45df-ba4e-dc3cca6eeb7d">
+    <display-name><![CDATA[Get Resource Details]]></display-name>
+    <in-binding>
+      <bind name="restOperation" type="REST:RESTOperation" export-name="getVmName">
+        <description><![CDATA[REST operation to be used for the call]]></description>
+      </bind>
+      <bind name="param_0" type="string" export-name="resourceId">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_1" type="string" explicitly-not-bound="true" export-name="param_1">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_2" type="string" explicitly-not-bound="true" export-name="param_2">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_3" type="string" explicitly-not-bound="true" export-name="param_3">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_4" type="string" explicitly-not-bound="true" export-name="param_4">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_5" type="string" explicitly-not-bound="true" export-name="param_5">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_6" type="string" explicitly-not-bound="true" export-name="param_6">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_7" type="string" explicitly-not-bound="true" export-name="param_7">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_8" type="string" explicitly-not-bound="true" export-name="param_8">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_9" type="string" explicitly-not-bound="true" export-name="param_9">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_10" type="string" explicitly-not-bound="true" export-name="param_10">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_11" type="string" explicitly-not-bound="true" export-name="param_11">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_12" type="string" explicitly-not-bound="true" export-name="param_12">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_13" type="string" explicitly-not-bound="true" export-name="param_13">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="param_14" type="string" explicitly-not-bound="true" export-name="param_14">
+        <description><![CDATA[Input parameter]]></description>
+      </bind>
+      <bind name="content" type="string" explicitly-not-bound="true" export-name="contentAsString">
+        <description><![CDATA[Input content]]></description>
+      </bind>
+      <bind name="defaultContentType" type="string" explicitly-not-bound="true" export-name="defaultContentType">
+        <description><![CDATA[Input content type]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="statusCode" type="number" explicitly-not-bound="true">
+        <description><![CDATA[Status code of the HTTP request]]></description>
+      </bind>
+      <bind name="contentLength" type="number" explicitly-not-bound="true">
+        <description><![CDATA[Length of the request response]]></description>
+      </bind>
+      <bind name="headers" type="Properties" explicitly-not-bound="true">
+        <description><![CDATA[Response headers]]></description>
+      </bind>
+      <bind name="contentAsString" type="string" export-name="contentAsString">
+        <description><![CDATA[Response content as string]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Invokes a REST operation.]]></description>
+    <position y="55.90909090909091" x="505.0"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item0" type="task">
+    <display-name><![CDATA[Get VM Name]]></display-name>
+    <script encoded="false"><![CDATA[response = JSON.parse(contentAsString);
+
+//System.log("Total Response:" + response);
+vmName = response["resourceKey"]["name"];
+
+System.log("VM Name: "+ vmName);]]></script>
+    <in-binding>
+      <bind name="contentAsString" type="string" export-name="contentAsString"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vmName" type="string" export-name="vmName"/>
+    </out-binding>
+    <position y="55.90909090909091" x="725.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="alertId">
+      <desc><![CDATA[message]]></desc>
+    </p-param>
+    <p-param name="param_1">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_2">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_3">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_4">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_5">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_6">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_7">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_8">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_9">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_10">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_11">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_12">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_13">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="param_14">
+      <desc><![CDATA[Input parameter]]></desc>
+    </p-param>
+    <p-param name="defaultContentType">
+      <desc><![CDATA[Input content type]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

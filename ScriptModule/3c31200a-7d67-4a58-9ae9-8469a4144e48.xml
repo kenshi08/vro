@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getParentTypeDefinition" result-type="DynamicTypes:DynamicTypeDefinition" api-version="6.0.0" id="3c31200a-7d67-4a58-9ae9-8469a4144e48" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes">
+  <param n="typeDefinition" t="DynamicTypes:DynamicTypeDefinition"/>
+  <script encoded="false"><![CDATA[var namespace = typeDefinition.namespace;
+var childType = typeDefinition.type.split(":")[1]
+
+
+var allDefinitions = DynamicTypesManager.getAllRelations();
+
+for each (var definition in allDefinitions) {
+	System.log(definition.childType + " == " + childType);
+	if (definition.childType == childType) {
+		var parentType = definition.parentType.split(".")[1];
+		return DynamicTypesManager.getType(namespace , parentType);
+	}
+}]]></script>
+</dunes-script-module>

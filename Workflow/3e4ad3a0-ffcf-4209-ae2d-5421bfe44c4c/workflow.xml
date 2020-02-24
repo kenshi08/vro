@@ -1,0 +1,270 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="3e4ad3a0-ffcf-4209-ae2d-5421bfe44c4c" version="0.0.19" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Run Resource Action On VM (vRA 6)]]></display-name>
+  <description><![CDATA[Run a resource action on a managed VM in Cloud Automation Center.]]></description>
+  <error-handler name="item4" throw-bind-name="errorCode">
+    <position y="118.13636363636363" x="45.0"/>
+  </error-handler>
+  <position y="9.045454545454543" x="45.0"/>
+  <input>
+    <param name="vCACVm" type="vCAC:VirtualMachine">
+      <description><![CDATA[vCAC Virtual Machine]]></description>
+    </param>
+    <param name="vCACVmName" type="string">
+      <description><![CDATA[Virtual Machine Name]]></description>
+    </param>
+    <param name="opName" type="string">
+      <description><![CDATA[Operation Name]]></description>
+    </param>
+    <param name="inputs" type="Properties">
+      <description><![CDATA[Input Values]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="result" type="string">
+      <description><![CDATA[Resource action request state]]></description>
+    </param>
+  </output>
+  <attrib name="resource" type="vCACCAFE:CatalogResource" read-only="false">
+    <description><![CDATA[Catalog resource]]></description>
+  </attrib>
+  <attrib name="operation" type="vCACCAFE:ConsumerResourceOperation" read-only="false">
+    <description><![CDATA[Resource operation]]></description>
+  </attrib>
+  <attrib name="request" type="vCACCAFE:ResourceActionRequest" read-only="false">
+    <description><![CDATA[Request]]></description>
+  </attrib>
+  <attrib name="cafeHost" type="vCACCAFE:VCACHost" read-only="false" conf-id="960ea466-60cf-4f4a-82ec-05cffd5c5c17" conf-key="cafeHost">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="vm" type="vCAC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="vmName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="timeout" type="number" read-only="false">
+    <value encoded="n"><![CDATA[1800.0]]></value>
+    <description><![CDATA[Timeout]]></description>
+  </attrib>
+  <attrib name="operationResult" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="state" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="endpointType" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="endpointVcloud" type="string" read-only="false" conf-id="2b2e1dfb-a2a3-4513-9c7d-329197246d00" conf-key="endpointVcloud">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="vmEntity" type="vCAC:Entity" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item1" out-name="item3" type="task">
+    <display-name><![CDATA[init]]></display-name>
+    <script encoded="false"><![CDATA[vm     = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineByNameOrObject(vCACVmName,vCACVm);
+vmName = vm.virtualMachineName;
+
+// Get Endpoint type (vCloud, AWS, vCenter, etc.)
+endpointType = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineEndpointType(vm);
+
+if (endpointType == endpointVcloud && vm.isComponent == true) {
+	System.log("Find vApp for "+vmName);
+	
+	var vmEntity = vm.getEntity();
+	var vAppID   = vmEntity.getProperty("ParentMachineID");
+	vm     = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineById(vAppID);
+	vmName = vm.virtualMachineName;
+	System.log("Found vApp "+vmName);
+}
+
+// Get CAFE Catalog Resource for vCAC VM
+var resources = Server.findAllForType("VCACCAFE:CatalogResource",vmName);
+for each (r in resources){
+	if (r.getName() == vmName){
+		var providerBinding = r.getProviderBinding();
+		var bindingId       = providerBinding.getBindingId();
+		
+		if (bindingId == vm.virtualMachineID) {
+			cafeHost = System.getModule("com.vmware.pso.vcaccafe").getCafeHostForCafeObject(r);
+			resource = vCACCAFEEntitiesFinder.getCatalogResource(cafeHost,r.getId());
+			break;
+		}
+	}
+}
+
+// Get operations on catalog Resource
+// Look for match with opName
+if (isSet(resource)) {
+	for each (op in resource.getOperations()){
+		var name = op.getName();
+		System.log(name);
+		if (name == opName){
+			System.log("Found: "+opName);
+			operation = op;
+			break;
+		}
+	}
+}
+
+// ---------------------------------------------------------------
+function isSet(s){
+    return s!=null && s!=undefined && s!="";
+}
+
+]]></script>
+    <in-binding>
+      <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost"/>
+      <bind name="opName" type="string" export-name="opName"/>
+      <bind name="endpointVcloud" type="string" export-name="endpointVcloud"/>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vCACVm"/>
+      <bind name="vCACVmName" type="string" export-name="vCACVmName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="resource" type="vCACCAFE:CatalogResource" export-name="resource"/>
+      <bind name="operation" type="vCACCAFE:ConsumerResourceOperation" export-name="operation"/>
+      <bind name="endpointType" type="string" export-name="endpointType"/>
+      <bind name="vmEntity" type="vCAC:Entity" export-name="vmEntity"/>
+      <bind name="vmName" type="string" export-name="vmName"/>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vm"/>
+    </out-binding>
+    <position y="19.045454545454543" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item13" type="custom-condition" alt-out-name="item12">
+    <display-name><![CDATA[found operation?]]></display-name>
+    <script encoded="false"><![CDATA[return (operation != null);]]></script>
+    <in-binding>
+      <bind name="operation" type="vCACCAFE:ConsumerResourceOperation" export-name="operation"/>
+    </in-binding>
+    <position y="9.045454545454543" x="244.5"/>
+  </workflow-item>
+  <workflow-item name="item5" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="63.59090909090908" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item5" type="task">
+    <display-name><![CDATA[log error]]></display-name>
+    <script encoded="false"><![CDATA[errorCode = "The '"+opName+"' resource operation was not found for "+vmName+" ("+state+")";
+
+System.error(errorCode);]]></script>
+    <in-binding>
+      <bind name="opName" type="string" export-name="opName"/>
+      <bind name="state" type="string" export-name="state"/>
+      <bind name="vmName" type="string" export-name="vmName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </out-binding>
+    <position y="73.59090909090908" x="365.0"/>
+  </workflow-item>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="9.045454545454543" x="764.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item11" throw-bind-name="errorCode" type="link" linked-workflow-id="8c275d1d-c296-4975-adca-c915f33cc96e">
+    <display-name><![CDATA[Wait for resource action request]]></display-name>
+    <in-binding>
+      <bind name="request" type="vCACCAFE:ResourceActionRequest" export-name="request">
+        <description><![CDATA[Resource action request]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="string" export-name="operationResult">
+        <description><![CDATA[Resource action request state]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Waits for a resource action request to complete.]]></description>
+    <position y="19.045454545454543" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item11" prototype-id="system-log" out-name="item0" type="task" interaction="l">
+    <display-name><![CDATA[System log]]></display-name>
+    <script encoded="false"><![CDATA[//Auto-generated script
+System.log(text);
+
+result = text;]]></script>
+    <in-binding>
+      <bind name="text" type="String" export-name="operationResult">
+        <description><![CDATA[The text to log]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="string" export-name="result"/>
+    </out-binding>
+    <description><![CDATA[Log the input text to the console log with level 'log']]></description>
+    <position y="19.045454545454543" x="604.5"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item7" type="task" script-module="com.vmware.pso.vcac/getVCACVirtualMachineState">
+    <display-name><![CDATA[get vm state]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineState(vCACVm) ;]]></script>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[vCAC Virtual Machine]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" export-name="state"/>
+    </out-binding>
+    <description><![CDATA[Get current state of the vCAC:VirtualMachine.
+
+Input: vCAC:VirtualMachine
+Return: string]]></description>
+    <position y="73.59090909090908" x="244.5"/>
+  </workflow-item>
+  <workflow-item name="item13" out-name="item8" type="task" script-module="com.vmware.library.vcaccafe.request/requestResourceAction">
+    <display-name><![CDATA[requestResourceAction]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vcaccafe.request").requestResourceAction(operation,inputs) ;]]></script>
+    <in-binding>
+      <bind name="operation" type="vCACCAFE:ConsumerResourceOperation" export-name="operation">
+        <description><![CDATA[Resource operation]]></description>
+      </bind>
+      <bind name="inputs" type="Properties" export-name="inputs">
+        <description><![CDATA[Input values]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCACCAFE:ResourceActionRequest" export-name="request"/>
+    </out-binding>
+    <description><![CDATA[Sends a request for a resource action.]]></description>
+    <position y="19.045454545454543" x="364.5"/>
+  </workflow-item>
+  <workflow-item name="item2" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="118.13636363636363" x="284.5"/>
+  </workflow-item>
+  <workflow-item name="item4" prototype-id="system-error" out-name="item2" catch-name="item2" throw-bind-name="errorCode" type="task" interaction="l">
+    <display-name><![CDATA[System error]]></display-name>
+    <script encoded="false"><![CDATA[//Auto-generated script
+System.error(text);
+]]></script>
+    <in-binding>
+      <bind name="text" type="String" export-name="errorCode">
+        <description><![CDATA[The text to log]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Log the input text to the console log with level 'error']]></description>
+    <position y="128.13636363636363" x="124.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vCACVm">
+      <desc><![CDATA[vCAC Virtual Machine]]></desc>
+    </p-param>
+    <p-param name="vCACVmName">
+      <desc><![CDATA[VM Name]]></desc>
+    </p-param>
+    <p-param name="opName">
+      <desc><![CDATA[Operation]]></desc>
+      <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#Power On#;#string#Shutdown#;#string#Reboot#;#string#Expire#;#string#Change Lease#}#]]></p-qual>
+    </p-param>
+    <p-param name="inputs">
+      <desc><![CDATA[Input values]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

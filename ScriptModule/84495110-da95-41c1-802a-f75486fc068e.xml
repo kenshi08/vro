@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="requestCatalogItem" result-type="vCACCAFE:CatalogItemRequest" api-version="6.0.0" id="84495110-da95-41c1-802a-f75486fc068e" version="1.0.3" allowed-operations="vf" category-name="com.vmware.library.vcaccafe.request">
+  <description><![CDATA[Sends a request for a catalog item.]]></description>
+  <param n="item" t="vCACCAFE:CatalogItem"><![CDATA[Catalog item]]></param>
+  <param n="inputs" t="Properties"><![CDATA[Input values]]></param>
+  <script encoded="false"><![CDATA[System.getModule("com.vmware.library.vcaccafe.util").validateObject(item, "Catalog item");
+System.log("Getting provisioning request for: '" + item.getName() + "' request form...");
+var provisioningRequest = vCACCAFERequestsHelper.getProvisioningRequestForCatalogItem(item);
+
+if (inputs != null) {
+	if (inputs["description"] != null) {
+		provisioningRequest.setDescription(inputs["description"]);
+	}
+	if (inputs["reasons"] != null) {
+		provisioningRequest.setReasons(inputs["reasons"]);
+	}
+	
+	if (inputs["requestedFor"] != null) {
+		provisioningRequest.setRequestedFor(inputs["requestedFor"]);
+	}
+}
+
+provisioningRequest.setBusinessGroupId(item.getOrganization().getSubtenantRef());
+
+var jsonData = vCACCAFERequestsHelper.getProvisioningRequestData(provisioningRequest);
+
+System.log(jsonData);
+
+var json = JSON.parse(jsonData);
+
+var parameterPattern = /^provider[-~]([^~]+)(?:~([^~]+))*$/;
+
+if (inputs != null) {
+	for (var path in inputs) {
+		var parameter = inputs[path];
+		var match = path.match(parameterPattern);
+		if (match != null) {
+			var index = 1;
+			var component = json;
+			while (index < match.length - 1 && match[index + 1] != null  
+				&& component[match[index]] != null && component[match[index]].data != null) {
+				component = component[match[index]].data;
+				index++;
+			}
+			component[match[index]] = parameter;
+		}
+	}
+}
+
+vCACCAFERequestsHelper.setProvisioningRequestData(provisioningRequest, JSON.stringify(json));
+
+var request = System.getModule("com.vmware.library.vcaccafe.request").requestCatalogItemWithProvisioningRequest(item, provisioningRequest);
+System.log(JSON.stringify(json));
+
+return request;]]></script>
+</dunes-script-module>

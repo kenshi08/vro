@@ -1,0 +1,221 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="37559ce8-25da-402e-ae0c-3a780655aada" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Configure Linux Agent with SSH]]></display-name>
+  <description><![CDATA[Configures the Puppet agent on linux node using SSH.]]></description>
+  <ref-types><![CDATA[>(Puppet:Master)]]></ref-types>
+  <position y="45.40909090909091" x="65.0"/>
+  <input>
+    <param name="master" type="Puppet:Master">
+      <description><![CDATA[Puppet master]]></description>
+    </param>
+    <param name="hostname" type="string">
+      <description><![CDATA[Node hostname]]></description>
+    </param>
+    <param name="username" type="string">
+      <description><![CDATA[Node username]]></description>
+    </param>
+    <param name="password" type="SecureString">
+      <description><![CDATA[Node password]]></description>
+    </param>
+    <param name="environment" type="string">
+      <description><![CDATA[Puppet environment (e.g. PROD, QE etc)]]></description>
+    </param>
+    <param name="registerMasterInHostsFile" type="boolean">
+      <description><![CDATA[Register Puppet master in node's hosts file]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="certName" type="string">
+      <description><![CDATA[Certificate name]]></description>
+    </param>
+  </output>
+  <attrib name="configureScript" type="Text" read-only="true">
+    <value encoded="n"><![CDATA[#! /bin/bash
+
+export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+function fail() {
+   echo "==={{ ERROR BEGIN }}==="
+   echo "$1"
+   echo "==={{ ERROR END }}==="
+
+   exit 1
+}
+
+function configure_agent() {
+  # use puppet config to set cert name
+  puppet config set server "${puppet_master}" --section agent --color=false || fail "Failed to set puppet master in agent config"
+  puppet config set certname "${cert_name}" --section agent --color=false || fail "Failed to set cert name in agent config"
+  puppet config set environment "${puppet_env}" --section agent --color=false || fail "Failed to set environment in agent config"
+
+  echo "Stopping Puppet agent service, if running"
+  puppet resource service "${service_name}" ensure=stopped --color=false
+
+  echo "Starting Puppet agent service"
+  puppet resource service "${service_name}" ensure=running enable=true --color=false || fail "Failed to start Puppet agent"
+}
+
+function configure_host_file() {
+  if [[ -z "${puppet_master_ip}" ]]; then
+    fail "ENV variable puppet_master_ip unset"
+  fi
+
+  echo "Updating host file entry for [${puppet_master_ip}]:[${puppet_master}]"
+  short_host_name=`echo ${puppet_master} | cut -d'.' -f1`
+  echo "${puppet_master_ip}   ${puppet_master}    ${short_host_name}" >> /etc/hosts
+}
+
+# validate env vars
+if [[ -z "${puppet_master}" ]]; then
+  fail "ENV variable puppet_master unset"
+elif [[ -z "${puppet_env}" ]]; then
+  fail "ENV variable puppet_env unset"
+fi
+
+echo "puppet_master: ${puppet_master}"
+echo "puppet_env: ${puppet_env}"
+echo "puppet_master_ip: ${puppet_master_ip}"
+echo "puppet_host_file: ${puppet_host_file}"
+
+# Check if puppet already installed
+version=`puppet --version --color=false 2>&1`
+if [[ $? -ne 0 ]]; then
+   fail "Puppet is not installed"
+fi
+
+echo "Puppet version: $version"
+
+if [[ "$version" =~ "Enterprise" ]]; then
+  service_name=pe-puppet
+else
+  service_name=puppet
+fi
+
+echo "Puppet service name: ${service_name}"
+
+# set certname to fqdn
+cert_name=`hostname`
+cert_name=`echo "${cert_name}" | tr '[:upper:]' '[:lower:]'`
+
+echo "==={{ CERTNAME BEGIN }}==="
+echo "${cert_name}"
+echo "==={{ CERTNAME END }}==="
+
+if [[ "${puppet_host_file}" = "true" ]]; then
+  configure_host_file
+fi
+
+configure_agent
+
+exit 0]]></value>
+    <description><![CDATA[Puppet configure script]]></description>
+  </attrib>
+  <workflow-item name="item2" out-name="item4" type="task">
+    <display-name><![CDATA[Configure]]></display-name>
+    <script encoded="false"><![CDATA[var masterCertname = System.getModule("com.vmware.o11n.plugin.puppet").getCertName(master);
+var masterIp = master.host;
+var configureScriptPath = "/tmp/puppet_configure.sh";
+var session;
+try {
+	// ssh session to node
+	session = new SSHSession(hostname, username);
+	session.connectWithPassword(password);
+
+	// create tmp file
+	var localFile = System.createTempFile();
+	var localFilePath = localFile.path;
+
+	// copy content to tmp file
+	localFile.write(configureScript);
+
+	// copy file to node
+	System.log("Copying puppet agent configure script, file=" + configureScriptPath);
+
+	var exitCode = session.putFile(localFilePath, configureScriptPath);
+	localFile.deleteFile();
+	if (exitCode !== 0) {
+		throw "Failed to create puppet agent configuration script. exitCode=" + exitCode;
+	}
+
+	// execute the copied script file
+	System.log("Running configure script");
+
+	var command = "puppet_master=" + System.getModule("com.vmware.o11n.plugin.puppet").escapeShellArgument(masterCertname) +
+					" puppet_env=" + System.getModule("com.vmware.o11n.plugin.puppet").escapeShellArgument(environment) +
+					" puppet_host_file=" + System.getModule("com.vmware.o11n.plugin.puppet").escapeShellArgument(registerMasterInHostsFile) +
+					" puppet_master_ip=" + System.getModule("com.vmware.o11n.plugin.puppet").escapeShellArgument(masterIp) +
+					" bash " + configureScriptPath;
+
+	session.executeCommand(command, true);
+
+	System.log("Configure Puppet agent result. exitCode=" + session.exitCode + " output=" + session.output + " error=" + session.error);
+
+	certName = System.getModule("com.vmware.o11n.plugin.puppet.node").getSectionText("CERTNAME", session.output);
+
+	if (session.exitCode !== 0) {
+		var error = System.getModule("com.vmware.o11n.plugin.puppet.node").getSectionText("ERROR", session.output);
+		if (!error) {
+			error = "Failed to configure agent. exitCode=" + session.exitCode;
+		}
+
+		throw error;
+	}
+}
+finally {
+	if (session) {
+		try {
+			session.disconnect();
+		}
+		catch(e) {
+		}
+	}
+}
+]]></script>
+    <in-binding>
+      <bind name="hostname" type="string" export-name="hostname"/>
+      <bind name="username" type="string" export-name="username"/>
+      <bind name="password" type="SecureString" export-name="password"/>
+      <bind name="master" type="Puppet:Master" export-name="master"/>
+      <bind name="configureScript" type="Text" export-name="configureScript"/>
+      <bind name="environment" type="string" export-name="environment"/>
+      <bind name="registerMasterInHostsFile" type="boolean" export-name="registerMasterInHostsFile"/>
+    </in-binding>
+    <out-binding>
+      <bind name="certName" type="string" export-name="certName"/>
+    </out-binding>
+    <description><![CDATA[Configure agent]]></description>
+    <position y="55.40909090909091" x="164.5"/>
+  </workflow-item>
+  <workflow-item name="item4" type="end" end-mode="0">
+    <position y="45.40909090909091" x="364.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="master">
+      <desc><![CDATA[Puppet Master]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual name="contextualParameter" type="void"><![CDATA[__NULL__]]></p-qual>
+    </p-param>
+    <p-param name="hostname">
+      <desc><![CDATA[Puppet Node Hostname]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual kind="static" name="inetAddress" type="String"><![CDATA[Host name or IP address]]></p-qual>
+    </p-param>
+    <p-param name="username">
+      <desc><![CDATA[Puppet Node Username]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="password">
+      <desc><![CDATA[Puppet Node Password]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="environment">
+      <desc><![CDATA[Puppet environment (e.g. PROD, QE etc)]]></desc>
+      <p-qual kind="static" name="defaultValue" type="string"><![CDATA[production]]></p-qual>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="registerMasterInHostsFile">
+      <desc><![CDATA[Register Puppet Master in Hosts file]]></desc>
+      <p-qual kind="static" name="defaultValue" type="boolean"><![CDATA[__NULL__]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

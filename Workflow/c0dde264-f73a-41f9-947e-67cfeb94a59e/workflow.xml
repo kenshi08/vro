@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="c0dde264-f73a-41f9-947e-67cfeb94a59e" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[ServiceNow - Create CMDB CI]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="hostname" type="string"/>
+    <param name="owner" type="string"/>
+    <param name="vcUuid" type="string"/>
+    <param name="diskProvisionGB" type="string"/>
+    <param name="deploymentId" type="string"/>
+    <param name="MemoryInMB" type="string"/>
+    <param name="cpuTotalCount" type="string"/>
+  </input>
+  <output>
+    <param name="serviceNowSysId" type="string"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="task">
+    <display-name><![CDATA[CI Rest Operation]]></display-name>
+    <script encoded="false"><![CDATA[var configPath = "CS"
+var configName = "environmentConfig"
+var attributeName = "serviceNowRestHost"
+var tableName = "cmdb_ci_vmware_instance"
+
+//get REST Host from configuration element
+var restHost = System.getModule("com.neetcloud.cs.example").getRestHostFromConfig(configPath, configName, attributeName)
+
+//REST Template 
+var opName = "serviceNowCreateCI";
+var opTemplate = "/api/now/table/" + tableName;
+var opMethod = "POST";
+
+// create the REST operation:
+var opCI = System.getModule("com.neetcloud.cs.example").createOp(restHost, opName, opMethod, opTemplate);
+
+
+//cmdb_ci_vm_vmware table content to post;
+var contentObject = {}; 
+contentObject["name"] = hostname;
+contentObject["cpus"] = cpuTotalCount;
+contentObject["memory"] = MemoryInMB;
+contentObject["correlation_id"]=  deploymentId
+contentObject["disks_size"]=  diskProvisionGB
+contentObject["location"] = "Sydney";
+contentObject["vcenter_uuid"] = vcUuid;
+contentObject["state"] = "On";
+contentObject["owned_by"] = owner;
+
+postContent = JSON.stringify(contentObject);
+System.log("JSON: " + postContent);
+
+// (Rest Operation, Params, Content, Auth Token)
+var ciResponse = System.getModule("com.neetcloud.cs.example").executeOp(opCI, null, postContent, null) ;
+
+try{
+	var cmdbCI = JSON.parse(ciResponse);
+} catch (ex) {
+	throw ex + " failed to parse ServiceNow CMDB response";
+} 
+
+serviceNowSysId = cmdbCI['result']['sys_id'];]]></script>
+    <in-binding>
+      <bind name="hostname" type="string" export-name="hostname"/>
+      <bind name="cpuTotalCount" type="string" export-name="cpuTotalCount"/>
+      <bind name="MemoryInMB" type="string" export-name="MemoryInMB"/>
+      <bind name="deploymentId" type="string" export-name="deploymentId"/>
+      <bind name="diskProvisionGB" type="string" export-name="diskProvisionGB"/>
+      <bind name="vcUuid" type="string" export-name="vcUuid"/>
+      <bind name="owner" type="string" export-name="owner"/>
+    </in-binding>
+    <out-binding>
+      <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="hostname">
+      <desc><![CDATA[hostname]]></desc>
+    </p-param>
+    <p-param name="owner">
+      <desc><![CDATA[owner]]></desc>
+    </p-param>
+    <p-param name="vcUuid">
+      <desc><![CDATA[vcUuid]]></desc>
+    </p-param>
+    <p-param name="diskProvisionGB">
+      <desc><![CDATA[diskProvisionGB]]></desc>
+    </p-param>
+    <p-param name="deploymentId">
+      <desc><![CDATA[deploymentId]]></desc>
+    </p-param>
+    <p-param name="MemoryInMB">
+      <desc><![CDATA[MemoryInMB]]></desc>
+    </p-param>
+    <p-param name="cpuTotalCount">
+      <desc><![CDATA[cpuTotalCount]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

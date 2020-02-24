@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVCACVirtualMachineByNameOrObject" result-type="vCAC:VirtualMachine" api-version="6.0.0" id="2be18c1f-fcb9-4c57-8bbd-9940aa564063" version="1.0.0" allowed-operations="evf" category-name="com.vmware.pso.vcac">
+  <param n="vCACVmName" t="string"><![CDATA[Virtual Machine Name]]></param>
+  <param n="vCACVm" t="vCAC:VirtualMachine"><![CDATA[vCAC Virtual Machine]]></param>
+  <script encoded="false"><![CDATA[if (!isSet(vCACVmName) && !isSet(vCACVm)) { throw 'No inputs provided'; }
+
+var vm;
+if (isSet(vCACVmName)) {
+	//var vm = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineByName(vCACVmName);
+	var vm = getVCACVirtualMachineByName(vCACVmName);
+} else if (isSet(vCACVm)) {
+	var vm = vCACVm;
+}
+
+if (!isSet(vm)) { throw 'Unable to find VM'; }
+
+return vm;
+	
+// ---------------------------------------------------------------
+function isSet(s){
+    return s!=null && s!=undefined && s!="";
+}
+
+
+function getVCACVirtualMachineByName(vmName) {
+	var vcacVM;
+	var vCACVms = Server.findAllForType("vCAC:VirtualMachine", "VirtualMachineName eq '" + vmName + "' and IsManaged eq true");
+	
+	if(vCACVms != null && vCACVms.length != 0){
+		vcacVM = vCACVms[0];	
+	}
+	else{
+		System.error("No vCAC virtual machine found with name " + vmName);
+		throw "No vCAC virtual machine found with name " + vmName;
+	}
+	
+	return vcacVM;
+}
+]]></script>
+</dunes-script-module>

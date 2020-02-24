@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="hasChildrenInRelation" result-type="boolean" api-version="6.0.0" id="72edc9ce-aed5-4ccd-b66a-ba68f2f6cf66" version="0.0.0" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes.sql">
+  <param n="parentType" t="string"/>
+  <param n="parentId" t="string"/>
+  <param n="relationName" t="string"/>
+  <script encoded="false"><![CDATA[var objects = System.getModule("com.vmware.coe.dynamicTypes.sql").findRelation(parentType,parentId,relationName);
+if (objects == null) return false;
+if (objects.length == 0) return false;
+return true;]]></script>
+</dunes-script-module>

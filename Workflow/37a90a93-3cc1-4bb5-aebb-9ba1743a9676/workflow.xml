@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="37a90a93-3cc1-4bb5-aebb-9ba1743a9676" version="0.0.9" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Add VMs to existing load balancer pools]]></display-name>
+  <description><![CDATA[Adds VMs as members to existing load balancer pools]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="connection" type="NSX:Connection">
+      <description><![CDATA[NSX endpoint]]></description>
+    </param>
+    <param name="edgeId" type="string">
+      <description><![CDATA[Edge id]]></description>
+    </param>
+    <param name="poolId" type="Array/string">
+      <description><![CDATA[Pool ids]]></description>
+    </param>
+    <param name="poolMembers" type="Array/CompositeType(ipAddress:string,weight:number):poolMember">
+      <description><![CDATA[Pool members]]></description>
+    </param>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[	var members = new NSXLoadBalancerPoolMembers();
+	var membersList = new Array();
+
+	for (var i=0; i<poolMembers.length; i++) {
+		var member = new NSXLoadBalancerPoolMember();
+
+		member.ipAddress = poolMembers[i].ipAddress;
+		member.weight = poolMembers[i].weight;
+
+		membersList[i] = member;
+	}
+	members.loadBalancerPoolMembers = membersList;
+
+	NSXEdgeManager.addVMsToLBPool(connection, edgeId, poolIds, members);]]></script>
+    <in-binding>
+      <bind name="connection" type="NSX:Connection" export-name="connection">
+        <description><![CDATA[NSX Endpoint]]></description>
+      </bind>
+      <bind name="edgeId" type="string" export-name="edgeId">
+        <description><![CDATA[Edge Id]]></description>
+      </bind>
+      <bind name="poolIds" type="Array/string" export-name="poolId">
+        <description><![CDATA[Pool Id]]></description>
+      </bind>
+      <bind name="poolMembers" type="Array/CompositeType(ipAddress:string,weight:number):poolMember" export-name="poolMembers">
+        <description><![CDATA[Pool Members]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Adds VMs as members to existing load balancer pools]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="connection">
+      <desc><![CDATA[NSX Connection object (Select from the NSX inventory, from the vRO inventory view)]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="edgeId">
+      <desc><![CDATA[Edge id]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="poolId">
+      <desc><![CDATA[Pool ids]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="poolMembers">
+      <desc><![CDATA[Pool members (Specify IP address and weight of the pool member)]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

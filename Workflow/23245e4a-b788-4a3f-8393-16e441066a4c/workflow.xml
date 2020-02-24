@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="23245e4a-b788-4a3f-8393-16e441066a4c" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Import blueprint from sample exchange]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="blueprintName" type="string"/>
+    <param name="overwriteContent" type="boolean"/>
+  </input>
+  <attrib name="host" type="vCACCAFE:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="link" linked-workflow-id="c8fb97d7-19c1-4dde-8130-aa036467627f">
+    <display-name><![CDATA[Import blueprint from sample exchange to vRA ]]></display-name>
+    <in-binding>
+      <bind name="blueprintName" type="string" export-name="blueprintName"/>
+      <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
+      <bind name="overwriteContent" type="boolean" export-name="overwriteContent"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="task">
+    <display-name><![CDATA[Set host]]></display-name>
+    <script encoded="false"><![CDATA[// Creating the host
+var properties = {
+	name: "name",
+	url: "url",
+	tenant: "tenant",
+	sessionMode: "sessionMode",
+	connectionTimeout: 30,
+	operationTimeout: 60
+};
+
+host = vCACCAFEHostManager.createHost(properties).getHostForCurrentUser();]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="blueprintName">
+      <desc><![CDATA[Blueprint name]]></desc>
+      <p-qual kind="ognl" name="genericEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.coe.vra.content","getSampleExchangeBlueprintNames").call()]]></p-qual>
+    </p-param>
+    <p-param name="overwriteContent">
+      <desc><![CDATA[Overwrite ?]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

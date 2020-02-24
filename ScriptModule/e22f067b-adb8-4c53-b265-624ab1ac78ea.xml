@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getObjectProperties" result-type="Array/string" api-version="6.0.0" id="e22f067b-adb8-4c53-b265-624ab1ac78ea" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes">
+  <description><![CDATA[Get an object type definition output fields]]></description>
+  <param n="namespace" t="string"/>
+  <param n="type" t="string"/>
+  <script encoded="false"><![CDATA[var dynamicTypeDefinition = DynamicTypesManager.getType(namespace , type);
+if (dynamicTypeDefinition != null) return dynamicTypeDefinition.properties;
+return null;]]></script>
+</dunes-script-module>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getRestHostFromConfig" result-type="REST:RESTHost" api-version="6.0.0" id="9daf9046-cdd7-4f0b-8724-a8e6d9ba531d" version="0.0.2" allowed-operations="evf" category-name="com.neetcloud.cs.example">
+  <param n="configPath" t="string"/>
+  <param n="configName" t="string"/>
+  <param n="attributeName" t="string"/>
+  <script encoded="false"><![CDATA[// Get Global attributes from Configuration Element
+var ConfigurationElement = System.getModule("com.neetcloud.cs.example").getConfigurationElementByName(configName, configPath);
+System.log("attributeName: " + attributeName);
+attributeName = attributeName.replace(/\s+/g, ' ');
+return ConfigurationElement.getAttributeWithKey(attributeName).value]]></script>
+</dunes-script-module>

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCatalogResourceExternalReference" result-type="string" api-version="6.0.0" id="2613ea3d-b051-4da6-8c12-ca8ebfe267cb" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.library.vcac">
+  <param n="catalogResource" t="vCACCAFE:CatalogResource"/>
+  <script encoded="false"><![CDATA[
+var vcacHost = System.getModule("com.vmware.coe.library.vcac").getVcacHost(catalogResource) ;
+var catalogClient = vcacHost.createRestClient(vCACCAFEServicesEnum.CATALOG_SERVICE);
+var catalogItem = catalogResource.getResourceTypeRef();
+var serviceResponse = catalogClient.get("consumer/resources/" + catalogResource.id);
+if (serviceResponse.getStatus() != "200") throw serviceResponse.getStatus();
+var jsonResource = serviceResponse.getBodyAsString();
+
+var resource = JSON.parse(jsonResource);
+var resourceDataEntries = resource.resourceData.entries;
+for each (var resourceDataEntry in resourceDataEntries) {
+	if (resourceDataEntry.key == "EXTERNAL_REFERENCE_ID") {
+		return resourceDataEntry.value.value;
+	}	
+}]]></script>
+</dunes-script-module>

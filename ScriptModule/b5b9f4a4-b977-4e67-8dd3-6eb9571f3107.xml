@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVCACVirtualMachineEndpointType" result-type="string" api-version="6.0.0" id="b5b9f4a4-b977-4e67-8dd3-6eb9571f3107" version="0.0.1" allowed-operations="evf" category-name="com.vmware.pso.vcac">
+  <description><![CDATA[• Assists in getting the type of hosting environment, and also let you know whether it is hosted internally or externally
+   For example: vCcloud air, Amazon, vblock, or other hosting environment
+]]></description>
+  <param n="vCACVm" t="vCAC:VirtualMachine"><![CDATA[vCAC Virtual Machine]]></param>
+  <script encoded="false"><![CDATA[if (vCACVm == null) { throw 'VM not provided'; }
+
+virtualMachineEntity = vCACVm.getEntity();
+vCACHost = Server.findForType("vCAC:VCACHost", virtualMachineEntity.hostId);
+
+var hostEntity = virtualMachineEntity.getLink(vCACHost, "Host")[0];
+
+var managementEndpointEntity = hostEntity.getLink(vCACHost, "ManagementEndpoint")[0];
+
+var interfaceType = managementEndpointEntity.getProperty("InterfaceType");
+
+interfaceType = (interfaceType == null || interfaceType == "") ? "UNKNOWN" : interfaceType;
+
+return interfaceType;
+]]></script>
+</dunes-script-module>

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="f9746c6e-e84e-49ef-9a9a-23aa80dd01ce" version="1.0.3" api-version="6.0.0" allowed-operations="vf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Request a catalog item on behalf of a user]]></display-name>
+  <description><![CDATA[Sends a request for a catalog item on behalf of a user. You can use this workflow only for catalog items entitled to both you and the user on behalf of whom you are sending the request.
+
+Usage: 
+Provide the parameters in the form :
+provider~<component_id>~<parameter_id>
+In case of nested components, use:
+provider~<component_1_id>~<component_2_id>~<parameter>]]></description>
+  <ref-types><![CDATA[>(vCACCAFE:CatalogItem)]]></ref-types>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="item" type="vCACCAFE:CatalogItem">
+      <description><![CDATA[Catalog item]]></description>
+    </param>
+    <param name="user" type="string">
+      <description><![CDATA[User id]]></description>
+    </param>
+    <param name="inputs" type="Array/CompositeType(name:string,value:string):FormInput">
+      <description><![CDATA[Input values]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="request" type="vCACCAFE:CatalogItemRequest">
+      <description><![CDATA[Request]]></description>
+    </param>
+  </output>
+  <attrib name="properties" type="Properties" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="task" script-module="com.vmware.library.vcaccafe.util/compositeTypeToProperties">
+    <display-name><![CDATA[compositeTypeToProperties]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vcaccafe.util").compositeTypeToProperties(types) ;]]></script>
+    <in-binding>
+      <bind name="types" type="Array/CompositeType(name:string,value:string):Entries" export-name="inputs">
+        <description><![CDATA[Entry pairs name/value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Properties" export-name="properties"/>
+    </out-binding>
+    <description><![CDATA[Converts an array of composite types objects to a properties object.]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task" script-module="com.vmware.library.vcaccafe.request/requestCatalogItemOnBehalfOf">
+    <display-name><![CDATA[requestCatalogItemOnBehalfOf]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vcaccafe.request").requestCatalogItemOnBehalfOf(item,inputs,user) ;]]></script>
+    <in-binding>
+      <bind name="item" type="vCACCAFE:CatalogItem" export-name="item">
+        <description><![CDATA[Catalog item]]></description>
+      </bind>
+      <bind name="inputs" type="Properties" export-name="properties">
+        <description><![CDATA[Input values]]></description>
+      </bind>
+      <bind name="user" type="string" export-name="user">
+        <description><![CDATA[User id]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCACCAFE:CatalogItemRequest" export-name="request"/>
+    </out-binding>
+    <description><![CDATA[Sends a request for a catalog item on behalf of a user.]]></description>
+    <position y="55.90909090909091" x="345.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="item">
+      <desc><![CDATA[Catalog item]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual name="contextualParameter" type="void"><![CDATA[__NULL__]]></p-qual>
+    </p-param>
+    <p-param name="user">
+      <desc><![CDATA[User id]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="inputs">
+      <desc><![CDATA[Input values]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

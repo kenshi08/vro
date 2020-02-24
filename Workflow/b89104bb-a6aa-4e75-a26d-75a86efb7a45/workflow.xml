@@ -1,0 +1,1168 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="b89104bb-a6aa-4e75-a26d-75a86efb7a45" version="0.0.40" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Get Virtual Server Configuration]]></display-name>
+  <description><![CDATA[Get Virtual Server Configuration.
+
+VMware PSO I&A Selva 08/2015]]></description>
+  <position y="45.40909090909091" x="25.0"/>
+  <input>
+    <param name="edgeName" type="string">
+      <description><![CDATA[Edge Name]]></description>
+    </param>
+    <param name="virtualServerName" type="string">
+      <description><![CDATA[Virtual Server Name]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="virtualServer" type="CompositeType(virtualServerName:string,virtualServerId:string,enabled:boolean,ipAddress:string,protocol:string,port:number,connectionLimit:number,connectionRateLimit:number,defaultPoolId:string,applicationProfileId:string,enableServiceInsertion:boolean,accelerationEnabled:boolean):virtualServer">
+      <description><![CDATA[Virtual Server Configuration]]></description>
+    </param>
+    <param name="pool" type="CompositeType(poolId:string,name:string,algorithm:string,transparent:boolean,monitorId:string):pool">
+      <description><![CDATA[Pool Configuration]]></description>
+    </param>
+    <param name="member" type="Array/CompositeType(memberId:string,ipAddress:string,weight:number,monitorPort:number,port:number,maxConn:number,minConn:number,condition:string,name:string):member">
+      <description><![CDATA[Member]]></description>
+    </param>
+    <param name="monitor" type="CompositeType(monitorId:string,type:string,interval:number,timeout:number,maxRetries:number,name:string,send:number,receive:number,expected:string,Method:string,url:string,extension:string):monitor">
+      <description><![CDATA[Monitor]]></description>
+    </param>
+    <param name="applicationProfile" type="CompositeType(applicationProfileId:string,name:string,insertXForwardedFor:boolean,sslPassthrough:boolean,template:string,serverSslEnabled:boolean,appPersistMethod:string,expire:number,cookieName:string,httpRedirect:string,cookieMode:string):applicationProfile">
+      <description><![CDATA[Application Profile]]></description>
+    </param>
+    <param name="clientSsl" type="CompositeType(ciphers:string,clientAuth:string,serviceCertificate:string,serviceCertificateName:string,serviceCertificateExpiry:string,serviceCertificateContent:string,caCertificate:string,caCertificateName:string,caCertificateExpiry:string,caCertificateContent:string,crlCertificate:string,crlCertificateName:string,crlCertificateExpiry:string,crlCertificateContent:string)">
+      <description><![CDATA[Virtual Server SSL]]></description>
+    </param>
+    <param name="serverSsl" type="CompositeType(serviceCertificate:string,serviceCertificateName:string,serviceCertificateExpiry:string,serviceCertificateContent:string,caCertificate:string,caCertificateName:string,caCertificateExpiry:string,caCertificateContent:string,crlCertificate:string,crlCertificateName:string,crlCertificateExpiry:string,crlCertificateContent:string)">
+      <description><![CDATA[Pool Side SSL]]></description>
+    </param>
+    <param name="applicationRule" type="Array/CompositeType(applicationRuleId:string,name:string,script:string):applicationRule">
+      <description><![CDATA[Application Rule]]></description>
+    </param>
+    <param name="error" type="string">
+      <description><![CDATA[Error Content]]></description>
+    </param>
+  </output>
+  <attrib name="method" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest method]]></description>
+  </attrib>
+  <attrib name="uri" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest url]]></description>
+  </attrib>
+  <attrib name="body" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest body]]></description>
+  </attrib>
+  <attrib name="xmlContentObj" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest xml content]]></description>
+  </attrib>
+  <attrib name="nsxRestHost" type="REST:RESTHost" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Rest Host]]></description>
+  </attrib>
+  <attrib name="edgeId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge ID]]></description>
+  </attrib>
+  <attrib name="virtualServerId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Virtual Server ID]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Error Code]]></description>
+  </attrib>
+  <workflow-note x="100.0" y="36.36363636363636" w="1020.0" h="63.63636363636363">
+    <description><![CDATA[Get Virtual Server Config]]></description>
+  </workflow-note>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="1184.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item3" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get Virtual Server Config]]></display-name>
+    <script encoded="false"><![CDATA[	//Get Virtual Server Config
+
+	method = "GET";
+	uri = "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+	body = "";
+	var VSIDUrl = uri;
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	response = request.execute().contentAsString;
+
+	//	System.log("Response Body : " +response);
+
+	var ind1 = response.indexOf("<protocol>") + "<protocol>".length;
+	var ind2 = response.indexOf("</protocol>");
+	protocol = response.substring(ind1, ind2);
+	if (ind2 == -1) {
+	 protocol = "";
+	}
+
+
+	var ind3 = response.indexOf("<port>") + "<port>".length;
+	var ind4 = response.indexOf("</port>");
+	port = response.substring(ind3, ind4);
+	if (ind4 == -1) {
+	 port = "";
+	}
+
+	var ind5 = response.indexOf("<defaultPoolId>") + "<defaultPoolId>".length;
+	var ind6 = response.indexOf("</defaultPoolId>");
+	defaultPoolId = response.substring(ind5, ind6);
+
+	if (ind6 == -1) {
+	 defaultPoolId = "";
+	}
+
+	ind7 = response.indexOf("<applicationProfileId>") + "<applicationProfileId>".length;
+	ind8 = response.indexOf("</applicationProfileId>");
+	applicationProfileId = response.substring(ind7, ind8);
+	if (ind8 == -1) {
+	 applicationProfileId = "";
+	}
+
+	var virtid1 = response.indexOf("<virtualServerId>") + "<virtualServerId>".length;
+	var virtid2 = response.indexOf("</virtualServerId>");
+	virtualServerId = response.substring(virtid1, virtid2);
+	if (virtid2 == -1) {
+	 virtualServerId = "";
+	}
+
+	var virtName1 = response.indexOf("<name>") + "<name>".length;
+	var virtName2 = response.indexOf("</name>");
+	virtualServerName = response.substring(virtName1, virtName2);
+	if (virtName2 == -1) {
+	 virtualServerName = "";
+	}
+
+	var virtenb1 = response.indexOf("<enabled>") + "<enabled>".length;
+	var virtenb2 = response.indexOf("</enabled>");
+	enabled = response.substring(virtenb1, virtenb2);
+	if (virtenb2 == -1) {
+	 enabled = "";
+	}
+
+	var virtip1 = response.indexOf("<ipAddress>") + "<ipAddress>".length;
+	var virtip2 = response.indexOf("</ipAddress>");
+	ipAddress = response.substring(virtip1, virtip2);
+	if (virtip2 == -1) {
+	 ipAddress = "";
+	}
+
+	var conn1 = response.indexOf("<connectionLimit>") + "<connectionLimit>".length;;
+	var conn2 = response.indexOf("</connectionLimit>");
+	connectionLimit = response.substring(conn1, conn2);
+	if (conn2 == -1) {
+	 connectionLimit = "";
+	}
+
+	var conn3 = response.indexOf("<connectionRateLimit>") + "<connectionRateLimit>".length;;
+	var conn4 = response.indexOf("</connectionRateLimit>");
+	connectionRateLimit = response.substring(conn3, conn4);
+	if (conn4 == -1) {
+	 connectionRateLimit = "";
+	}
+
+	var poolid1 = response.indexOf("<defaultPoolId>") + "<defaultPoolId>".length;;
+	var poolid2 = response.indexOf("</defaultPoolId>");
+	defaultPoolId = response.substring(poolid1, poolid2);
+	if (poolid2 == -1) {
+	 defaultPoolId = "";
+	}
+
+	var appid1 = response.indexOf("<applicationProfileId>") + "<applicationProfileId>".length;;
+	var appid2 = response.indexOf("</applicationProfileId>");
+	applicationProfileId = response.substring(appid1, appid2);
+	if (appid2 == -1) {
+	 applicationProfileId = "";
+	}
+
+	var enb1 = response.indexOf("<enableServiceInsertion>") + "<enableServiceInsertion>".length;;
+	var enb2 = response.indexOf("</enableServiceInsertion>");
+	enableServiceInsertion = response.substring(enb1, enb2);
+	if (enb2 == -1) {
+	 enableServiceInsertion = "";
+	}
+
+	var enb3 = response.indexOf("<accelerationEnabled>") + "<accelerationEnabled>".length;;
+	var enb4 = response.indexOf("</accelerationEnabled>");
+	accelerationEnabled = response.substring(enb3, enb4);
+	if (enb4 == -1) {
+	 accelerationEnabled = "";
+	}
+
+	virtualServer = ({
+	 virtualServerName: virtualServerName,
+	 virtualServerId: virtualServerId,
+	 applicationProfileId: applicationProfileId,
+	 enabled: enabled,
+	 ipAddress: ipAddress,
+	 protocol: protocol,
+	 port: port,
+	 connectionLimit: connectionLimit,
+	 connectionRateLimit: connectionRateLimit,
+	 defaultPoolId: defaultPoolId,
+	 enableServiceInsertion: enableServiceInsertion,
+	 accelerationEnabled: accelerationEnabled
+	});
+	virtualServer.virtualServerName = virtualServerName;
+	virtualServer.virtualServerId = virtualServerId;
+	virtualServer.applicationProfileId = applicationProfileId;
+	virtualServer.enabled = enabled;
+	virtualServer.ipAddress = ipAddress;
+	virtualServer.protocol = protocol;
+	virtualServer.port = port;
+	virtualServer.connectionLimit = connectionLimit;
+	virtualServer.connectionRateLimit = connectionRateLimit;
+	virtualServer.defaultPoolId = defaultPoolId;
+	virtualServer.enableServiceInsertion = enableServiceInsertion;
+	virtualServer.accelerationEnabled = accelerationEnabled;]]></script>
+    <in-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="xmlContentObj" type="string" export-name="xmlContentObj"/>
+      <bind name="virtualServer" type="CompositeType(virtualServerName:string,virtualServerId:string,enabled:boolean,ipAddress:string,protocol:string,port:number,connectionLimit:number,connectionRateLimit:number,defaultPoolId:string,applicationProfileId:string,enableServiceInsertion:boolean,accelerationEnabled:boolean):virtualServer" export-name="virtualServer"/>
+    </out-binding>
+    <position y="55.40909090909091" x="424.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item4" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get virtualServerId]]></display-name>
+    <script encoded="false"><![CDATA[	var virtualServerMatchCounter = 0;
+	// Create a REST call to query all edges configured
+	System.log("Get RestHost :" + nsxRestHost);
+	System.log("Get edgeId :" + edgeId);
+	var request = nsxRestHost.createRequest("GET", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers");
+	//System.log("Request URL: " + request.fullUrl);
+
+	// Execute the request
+	System.log("EdgeID :" + edgeId);
+	System.log("NSX Host :" + nsxRestHost);
+	var response = request.execute();
+	var foundRule = false;
+
+	// Evaluate the Response
+
+	if (response.statusCode == 200) {
+	 // Get XML response from NSX
+	 var responseXML = XMLManager.fromString(response.ContentAsString);
+	 var virtualServerNameList = responseXML.documentElement.getElementsByTagName("name");
+	 var virtualServerIdList = responseXML.documentElement.getElementsByTagName("virtualServerId");
+
+	 // loop through list of virtual names in the response. 
+	 for (x = 0; x < virtualServerNameList.length; x++) {
+	  if (virtualServerNameList.item(x).firstChild.textContent == virtualServerName) {
+	   virtualServerId = virtualServerIdList.item(x).firstChild.textContent;
+	   virtualServerID = virtualServerId;
+	   //NSXurl = nsxConnectionList[v].url;
+	   virtualServerMatchCounter++;
+	   //System.log("Virtual Server ID for " +virtualServerNameList.item(x).firstChild.textContent + " is >> " + virtualServerIdList.item(x).firstChild.textContent)
+	   System.log("Virtual Server ID : " + virtualServerId);
+	   // System.log("NSX URL for " +edgeNameList.item(x).firstChild.textContent + " is >> " + NSXurl)
+	   if (virtualServerMatchCounter > 1) {
+	    throw "Multiple virtualservers with the same virtual server name (" + virtualServerName + ") found";
+	   }
+	  }
+	 }
+	}
+	if (virtualServerId == null) {
+	 System.error("Virtual Server -> " + virtualServerName + " doesn't exist");
+	 throw "Virtual Server -> " + virtualServerName + " doesn't exist";
+	}]]></script>
+    <in-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="264.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item6" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get Pool and Monitor Config]]></display-name>
+    <script encoded="false"><![CDATA[	//Get Pool and Monitor Config
+
+	method = "GET";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+	body = "";
+	var VSIDUrl = uri;
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	response = request.execute().contentAsString;
+
+	var ind1 = response.indexOf("<defaultPoolId>") + "<defaultPoolId>".length;
+	var ind2 = response.indexOf("</defaultPoolId>");
+	poolId = response.substring(ind1, ind2);
+	if (ind2 == -1) {
+	 poolId = "";
+	}
+	//Get Pool Config
+
+	method = "GET";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/pools/" + poolId;
+	body = "";
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	response = request.execute().contentAsString;
+	//System.log( "Pool : " +poolId);
+
+	var pl1 = response.indexOf("<poolId>") + "<poolId>".length;
+	var pl2 = response.indexOf("</poolId>");
+	poolId = response.substring(pl1, pl2);
+	if (pl2 == -1) {
+	 poolId = "";
+	}
+
+	var name1 = response.indexOf("<name>") + "<name>".length;
+	var name2 = response.indexOf("</name>");
+	name = response.substring(name1, name2);
+	if (name2 == -1) {
+	 name = "";
+	}
+
+	var alg1 = response.indexOf("<algorithm>") + "<algorithm>".length;
+	var alg2 = response.indexOf("</algorithm>");
+	algorithm = response.substring(alg1, alg2);
+	if (alg2 == -1) {
+	 algorithm = "";
+	}
+
+	var tran1 = response.indexOf("<transparent>") + "<transparent>".length;
+	var tran2 = response.indexOf("</transparent>");
+	transparent = response.substring(tran1, tran2);
+	if (tran2 == -1) {
+	 transparent = "";
+	}
+
+
+	var mon1 = response.indexOf("<monitorId>") + "<monitorId>".length;
+	var mon2 = response.indexOf("</monitorId>");
+	monitorId = response.substring(mon1, mon2);
+	if (mon2 == -1) {
+	 monitorId = "";
+	}
+
+
+
+	pool = ({
+	 poolId: poolId,
+	 name: name,
+	 algorithm: algorithm,
+	 transparent: transparent,
+	 monitorId: monitorId,
+	 member: member
+	});
+	pool.poolId = poolId;
+	pool.name = name;
+	pool.algorithm = algorithm;
+	pool.transparent = transparent;
+	pool.monitorId = monitorId;
+
+	method = "GET";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/monitors/" + monitorId;
+	body = "";
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	response = request.execute().contentAsString;
+	//System.log( "Pool : " +poolId);
+
+	var mon1 = response.indexOf("<monitorId>") + "<monitorId>".length;
+	var mon2 = response.indexOf("</monitorId>");
+	monitorId = response.substring(mon1, mon2);
+	if (mon2 == -1) {
+	 monitorId = "";
+	}
+
+	var type1 = response.indexOf("<type>") + "<type>".length;
+	var type2 = response.indexOf("</type>");
+	type = response.substring(type1, type2);
+	if (type2 == -1) {
+	 type = "";
+	}
+
+	var int1 = response.indexOf("<interval>") + "<interval>".length;
+	var int2 = response.indexOf("</interval>");
+	interval = response.substring(int1, int2);
+	if (int2 == -1) {
+	 interval = "";
+	}
+
+	var tim1 = response.indexOf("<timeout>") + "<timeout>".length;
+	var tim2 = response.indexOf("</timeout>");
+	timeout = response.substring(tim1, tim2);
+	if (tim2 == -1) {
+	 timeout = "";
+	}
+
+	var max1 = response.indexOf("<maxRetries>") + "<maxRetries>".length;
+	var max2 = response.indexOf("</maxRetries>");
+	maxRetries = response.substring(max1, max2);
+	if (max2 == -1) {
+	 maxRetries = "";
+	}
+
+	var nam3 = response.indexOf("<name>") + "<name>".length;
+	var nam4 = response.indexOf("</name>");
+	name = response.substring(nam3, nam4);
+	if (nam4 == -1) {
+	 name = "";
+	}
+
+	var send1 = response.indexOf("<send>") + "<send>".length;
+	var send2 = response.indexOf("</send>");
+	send = response.substring(send1, send2);
+	if (send2 == -1) {
+	 send = "";
+	}
+
+	var rec1 = response.indexOf("<receive>") + "<receive>".length;
+	var rec2 = response.indexOf("</receive>");
+	receive = response.substring(rec1, rec2);
+	if (rec2 == -1) {
+	 receive = "";
+	}
+
+	var exp1 = response.indexOf("<expected>") + "<expected>".length;
+	var exp2 = response.indexOf("</expected>");
+	expected = response.substring(exp1, exp2);
+	if (exp2 == -1) {
+	 expected = "";
+	}
+
+	var url1 = response.indexOf("<url>") + "<url>".length;
+	var url2 = response.indexOf("</url>");
+	url = response.substring(url1, url2);
+	if (url2 == -1) {
+	 url = "";
+	}
+
+	var meth1 = response.indexOf("<method>") + "<method>".length;
+	var meth2 = response.indexOf("</method>");
+	Method = response.substring(meth1, meth2);
+	if (url2 == -1) {
+	 Method = "";
+	}
+
+	var ext1 = response.indexOf("<extension>") + "<extension>".length;
+	var ext2 = response.indexOf("</extension>");
+	extension = response.substring(ext1, ext2);
+	if (ext2 == -1) {
+	 extension = "";
+	}
+
+	monitor = ({
+	 monitorId: monitorId,
+	 type: type,
+	 interval: interval,
+	 timeout: timeout,
+	 monitorId: monitorId,
+	 maxRetries: maxRetries,
+	 name: name,
+	 send: send,
+	 receive: receive,
+	 expected: expected,
+	 Method: Method,
+	 url: url,
+	 extension: extension
+	});
+	monitor.monitorId = monitorId;
+	monitor.type = type;
+	monitor.interval = interval;
+	monitor.timeout = timeout;
+	monitor.monitorId = monitorId;
+	monitor.maxRetries = maxRetries;
+	monitor.name = name;
+	monitor.send = send;
+	monitor.receive = receive;
+	monitor.expected = expected;
+	monitor.Method = Method;
+	monitor.url = url;
+	monitor.extension = extension;
+
+	System.log("Monitor Name : " + monitor.name);]]></script>
+    <in-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="pool" type="CompositeType(poolId:string,name:string,algorithm:string,transparent:boolean,monitorId:string):pool" export-name="pool"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="xmlContentObj" type="string" export-name="xmlContentObj"/>
+      <bind name="monitor" type="CompositeType(monitorId:string,type:string,interval:number,timeout:number,maxRetries:number,name:string,send:number,receive:number,expected:string,Method:string,url:string,extension:string):monitor" export-name="monitor"/>
+      <bind name="member" type="Array/CompositeType(memberId:string,ipAddress:string,weight:number,monitorPort:number,port:number,maxConn:number,minConn:number,condition:string,name:string):member" export-name="member"/>
+    </out-binding>
+    <position y="55.40909090909091" x="564.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item9" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get Application Profile Config]]></display-name>
+    <script encoded="false"><![CDATA[	//Get Virtual Server Config
+
+	method = "GET";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+	body = "";
+	var VSIDUrl = uri;
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	response = request.execute().contentAsString;
+
+	var ind1 = response.indexOf("<applicationProfileId>") + "<applicationProfileId>".length;
+	var ind2 = response.indexOf("</applicationProfileId>");
+	var applicationprofileId = response.substring(ind1, ind2);
+	if (ind2 == -1) {
+	 applicationprofileId = "";
+	}
+
+	//Get Application Profile Config
+
+	method = "GET";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationprofileId;
+	body = "";
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	response = request.execute().contentAsString;
+
+	var ap1 = response.indexOf("<applicationProfileId>") + "<applicationProfileId>".length;
+	var ap2 = response.indexOf("</applicationProfileId>");
+	applicationProfileId = response.substring(ap1, ap2);
+	if (ap2 == -1) {
+	 applicationProfileId = "";
+	}
+
+	var nam1 = response.indexOf("<name>") + "<name>".length;
+	var nam2 = response.indexOf("</name>");
+	name = response.substring(nam1, nam2);
+	if (nam2 == -1) {
+	 name = "";
+	}
+
+	var ins1 = response.indexOf("<insertXForwardedFor>") + "<insertXForwardedFor>".length;
+	var ins2 = response.indexOf("</insertXForwardedFor>");
+	insertXForwardedFor = response.substring(ins1, ins2);
+	if (ins2 == -1) {
+	 insertXForwardedFor = "";
+	}
+
+	var ssl1 = response.indexOf("<sslPassthrough>") + "<sslPassthrough>".length;
+	var ssl2 = response.indexOf("</sslPassthrough>");
+	sslPassthrough = response.substring(ssl1, ssl2);
+	//System.log("App ssl passthrough :" +sslPassthrough);
+	if (ssl2 == -1) {
+	 sslPassthrough = "";
+	}
+
+	var temp1 = response.indexOf("<template>") + "<template>".length;
+	var temp2 = response.indexOf("</template>");
+	template = response.substring(temp1, temp2);
+	if (temp2 == -1) {
+	 template = "";
+	 throw "Issue with virtual server application profile for (" + edgeId + ") (" + virtualServerId + ")";
+	}
+
+	var ser1 = response.indexOf("<serverSslEnabled>") + "<serverSslEnabled>".length;
+	var ser2 = response.indexOf("</serverSslEnabled>");
+	serverSslEnabled = response.substring(ser1, ser2);
+	if (ser2 == -1) {
+	 serverSslEnabled = "";
+	}
+
+	var met1 = response.indexOf("<method>") + "<method>".length;
+	var met2 = response.indexOf("</method>");
+	method1 = response.substring(met1, met2);
+	if (met2 == -1) {
+	 method1 = "";
+	}
+
+
+	var exp1 = response.indexOf("<expire>") + "<expire>".length;
+	var exp2 = response.indexOf("</expire>");
+	expire = response.substring(exp1, exp2);
+	if (exp2 == -1) {
+	 expire = "";
+	}
+
+	var http1 = response.indexOf("<httpRedirect>") + "<httpRedirect>".length;
+	var http2 = response.indexOf("</httpRedirect>");
+	httpRedirect = response.substring(http1, http2);
+	if (http2 == -1) {
+	 httpRedirect = "";
+	}
+
+	var cookmode1 = response.indexOf("<cookieMode>") + "<cookieMode>".length;
+	var cookmode2 = response.indexOf("</cookieMode>");
+	cookieMode = response.substring(cookmode1, cookmode2);
+	if (cookmode2 == -1) {
+	 cookieMode = "";
+	}
+
+	var cook1 = response.indexOf("<cookieName>") + "<cookieName>".length;
+	var cook2 = response.indexOf("</cookieName>");
+	cookieName = response.substring(cook1, cook2);
+	if (cook2 == -1) {
+	 cookieName = "";
+	}
+	var serverS1 = response.indexOf("<serverSsl>") + "<serverSsl>".length;
+	var serverS2 = response.indexOf("</serverSsl>");
+	serverSsl = response.substring(serverS1, serverS2);
+	if (serverS2 == -1) {
+	 serverSsl = "";
+	}
+
+	//	System.log("Server SSL : "+serverSsl);
+
+	// Client SSL  ***************************************************************************************
+
+	var clientS1 = response.indexOf("<clientSsl>") + "<clientSsl>".length;
+	var clientS2 = response.indexOf("</clientSsl>");
+	clientSsl = response.substring(clientS1, clientS2);
+	if (clientS2 == -1) {
+	 clientSsl = "";
+	}
+
+	//	System.log("Client SSl : "+clientSsl);
+
+	var cs1 = clientSsl.indexOf("<serviceCertificate>") + "<serviceCertificate>".length;
+	var cs2 = clientSsl.indexOf("</serviceCertificate>");
+	var clientServiceCertificate = clientSsl.substring(cs1, cs2);
+	if (cs2 == -1) {
+	 clientServiceCertificate = "";
+	}
+
+	var cp1 = clientSsl.indexOf("<ciphers>") + "<ciphers>".length;
+	var cp2 = clientSsl.indexOf("</ciphers>");
+	var ciphers = clientSsl.substring(cp1, cp2);
+	if (cp2 == -1) {
+	 ciphers = "";
+	}
+
+	//	System.log("Client cipher : "+ciphers);
+
+	var cauth1 = clientSsl.indexOf("<clientAuth>") + "<clientAuth>".length;
+	var cauth2 = clientSsl.indexOf("</clientAuth>");
+	var clientAuth = clientSsl.substring(cauth1, cauth2);
+	if (cauth2 == -1) {
+	 clientAuth = "";
+	}
+	//	System.log("Client Auth : "+clientAuth);
+
+	// Client SSL - VS Certificate  ***********************************************************************
+
+	System.log("********************** Client ServCert : " + clientServiceCertificate);
+
+	if (clientServiceCertificate != "") {
+
+	 var request = nsxRestHost.createRequest("GET", "api/2.0/services/truststore/certificate/" + clientServiceCertificate, "");
+	 request.contentType = "application/xml";
+	 response = request.execute().contentAsString;
+
+	 var ind1 = response.indexOf("<pemEncoding>") + "<pemEncoding>".length;
+	 var ind2 = response.indexOf("</pemEncoding>");
+	 var clientServiceCertificateContent = response.substring(ind1, ind2);
+	 if (ind2 == -1) {
+	  clientServiceCertificateContent = "";
+	 }
+
+	 //		System.log("clientServiceCertificateContent : "+clientServiceCertificateContent);
+
+	 var subjectCn1 = response.indexOf("<subjectCn>") + "<subjectCn>".length;
+	 var subjectCn2 = response.indexOf("</subjectCn>");
+	 var clientServiceCertificateName = response.substring(subjectCn1, subjectCn2);
+	 if (subjectCn2 == -1) {
+	  clientServiceCertificateName = "";
+	 }
+
+	 var ex1 = response.indexOf("<notAfter>") + "<notAfter>".length;
+	 var ex2 = response.indexOf("</notAfter>");
+	 var clientServiceCertificateExpiry = response.substring(ex1, ex2);
+	 if (ex2 == -1) {
+	  clientServiceCertificateExpiry = "";
+	 }
+	}
+	// Client SSL - CA Certificate  ***********************************************************************
+
+	var cs3 = clientSsl.indexOf("<caCertificate>") + "<caCertificate>".length;
+	var cs4 = clientSsl.indexOf("</caCertificate>");
+	var clientCaCertificate = clientSsl.substring(cs3, cs4);
+	if (cs4 == -1) {
+	 clientCaCertificate = "";
+	}
+	//	System.log("Client CaCert : "+clientCaCertificate);
+
+	if (clientCaCertificate != "") {
+	 var request = nsxRestHost.createRequest("GET", "api/2.0/services/truststore/certificate/" + clientCaCertificate, "");
+	 request.contentType = "application/xml";
+	 response = request.execute().contentAsString;
+
+	 var ind1 = response.indexOf("<pemEncoding>") + "<pemEncoding>".length;
+	 var ind2 = response.indexOf("</pemEncoding>");
+	 var clientCaCertificateContent = response.substring(ind1, ind2);
+	 if (ind2 == -1) {
+	  clientCaCertificateContent = "";
+	 }
+	 //		System.log("clientCaCertificateContent : "+clientCaCertificateContent);
+
+	 var subjectCn1 = response.indexOf("<subjectCn>") + "<subjectCn>".length;
+	 var subjectCn2 = response.indexOf("</subjectCn>");
+	 var clientCaCertificateName = response.substring(subjectCn1, subjectCn2);
+	 if (subjectCn2 == -1) {
+	  clientCaCertificateName = "";
+	 }
+
+	 var ex1 = response.indexOf("<notAfter>") + "<notAfter>".length;
+	 var ex2 = response.indexOf("</notAfter>");
+	 var clientCaCertificateExpiry = response.substring(ex1, ex2);
+	 if (ex2 == -1) {
+	  clientCaCertificateExpiry = "";
+	 }
+
+	}
+
+	// Client SSL - CRL Certificate  ***********************************************************************
+
+	var cs5 = clientSsl.indexOf("<crlcertificate>") + "<crlCertificate>".length;
+	var cs6 = clientSsl.indexOf("</crlCertificate>");
+	var clientCrlCertificate = clientSsl.substring(cs5, cs6);
+	if (cs6 == -1) {
+	 clientCrlCertificate = "";
+	}
+
+	//	System.log("Client CrlCert : "+clientCrlCertificate);
+
+	if (clientCrlCertificate != "") {
+	 var request = nsxRestHost.createRequest("GET", "api/2.0/services/truststore/certificate/" + clientCrlCertificate, "");
+	 request.contentType = "application/xml";
+	 response = request.execute().contentAsString;
+
+	 var ind1 = response.indexOf("<pemEncoding>") + "<pemEncoding>".length;
+	 var ind2 = response.indexOf("</pemEncoding>");
+	 var clientCrlCertificateContent = response.substring(ind1, ind2);
+	 if (ind2 == -1) {
+	  clientCrlCertificateContent = "";
+	 }
+
+	 var subjectCn1 = response.indexOf("<subjectCn>") + "<subjectCn>".length;
+	 var subjectCn2 = response.indexOf("</subjectCn>");
+	 var clientCrlCertificateName = response.substring(subjectCn1, subjectCn2);
+	 if (subjectCn2 == -1) {
+	  clientCrlCertificateName = "";
+	 }
+
+	 var ex1 = response.indexOf("<notAfter>") + "<notAfter>".length;
+	 var ex2 = response.indexOf("</notAfter>");
+	 var clientCrlCertificateExpiry = response.substring(ex1, ex2);
+	 if (ex2 == -1) {
+	  clientCrlCertificateExpiry = "";
+	 }
+	}
+	//	System.log("clientCrlCertificateContent : "+clientCrlCertificateContent);
+
+	// Server SSL - VS Certificate  ***********************************************************************
+
+	var ss1 = serverSsl.indexOf("<serviceCertificate>") + "<serviceCertificate>".length;
+	var ss2 = serverSsl.indexOf("</serviceCertificate>");
+	var serverServiceCertificate = serverSsl.substring(ss1, ss2);
+	if (ss2 == -1) {
+	 serverServiceCertificate = "";
+	}
+
+	//	System.log("Server ServCert : "+serverServiceCertificate);
+	if (serverServiceCertificate != "") {
+	 var request = nsxRestHost.createRequest("GET", "api/2.0/services/truststore/certificate/" + serverServiceCertificate, "");
+	 request.contentType = "application/xml";
+	 response = request.execute().contentAsString;
+
+	 var ind1 = response.indexOf("<pemEncoding>") + "<pemEncoding>".length;
+	 var ind2 = response.indexOf("</pemEncoding>");
+	 var serverServiceCertificateContent = response.substring(ind1, ind2);
+	 if (ind2 == -1) {
+	  serverServiceCertificateContent = "";
+	 }
+
+	 var subjectCn1 = response.indexOf("<subjectCn>") + "<subjectCn>".length;
+	 var subjectCn2 = response.indexOf("</subjectCn>");
+	 var serverServiceCertificateName = response.substring(subjectCn1, subjectCn2);
+	 if (subjectCn2 == -1) {
+	  serverServiceCertificateName = "";
+	 }
+
+	 var ex1 = response.indexOf("<notAfter>") + "<notAfter>".length;
+	 var ex2 = response.indexOf("</notAfter>");
+	 var serverServiceCertificateExpiry = response.substring(ex1, ex2);
+	 if (ex2 == -1) {
+	  serverServiceCertificateExpiry = "";
+	 }
+
+	}
+	//	System.log("ServerServiceCertificateContent : "+serverServiceCertificateContent);
+
+	// Server SSL - CA Certificate  ***********************************************************************
+
+	var ss3 = serverSsl.indexOf("<caCertificate>") + "<caCertificate>".length;
+	var ss4 = serverSsl.indexOf("</caCertificate>");
+	var serverCaCertificate = serverSsl.substring(ss3, ss4);
+	if (ss4 == -1) {
+	 serverCaCertificate = "";
+	}
+	//	System.log("Server Ca Cert : "+serverCaCertificate);
+
+	if (serverCaCertificate != "") {
+	 var request = nsxRestHost.createRequest("GET", "api/2.0/services/truststore/certificate/" + serverCaCertificate, "");
+	 request.contentType = "application/xml";
+	 response = request.execute().contentAsString;
+
+	 var ind1 = response.indexOf("<pemEncoding>") + "<pemEncoding>".length;
+	 var ind2 = response.indexOf("</pemEncoding>");
+	 var serverCaCertificateContent = response.substring(ind1, ind2);
+	 if (ind2 == -1) {
+	  serverCaCertificateContent = "";
+	 }
+
+	 var subjectCn1 = response.indexOf("<subjectCn>") + "<subjectCn>".length;
+	 var subjectCn2 = response.indexOf("</subjectCn>");
+	 var serverCaCertificateName = response.substring(subjectCn1, subjectCn2);
+	 if (subjectCn2 == -1) {
+	  serverCaCertificateName = "";
+	 }
+
+	 var ex1 = response.indexOf("<notAfter>") + "<notAfter>".length;
+	 var ex2 = response.indexOf("</notAfter>");
+	 var serverCaCertificateExpiry = response.substring(ex1, ex2);
+	 if (ex2 == -1) {
+	  serverCaCertificateExpiry = "";
+	 }
+	}
+	//	System.log("ServerCaCertificateContent : "+serverCaCertificateContent);
+
+	// Server SSL - CRL Certificate  ***********************************************************************
+
+	var ss5 = serverSsl.indexOf("<crlCertificate>") + "<crlCertificate>".length;
+	var ss6 = serverSsl.indexOf("</crlCertificate>");
+	var serverCrlCertificate = serverSsl.substring(ss5, ss6);
+	if (ss6 == -1) {
+	 serverCrlCertificate = "";
+	}
+	//	System.log("Server Crl Cert : "+serverCrlCertificate);
+
+	if (serverCrlCertificate != "") {
+
+	 var request = nsxRestHost.createRequest("GET", "api/2.0/services/truststore/certificate/" + serverCrlCertificate, "");
+	 request.contentType = "application/xml";
+	 response = request.execute().contentAsString;
+
+	 var ind1 = response.indexOf("<pemEncoding>") + "<pemEncoding>".length;
+	 var ind2 = response.indexOf("</pemEncoding>");
+	 var serverCrlCertificateContent = response.substring(ind1, ind2);
+	 if (ind2 == -1) {
+	  serverCrlCertificateContent = "";
+	 }
+
+	 var subjectCn1 = response.indexOf("<subjectCn>") + "<subjectCn>".length;
+	 var subjectCn2 = response.indexOf("</subjectCn>");
+	 var serverCrlCertificateName = response.substring(subjectCn1, subjectCn2);
+	 if (subjectCn2 == -1) {
+	  serverCrlCertificateName = "";
+	 }
+
+	 var ex1 = response.indexOf("<notAfter>") + "<notAfter>".length;
+	 var ex2 = response.indexOf("</notAfter>");
+	 var serverCrlCertificateExpiry = response.substring(ex1, ex2);
+	 if (ex2 == -1) {
+	  serverCrlCertificateExpiry = "";
+	 }
+
+	}
+	//	System.log("ServerCrlCertificateContent : "+serverCrlCertificateContent);
+
+	applicationProfile = ({
+	 applicationProfileId: applicationProfileId,
+	 name: name,
+	 insertXForwardedFor: insertXForwardedFor,
+	 sslPassthrough: sslPassthrough,
+	 template: template,
+	 serverSslEnabled: serverSslEnabled,
+	 appPersistMethod: method1,
+	 cookieMode: cookieMode,
+	 cookieName: cookieName,
+	 expire: expire,
+	 httpRedirect: httpRedirect
+	});
+	applicationProfile.applicationProfileId = applicationProfileId;
+	applicationProfile.name = name;
+	applicationProfile.insertXForwardedFor = insertXForwardedFor;
+	applicationProfile.sslPassthrough = sslPassthrough;
+	applicationProfile.template = template;
+	applicationProfile.serverSslEnabled = serverSslEnabled;
+	//applicationProfile.persistence = persistence;
+	applicationProfile.appPersistMethod = method1;
+	applicationProfile.cookieMode = cookieMode;
+	applicationProfile.cookieName = cookieName;
+	applicationProfile.expire = expire;
+	applicationProfile.httpRedirect = httpRedirect;
+
+	clientSsl = ({
+	 serviceCertificate: clientServiceCertificate,
+	 caCertificate: clientCaCertificate,
+	 crlCertificate: clientCrlCertificate,
+	 serviceCertificateContent: clientServiceCertificateContent,
+	 caCertificateContent: clientCaCertificateContent,
+	 crlCertificateContent: clientCrlCertificateContent,
+	 ciphers: ciphers,
+	 clientAuth: clientAuth,
+	 serviceCertificateName: clientServiceCertificateName,
+	 serviceCertificateExpiry: clientServiceCertificateExpiry,
+	 caCertificateName: clientCaCertificateName,
+	 caCertificateExpiry: clientCaCertificateExpiry,
+	 crlCertificateName: clientCrlCertificateName,
+	 crlCertificateExpiry: clientCrlCertificateExpiry
+	});
+
+	clientSsl.serviceCertificate = clientServiceCertificate;
+	clientSsl.caCertificate = clientCaCertificate;
+	clientSsl.crlCertificate = clientCrlCertificate;
+	clientSsl.serviceCertificateContent = clientServiceCertificateContent;
+	clientSsl.caCertificateContent = clientCaCertificateContent;
+	clientSsl.crlCertificateContent = clientCrlCertificateContent;
+	clientSsl.ciphers = ciphers;
+	clientSsl.clientAuth = clientAuth;
+	clientSsl.serviceCertificateName = clientServiceCertificateName;
+	clientSsl.serviceCertificateExpiry = clientServiceCertificateExpiry;
+	clientSsl.caCertificateName = clientCaCertificateName;
+	clientSsl.caCertificateExpiry = clientCaCertificateExpiry;
+	clientSsl.crlCertificateName = clientCrlCertificateName;
+	clientSsl.crlCertificateExpiry = clientCrlCertificateExpiry;
+
+	serverSsl = ({
+	 serviceCertificate: clientServiceCertificate,
+	 caCertificate: serverCaCertificate,
+	 crlCertificate: serverCrlCertificate,
+	 serviceCertificateContent: serverServiceCertificateContent,
+	 caCertificateContent: serverCaCertificateContent,
+	 crlCertificateContent: serverCrlCertificateContent,
+	 serviceCertificateName: serverServiceCertificateName,
+	 serviceCertificateExpiry: serverServiceCertificateExpiry,
+	 caCertificateName: serverCaCertificateName,
+	 caCertificateExpiry: serverCaCertificateExpiry,
+	 crlCertificateName: serverCrlCertificateName,
+	 crlCertificateExpiry: serverCrlCertificateExpiry
+	});
+
+	serverSsl.serviceCertificate = serverServiceCertificate;
+	serverSsl.caCertificate = serverCaCertificate;
+	serverSsl.crlCertificate = serverCrlCertificate;
+	serverSsl.serviceCertificateContent = serverServiceCertificateContent;
+	serverSsl.caCertificateContent = serverCaCertificateContent;
+	serverSsl.crlCertificateContent = serverCrlCertificateContent;
+	serverSsl.serviceCertificateName = serverServiceCertificateName;
+	serverSsl.serviceCertificateExpiry = serverServiceCertificateExpiry;
+	serverSsl.caCertificateName = serverCaCertificateName;
+	serverSsl.caCertificateExpiry = serverCaCertificateExpiry;
+	serverSsl.crlCertificateName = serverCrlCertificateName;
+	serverSsl.crlCertificateExpiry = serverCrlCertificateExpiry;]]></script>
+    <in-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="applicationProfile" type="CompositeType(applicationProfileId:string,name:string,insertXForwardedFor:boolean,sslPassthrough:boolean,template:string,serverSslEnabled:boolean,appPersistMethod:string,expire:number,cookieName:string,httpRedirect:string,cookieMode:string):applicationProfile" export-name="applicationProfile"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="xmlContentObj" type="string" export-name="xmlContentObj"/>
+      <bind name="applicationRule" type="Array/CompositeType(applicationRuleId:string,name:string,script:string):applicationRule" export-name="applicationRule"/>
+      <bind name="clientSsl" type="CompositeType(ciphers:string,clientAuth:string,serviceCertificate:string,serviceCertificateName:string,serviceCertificateExpiry:string,serviceCertificateContent:string,caCertificate:string,caCertificateName:string,caCertificateExpiry:string,caCertificateContent:string,crlCertificate:string,crlCertificateName:string,crlCertificateExpiry:string,crlCertificateContent:string)" export-name="clientSsl"/>
+      <bind name="serverSsl" type="CompositeType(serviceCertificate:string,serviceCertificateName:string,serviceCertificateExpiry:string,serviceCertificateContent:string,caCertificate:string,caCertificateName:string,caCertificateExpiry:string,caCertificateContent:string,crlCertificate:string,crlCertificateName:string,crlCertificateExpiry:string,crlCertificateContent:string)" export-name="serverSsl"/>
+    </out-binding>
+    <position y="55.40909090909091" x="864.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item5" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get Pool Members]]></display-name>
+    <script encoded="false"><![CDATA[	//Get Pool Members Config
+
+	method = "GET";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+	body = "";
+	var VSIDUrl = uri;
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	response = request.execute().contentAsString;
+
+	var ind1 = response.indexOf("<defaultPoolId>") + "<defaultPoolId>".length;
+	var ind2 = response.indexOf("</defaultPoolId>");
+	poolId = response.substring(ind1, ind2);
+	if (ind2 == -1) {
+	 poolId = "";
+	}
+	//Get Pool Config
+
+	method = "GET";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/pools/" + poolId;
+	body = "";
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	//response = request.execute().contentAsString;
+	response = request.execute();
+	var statusCode = response.statusCode;
+	System.log("Status code: " + statusCode);
+	var contentLength = response.contentLength;
+	var headers = response.getAllHeaders();
+	var contentAsString = response.contentAsString;
+	//System.log( "Pool : " +poolId);
+
+	var xml_doc = new XML(contentAsString);
+	default xml namespace = xml_doc.namespace();
+
+	var members = xml_doc.member;
+	//System.log("Parsed XML, found this many members: " + members.name.length());
+	//member = new Array ({virtualServerName:virtualServerName,virtualServerId:v
+	member = new Array();
+	//for (var i=0; i<members.name.length; i++){
+	//member = new Array ({memberId:memberId,name:name,ipAddress:ipAddress});
+	var output_array = new Array();
+	//member = new Array ({memberId:memberId,ipAddress:ipAddress,weight:weight,monitorPort:monitorPort,port:port,maxConn:maxConn,minConn:minConn,condition:ondition,name:name})
+	var counter = 0;
+	for each(var pool_member in members) {
+	 counter++;
+
+	 memberId1 = pool_member.memberId.toString();
+	 ipAddress1 = pool_member.ipAddress.toString();
+	 weight1 = pool_member.weight.toString();
+	 monitorPort1 = pool_member.monitorPort.toString();
+	 port1 = pool_member.port.toString();
+	 maxConn1 = pool_member.maxConn.toString();
+	 minConn1 = pool_member.minConn.toString();
+	 condition1 = pool_member.condition.toString();
+	 name1 = pool_member.name.toString();
+
+	 member.push({
+	  memberId: memberId1,
+	  ipAddress: ipAddress1,
+	  weight: weight1,
+	  monitorPort: monitorPort1,
+	  port: port1,
+	  maxConn: maxConn1,
+	  minConn: minConn1,
+	  condition: condition1,
+	  name: name1
+	 });
+	 //System.log("Processing item" +counter);
+	}
+	//System.log(member.toString());]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="member" type="Array/CompositeType(memberId:string,ipAddress:string,weight:number,monitorPort:number,port:number,maxConn:number,minConn:number,condition:string,name:string):member" export-name="member"/>
+    </out-binding>
+    <position y="55.40909090909091" x="724.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" catch-name="item8" throw-bind-name="errorCode" type="link" linked-workflow-id="d02637fa-eb7c-4d09-8ccb-56f87715170d">
+    <display-name><![CDATA[Get NSX and EdgeId]]></display-name>
+    <in-binding>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </out-binding>
+    <position y="55.40909090909091" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item7" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="172.68181818181816" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item7" type="task">
+    <display-name><![CDATA[Error Handling]]></display-name>
+    <script encoded="false"><![CDATA[errorContent = errorCode;]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="128.13636363636363" x="485.0"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item0" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get Application Rules]]></display-name>
+    <script encoded="false"><![CDATA[method = "GET";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationrules";
+body = "";
+
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+//response = request.execute().contentAsString;
+
+response = request.execute();
+var statusCode = response.statusCode;
+System.log("Status code: " + statusCode);
+var contentLength = response.contentLength;
+var headers = response.getAllHeaders();
+var contentAsString = response.contentAsString;
+
+var xml_doc = new XML(contentAsString);
+default xml namespace = xml_doc.namespace();
+
+var apprules = xml_doc.applicationRule;
+System.log("Parsed XML, found this many application rules: " + apprules.name.length());
+//member = new Array ({virtualServerName:virtualServerName,virtualServerId:v
+applicationRule = new Array();
+
+var output_array = new Array();
+
+var counter = 0;
+for each(var app_rules in apprules) {
+ counter++;
+
+ applicationRuleId1 = app_rules.applicationRuleId.toString();
+ name1 = app_rules.name.toString();
+ script1 = app_rules.script.toString();
+
+ applicationRule.push({
+  applicationRuleId: applicationRuleId1,
+  name: name1,
+  script: script1
+ });
+
+}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="applicationRule" type="Array/CompositeType(applicationRuleId:string,name:string,script:string):applicationRule" export-name="applicationRule"/>
+    </out-binding>
+    <position y="55.40909090909091" x="1004.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="edgeName">
+      <desc><![CDATA[edgeName]]></desc>
+    </p-param>
+    <p-param name="virtualServerName">
+      <desc><![CDATA[virtualServerName]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

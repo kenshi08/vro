@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getObject" result-type="Any" api-version="6.0.0" id="3920723f-5472-47ad-8972-e408dbc62582" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes">
+  <description><![CDATA[Returns the specified object based on Namespace, Object Type, and Object ID.]]></description>
+  <param n="namespace" t="string"><![CDATA[Namespace of object to return]]></param>
+  <param n="objectType" t="string"><![CDATA[Type of object to return]]></param>
+  <param n="objectId" t="string"><![CDATA[ID of object to return]]></param>
+  <script encoded="false"><![CDATA[if (!namespace || !objectType || !objectId) return null;
+return DynamicTypesManager.getObject(namespace, objectType, objectId);]]></script>
+</dunes-script-module>

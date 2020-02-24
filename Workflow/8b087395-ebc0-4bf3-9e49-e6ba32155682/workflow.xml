@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="8b087395-ebc0-4bf3-9e49-e6ba32155682" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Ansible_Execute]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <attrib name="hostNameOrIP" type="string" read-only="false">
+    <value encoded="n"><![CDATA[192.168.1.40]]></value>
+  </attrib>
+  <attrib name="port" type="number" read-only="false">
+    <value encoded="n"><![CDATA[22.0]]></value>
+  </attrib>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[8BY56M4DW77I40M72J33K31Q21HC94664FV7570D4M766CF04SA614707H7C23927Y492253RC80F1F9U8FAB8E9H725D9D9P588E8DDYF1DB65DH8E32CFAVBC62967Z6FE833H2811987IBADCDF9NB53DBD4GA36D1B2L4E3396GD936BA0S63A3FEBH4C3A558O827B3B5XE204432I]]></value>
+  </attrib>
+  <attrib name="passwordAuthentication" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+  </attrib>
+  <attrib name="script" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="50.0" x="420.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="link" linked-workflow-id="90808080808080808080808080808080D28080800120523434428525559a3425f">
+    <display-name><![CDATA[Workflow element]]></display-name>
+    <in-binding>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP"/>
+      <bind name="port" type="number" export-name="port"/>
+      <bind name="username" type="string" export-name="username"/>
+      <bind name="password" type="SecureString" export-name="password"/>
+      <bind name="cmd" type="string" export-name="script"/>
+      <bind name="passwordAuthentication" type="boolean" export-name="passwordAuthentication"/>
+      <bind name="path" type="Path" export-name=""/>
+      <bind name="passphrase" type="SecureString" export-name=""/>
+      <bind name="encoding" type="string" export-name=""/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="number" export-name=""/>
+      <bind name="errorText" type="string" export-name=""/>
+      <bind name="outputText" type="string" export-name=""/>
+    </out-binding>
+    <description><![CDATA[ ]]></description>
+    <position y="60.0" x="260.0"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="task">
+    <display-name><![CDATA[format script]]></display-name>
+    <script encoded="false"><![CDATA[script = "ansible-playbook -i /home/playbooks/inventory /home/playbooks/vra-web.yml";
+System.log("Script is: " + script);]]></script>
+    <in-binding/>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="170.0"/>
+  </workflow-item>
+  <presentation/>
+</workflow>

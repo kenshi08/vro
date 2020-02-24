@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCatalogResourceForIaasVmEntity" result-type="vCACCAFE:CatalogResource" api-version="6.0.0" id="d20db6f5-f863-4343-ad56-2a3dcd8d8c2b" version="1.0.0" allowed-operations="evf" category-name="com.dailyhypervisor.vcac.common">
+  <param n="vcacCafeHost" t="vCACCAFE:VCACHost"><![CDATA[The vCAC catalog host]]></param>
+  <param n="vcacIaasVmEntity" t="vCAC:Entity"><![CDATA[The vCAC IaaS VM entity]]></param>
+  <script encoded="false"><![CDATA[return vCACCAFEEntitiesFinder.findCatalogResources(vcacCafeHost, vcacIaasVmEntity.getProperty("VirtualMachineName"))[0];
+]]></script>
+</dunes-script-module>

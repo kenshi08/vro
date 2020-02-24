@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="d34f839f-4f2d-4b80-b1bf-d26f84dc5090" version="0.0.8" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[vRA - Set T-Shirt Size]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="payload" type="Properties"/>
+  </input>
+  <output>
+    <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
+  </output>
+  <attrib name="nodeName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="tshirt" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="544.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Get Payload]]></display-name>
+    <script encoded="false"><![CDATA[machineId = payload.machine.id;
+nodeName = payload.machine.name;
+virtualMachineProperties = payload.machine.properties;
+
+System.log("Node Name: " + nodeName);
+System.log("machineID:" + machineId);
+//System.log("machineID: " + payload.machine.id);
+//System.log("Blueprint Name: " + payload.blueprintName);
+System.log("T-Shirt Size: " + virtualMachineProperties.get("eng.tshirt.size"));
+
+var obj = JSON.parse(virtualMachineProperties.get("eng.tshirt.size"));
+var cpu = obj.CPU;
+var mem = obj.Memory;
+
+tshirt = [virtualMachineProperties.get("eng.tshirt.size")];
+virtualMachineAddOrUpdateProperties = new Properties();
+virtualMachineAddOrUpdateProperties.put("VirtualMachine.CPU.Count",cpu);
+virtualMachineAddOrUpdateProperties.put("VirtualMachine.Memory.Size",mem);
+
+//tags = [virtualMachineProperties.get("seti.app.type"),virtualMachineProperties.get("seti.env"),machine.get("owner")];
+
+//tags.put(vmProperties.get("seti.app.type"));
+//tags.put(vmProperties.get("seti.env"));
+
+]]></script>
+    <in-binding>
+      <bind name="payload" type="Properties" export-name="payload"/>
+    </in-binding>
+    <out-binding>
+      <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
+      <bind name="nodeName" type="string" export-name="nodeName"/>
+      <bind name="tshirt" type="Array/string" export-name="tshirt"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="payload">
+      <desc><![CDATA[machine]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

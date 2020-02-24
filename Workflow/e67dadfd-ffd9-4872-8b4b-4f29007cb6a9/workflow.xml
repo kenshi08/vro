@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="e67dadfd-ffd9-4872-8b4b-4f29007cb6a9" version="1.0.1" api-version="6.0.0" allowed-operations="vf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Request a catalog item with provisioning request]]></display-name>
+  <description><![CDATA[Requests a catalog item using provisioning request.
+Usage: 
+Copy and modify this workflow to serve your needs, depending on the paramaters you want to provide to the catalog item.]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="catalogItem" type="vCACCAFE:CatalogItem">
+      <description><![CDATA[Catalog item]]></description>
+    </param>
+    <param name="description" type="string">
+      <description><![CDATA[Description]]></description>
+    </param>
+    <param name="reasons" type="string">
+      <description><![CDATA[Reasons]]></description>
+    </param>
+    <param name="requestedFor" type="string">
+      <description><![CDATA[Requested for]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="request" type="vCACCAFE:CatalogItemRequest">
+      <description><![CDATA[Catalog item request]]></description>
+    </param>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Request catalog item]]></display-name>
+    <script encoded="false"><![CDATA[var provisioningRequest = vCACCAFERequestsHelper.getProvisioningRequestForCatalogItem(catalogItem);
+provisioningRequest.setDescription(description);
+provisioningRequest.setReasons(reasons);
+if(requestedFor){
+	provisioningRequest.setRequestedFor(requestedFor);
+}
+provisioningRequest.setBusinessGroupId(catalogItem.getOrganization().getSubtenantRef());
+
+////Uncomment to customize request data
+//var jsonData = vCACCAFERequestsHelper.getProvisioningRequestData(provisioningRequest);
+//var json = JSON.parse(jsonData);
+////Change cpu example
+//json.ComponentName.data.cpu = 2;
+//vCACCAFERequestsHelper.setProvisioningRequestData(provisioningRequest, JSON.stringify(json));
+
+request = System.getModule("com.vmware.library.vcaccafe.request").requestCatalogItemWithProvisioningRequest(catalogItem, provisioningRequest);
+
+]]></script>
+    <in-binding>
+      <bind name="catalogItem" type="vCACCAFE:CatalogItem" export-name="catalogItem">
+        <description><![CDATA[Catalog item]]></description>
+      </bind>
+      <bind name="description" type="string" export-name="description">
+        <description><![CDATA[Description]]></description>
+      </bind>
+      <bind name="reasons" type="string" export-name="reasons">
+        <description><![CDATA[Reasons]]></description>
+      </bind>
+      <bind name="requestedFor" type="string" export-name="requestedFor">
+        <description><![CDATA[Requested for]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="request" type="vCACCAFE:CatalogItemRequest" export-name="request">
+        <description><![CDATA[Catalog item request]]></description>
+      </bind>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="catalogItem">
+      <desc><![CDATA[Catalog item]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual kind="static" name="show-select-as" type="string"><![CDATA[list]]></p-qual>
+    </p-param>
+    <p-param name="description">
+      <desc><![CDATA[Description]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="reasons">
+      <desc><![CDATA[Reasons]]></desc>
+    </p-param>
+    <p-param name="requestedFor">
+      <desc><![CDATA[Requested for]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

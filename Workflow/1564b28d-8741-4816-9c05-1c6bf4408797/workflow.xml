@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="1564b28d-8741-4816-9c05-1c6bf4408797" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Ansible-AddNode]]></display-name>
+  <position y="53.3984375" x="67.0"/>
+  <input>
+    <param name="ipaddr" type="string"/>
+  </input>
+  <output>
+    <param name="result" type="string"/>
+    <param name="errorText" type="string"/>
+    <param name="result_1" type="number"/>
+  </output>
+  <attrib name="script" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="hostNameOrIP" type="string" read-only="false">
+    <value encoded="n"><![CDATA[192.168.1.40]]></value>
+  </attrib>
+  <attrib name="port" type="number" read-only="false">
+    <value encoded="n"><![CDATA[22.0]]></value>
+  </attrib>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[8BV56T4DQ77Y40U72N33L31Q21H1E532E3NB1EB188HA7C2CDAK2EBCB76ZED56B9BV84BBC16Y9BF94D9UB59B5D0Q2815C27OCC4C69DSC11AE5EUEC3D785I11E6083I3601EADT81A553ZF721942NFBF80D2L251366DND38A4FEK887B0A4T639705K96EA689WD43B026I73E589EP]]></value>
+  </attrib>
+  <attrib name="passwordAuthentication" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="51.3984375" x="557.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[format script]]></display-name>
+    <script encoded="false"><![CDATA[script = "sudo sed -i " + "\\" + "$a" + ipaddr + " /home/playbooks/inventory";
+System.log("Script is: " + script);
+]]></script>
+    <in-binding>
+      <bind name="ipaddr" type="string" export-name="ipaddr"/>
+    </in-binding>
+    <out-binding>
+      <bind name="script" type="string" export-name="script"/>
+    </out-binding>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="70.8984375" x="181.0"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="90808080808080808080808080808080D28080800120523434428525559a3425f">
+    <display-name><![CDATA[Workflow element]]></display-name>
+    <in-binding>
+      <bind name="hostNameOrIP" type="string" export-name="hostNameOrIP"/>
+      <bind name="port" type="number" export-name="port"/>
+      <bind name="username" type="string" export-name="username"/>
+      <bind name="password" type="SecureString" export-name="password"/>
+      <bind name="cmd" type="string" export-name="script"/>
+      <bind name="passwordAuthentication" type="boolean" export-name="passwordAuthentication"/>
+      <bind name="path" type="Path"/>
+      <bind name="passphrase" type="SecureString" export-name=""/>
+      <bind name="encoding" type="string" export-name=""/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="number" export-name="result_1"/>
+      <bind name="errorText" type="string" export-name="errorText"/>
+      <bind name="outputText" type="string" export-name="result"/>
+    </out-binding>
+    <description><![CDATA[ ]]></description>
+    <position y="62.3984375" x="335.0"/>
+  </workflow-item>
+  <presentation/>
+</workflow>

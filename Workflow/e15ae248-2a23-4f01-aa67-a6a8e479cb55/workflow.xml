@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="e15ae248-2a23-4f01-aa67-a6a8e479cb55" version="1.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Delete virtual machine]]></display-name>
+  <description><![CDATA[Deletes the specified virtual machine.]]></description>
+  <position y="9.545454545454543" x="45.0"/>
+  <input>
+    <param name="virtualMachine" type="Azure:VirtualMachine">
+      <description><![CDATA[Azure virtual machine]]></description>
+    </param>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="9.045454545454543" x="324.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Delete]]></display-name>
+    <script encoded="false"><![CDATA[virtualMachine.delete();]]></script>
+    <in-binding>
+      <bind name="virtualMachine" type="Azure:VirtualMachine" export-name="virtualMachine">
+        <description><![CDATA[Azure virtual machine]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <position y="19.045454545454543" x="144.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="virtualMachine">
+      <desc><![CDATA[Azure virtual machine]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

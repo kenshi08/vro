@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getReservationNames" result-type="Array/string" api-version="6.0.0" id="9e447ec1-bf6c-40fe-be1e-8760daa291d4" version="0.0.1" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <description><![CDATA[Given a vCAC Host, return an array of strings containing the name of all Reservation Names]]></description>
+  <param n="vcacHost" t="vCAC:VCACHost"><![CDATA[vCloud Automation Center host]]></param>
+  <script encoded="false"><![CDATA[if (vcacHost == null) return null;
+var entities = vCACEntityManager.readModelEntitiesByCustomFilter(vcacHost.id, "ManagementModelEntities.svc", "HostReservations", null, null);
+System.log("Reservations found: "+entities.length);
+var prop = new Properties();
+for each (var entity in entities) {
+	prop.put(entity.getProperty("HostReservationName"));
+}
+return prop.keys.sort();]]></script>
+</dunes-script-module>

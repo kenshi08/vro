@@ -1,0 +1,331 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="workflow:name=generic" id="4e87dc58-87e7-49ff-bb02-bdfe03874743" version="0.0.7" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Remove DNS]]></display-name>
+  <description><![CDATA[Installs the Puppet agent on Windows node using PowerShell.]]></description>
+  <position y="45.40909090909091" x="65.0"/>
+  <input>
+    <param name="domain" type="string"/>
+    <param name="nodename" type="string"/>
+    <param name="RType" type="string"/>
+    <param name="DData" type="string"/>
+  </input>
+  <attrib name="host" type="PowerShell:PowerShellHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='1f89d2eb-638a-48a7-8af2-a6ca6fb567a9'&dunesName='PowerShell:PowerShellHost']]></value>
+    <description><![CDATA[Hostname]]></description>
+  </attrib>
+  <attrib name="name" type="string" read-only="false">
+    <value encoded="n"><![CDATA[ad]]></value>
+    <description><![CDATA[Node name]]></description>
+  </attrib>
+  <attrib name="type" type="string" read-only="false">
+    <value encoded="n"><![CDATA[WinRM]]></value>
+    <description><![CDATA[Host type]]></description>
+  </attrib>
+  <attrib name="acceptAllCertificates" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[Accept all certificates]]></description>
+  </attrib>
+  <attrib name="authentication" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Basic]]></value>
+    <description><![CDATA[Used in case of WinRM option choosen to determine authentication schema. Supports Basic and Kerberos authentication schema.]]></description>
+  </attrib>
+  <attrib name="port" type="string" read-only="false">
+    <value encoded="n"><![CDATA[5986]]></value>
+    <description><![CDATA[The port for the WinRM communication]]></description>
+  </attrib>
+  <attrib name="sessionMode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Shared Session]]></value>
+    <description><![CDATA[Session mode]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Error code]]></description>
+  </attrib>
+  <attrib name="installScript" type="Text" read-only="false">
+    <value encoded="n"><![CDATA[Function Write-Section($name, $text) {
+	Write-Output "==={{ $name BEGIN }}==="
+	Write-Output $text
+	Write-Output "==={{ $name END }}==="	
+}
+
+Try {
+	Write-Output "puppetEnterprise: $puppetEnterprise"
+	Write-Output "puppetVersion: $puppetVersion"
+	Write-Output "puppetRepoBaseUrl: $puppetRepoBaseUrl"
+	
+	$version = cmd /c puppet --version --color=false "2>&1"
+	if ($LastExitCode -eq 0) {
+		Throw "Puppet already installed. version=$version"
+	}
+
+	# TODO: Support for x64 msi file
+
+	If ($puppetEnterprise) {
+		If (!$puppetRepoBaseUrl) {
+			$puppetRepoBaseUrl = "https://s3.amazonaws.com/pe-builds/released"
+		}
+		$msiUrl = "$puppetRepoBaseUrl/$puppetVersion/puppet-enterprise-$puppetVersion.msi"
+	} Else {
+		If (!$puppetRepoBaseUrl) {
+			$puppetRepoBaseUrl = "https://downloads.puppetlabs.com/windows"
+		}
+		$msiUrl = "$puppetRepoBaseUrl/puppet-$puppetVersion.msi"
+	}
+
+	# Install Puppet
+	Write-Output "Installer URL: $msiUrl"
+
+	$msiLogFile = "$env:TEMP\puppetAgentInstall.log"
+
+	cmd /c msiexec /i $msiUrl /qn /l*v $msiLogFile PUPPET_AGENT_STARTUP_MODE=Manual
+	If ($LastExitCode -ne 0) {
+		Write-Output "MSI installation log file (last 100 lines):"
+		Try {
+			Get-Content $msiLogFile | Select-Object -Last 100 | Write-Output
+		}
+		Catch {
+			Write-Output "Warning: Can't read $msiLogFile file content. error=$_"
+		}
+
+		Throw "MSIEXEC exit code $LastExitCode."
+	}
+}
+Catch {
+	Write-Section ERROR "Failed to install Puppet agent. error=$_"
+}]]></value>
+    <description><![CDATA[Install script]]></description>
+  </attrib>
+  <attrib name="transportProtocol" type="string" read-only="false">
+    <value encoded="n"><![CDATA[HTTPS]]></value>
+    <description><![CDATA[Used in case of WinRM option is choosen to determine the transport protocol to either HTTP or HTTPS]]></description>
+  </attrib>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[administrator]]></value>
+    <description><![CDATA[Node username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[11BP4EQ75O6CQ6CO70J68I61R73X65N31V21OFCCEF79O5AE0568W1A6FCB6J1C95621M3683DF5P5A58871K7611C60S3B3BF6X5D8D97AJ47ABB44LCDAE236Y89A1826WAF3117AGC3D5FE9WFCDF43CUEB3E3E7N1C9058DZD11699IB9FFCBFVAE74166P7F3ABF7K]]></value>
+    <description><![CDATA[Node password]]></description>
+  </attrib>
+  <attrib name="hostname" type="string" read-only="false">
+    <value encoded="n"><![CDATA[ad.nullphase.local]]></value>
+  </attrib>
+  <workflow-item name="item2" out-name="item1" catch-name="item8" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Install]]></display-name>
+    <script encoded="false"><![CDATA[//var session;
+//try {
+//	session = host.openSession();
+//
+//	var script = '$puppetEnterprise = ' + System.getModule("com.vmware.o11n.plugin.puppet.node").escapePowerShellValue(isEnterprise) + '\n' +
+//				 '$puppetRepoBaseUrl = ' + System.getModule("com.vmware.o11n.plugin.puppet.node").escapePowerShellValue(installerBaseUrl) + '\n' +
+//				 '$puppetVersion = ' + System.getModule("com.vmware.o11n.plugin.puppet.node").escapePowerShellValue(puppetVersion) + '\n' +
+//				 installScript;
+//
+//	var result = session.invokeScript(script);
+//	if (result.getInvocationState() == 'Failed') {
+//		errorCode = "Failed to invoke script. errors=" + result.getErrors();
+//	}
+//	else {
+//		var output = result.getHostOutput();
+//		System.log("Output: " + output);
+//
+//		if (!output) {
+//			errorCode = "Script invocation output is empty";
+//		}
+//		else {
+//			errorCode = System.getModule("com.vmware.o11n.plugin.puppet.node").getSectionText("ERROR", output);
+//		}
+//	}
+//
+//	if (errorCode) {
+//		System.error(errorCode);
+//	}
+//}
+//finally {
+//	if (session) {
+//		host.closeSession(session.getSessionId());
+//	}
+//}
+/////////// New Code ///////////////////////////
+var sess;
+try {
+	sess = host.openSession()
+	System.log("DNS Command: " + "dnscmd " + hostname + " /RecordDelete " + domain + " " +nodename + " "  + RType + " /f");
+	sess.addCommandFromString("dnscmd " + hostname + " /RecordDelete " + domain + " " +nodename + " "  + RType + " /f");
+	var invResult = sess.invokePipeline();
+	//Show result
+	System.log( invResult.getHostOutput() );
+	
+	//Check for errors
+	if (invResult.invocationState  == 'Failed'){
+		System.error(invResult.getErrors());
+		errorCode = "Failed to invoke command. errors=" + invResult.getErrors()				
+	} else {
+		// Get PowerShellRemotePSObject
+		var psObject = invResult.getResults();
+//		var directories = psObject.getRootObject();
+		System.log(psObject);		
+//		var isList =  directories instanceof Array
+//		if ( isList ){
+//			for (idx in directories){
+//				var item = directories[idx];
+//				if ( item.instanceOf('System.IO.FileInfo') ){//check type of object
+//					System.log( item.getProperty('FullName') );//extract value from result
+//				}
+//			}
+//		} else {
+//			System.log( directories.getProperty('FullName') );//extract value from result
+//		}	
+	}
+} catch ( ex ) {			
+	System.log (ex);
+} finally {
+	if (sess) {
+		host.closeSession( sess.getSessionId());
+	}
+}
+
+try {
+	sess = host.openSession()
+	System.log("dnscmd " + hostname + " /RecordDelete " + DData.split(".")[2] + "." + DData.split(".")[1] + "." + DData.split(".")[0] + ".in-addr.arpa " + DData.split(".")[3] + " PTR "  + nodename + "." + domain + " /f");
+	sess.addCommandFromString("dnscmd " + hostname + " /RecordDelete " + DData.split(".")[2] + "." + DData.split(".")[1] + "." + DData.split(".")[0] + ".in-addr.arpa " + DData.split(".")[3] + " PTR "  + nodename + "." + domain + " /f");
+	var invResult = sess.invokePipeline();
+	//Show result
+	System.log( invResult.getHostOutput() );
+	
+	//Check for errors
+	if (invResult.invocationState  == 'Failed'){
+		System.error(invResult.getErrors());
+		errorCode = "Failed to invoke command. errors=" + invResult.getErrors()				
+	} else {
+		// Get PowerShellRemotePSObject
+		var psObject = invResult.getResults();
+//		var directories = psObject.getRootObject();
+		System.log(psObject);		
+//		var isList =  directories instanceof Array
+//		if ( isList ){
+//			for (idx in directories){
+//				var item = directories[idx];
+//				if ( item.instanceOf('System.IO.FileInfo') ){//check type of object
+//					System.log( item.getProperty('FullName') );//extract value from result
+//				}
+//			}
+//		} else {
+//			System.log( directories.getProperty('FullName') );//extract value from result
+//		}	
+	}
+} catch ( ex ) {			
+	System.log (ex);
+} finally {
+	if (sess) {
+		host.closeSession( sess.getSessionId());
+	}
+} ]]></script>
+    <in-binding>
+      <bind name="host" type="PowerShell:PowerShellHost" export-name="host"/>
+      <bind name="installScript" type="Text" export-name="installScript"/>
+      <bind name="RType" type="string" export-name="RType"/>
+      <bind name="DData" type="string" export-name="DData"/>
+      <bind name="domain" type="string" export-name="domain"/>
+      <bind name="nodename" type="string" export-name="nodename"/>
+      <bind name="hostname" type="string" export-name="hostname"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </out-binding>
+    <position y="55.40909090909091" x="444.5"/>
+  </workflow-item>
+  <workflow-item name="item4" type="end" end-mode="0">
+    <position y="45.40909090909091" x="944.5"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item2" type="link" linked-workflow-id="EF8180808080808080808080808080803D80808001270557368849c62c352aa82">
+    <display-name><![CDATA[Add a PowerShell host]]></display-name>
+    <in-binding>
+      <bind name="name" type="string" export-name="name">
+        <description><![CDATA[Name of the specified PowerShell host]]></description>
+      </bind>
+      <bind name="type" type="string" export-name="type">
+        <description><![CDATA[Host type]]></description>
+      </bind>
+      <bind name="transportProtocol" type="string" export-name="transportProtocol">
+        <description><![CDATA[Used in case of WinRM option is choosen to determine the transport protocol to either HTTP or HTTPS]]></description>
+      </bind>
+      <bind name="port" type="string" export-name="port">
+        <description><![CDATA[The port for the WinRM communication]]></description>
+      </bind>
+      <bind name="hostName" type="string" export-name="hostname">
+        <description><![CDATA[Host name or IP of the remote Power Shell machine]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[User name]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[Password]]></description>
+      </bind>
+      <bind name="sessionMode" type="string" export-name="sessionMode">
+        <description><![CDATA[Session mode]]></description>
+      </bind>
+      <bind name="authentication" type="string" export-name="authentication">
+        <description><![CDATA[Used in case of WinRM option choosen to determine authentication schema. Supports Basic and Kerberos authentication schema.]]></description>
+      </bind>
+      <bind name="acceptAllCertificates" type="boolean" export-name="acceptAllCertificates">
+        <description><![CDATA[Accept all certificates]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="host" type="PowerShell:PowerShellHost" export-name="host"/>
+    </out-binding>
+    <description><![CDATA[Adds a PowerShell host to the plug-in's inventory.]]></description>
+    <position y="55.40909090909091" x="304.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item7" type="link" linked-workflow-id="EF8180808080808080808080808080804380808001270557368849c62c352aa82">
+    <display-name><![CDATA[Remove a PowerShell host]]></display-name>
+    <in-binding>
+      <bind name="host" type="PowerShell:PowerShellHost" export-name="host">
+        <description><![CDATA[PowerShell host to remove]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Removes a PowerShell host from the plug-in's inventory.]]></description>
+    <position y="55.40909090909091" x="604.5"/>
+  </workflow-item>
+  <workflow-item name="item5" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="109.04545454545453" x="804.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item4" type="custom-condition" alt-out-name="item5">
+    <display-name><![CDATA[Success?]]></display-name>
+    <script encoded="false"><![CDATA[return !errorCode;]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <position y="45.40909090909091" x="764.5"/>
+  </workflow-item>
+  <workflow-item name="item8" prototype-id="system-log" out-name="item1" type="task" interaction="l">
+    <display-name><![CDATA[System log]]></display-name>
+    <script encoded="false"><![CDATA[//Auto-generated script
+System.log(text);
+]]></script>
+    <in-binding>
+      <bind name="text" type="string" export-name="errorCode">
+        <description><![CDATA[The text to log]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Log the input text to the console log with level 'log']]></description>
+    <position y="119.04545454545453" x="445.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="domain">
+      <desc><![CDATA[domain]]></desc>
+    </p-param>
+    <p-param name="nodename">
+      <desc><![CDATA[nodename]]></desc>
+    </p-param>
+    <p-param name="RType">
+      <desc><![CDATA[RType]]></desc>
+    </p-param>
+    <p-param name="DData">
+      <desc><![CDATA[DData]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

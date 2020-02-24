@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="findById" result-type="Any" api-version="6.0.0" id="28ad3fb6-751e-4c8b-9766-6b21f64f9397" version="0.0.2" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes.sql">
+  <param n="type" t="string"><![CDATA[Type of object to find]]></param>
+  <param n="id" t="string"><![CDATA[ID of object to find]]></param>
+  <script encoded="false"><![CDATA[var startDate = new Date();
+System.debug("com.vmware.coe.dynamicTypes.sql/findById - type :" + type + " id : "+ id);
+
+var namespace = type.split(".")[0];
+var class = type.split(".")[1];
+var foundObject = null; // Initialize the return object
+//Determine if the child is a folder
+var isFolder = System.getModule("com.vmware.coe.dynamicTypes").isFolder(namespace , class);
+if (isFolder == true) {
+	// Create a folder
+	//var id = parentObject.id + "-" + type;
+	foundObject = System.getModule("com.vmware.coe.dynamicTypes").getObjectFromCache(type,id, 0);
+	System.debug("Create folder of type " + type + " with name " + type + " and ID " + id);  
+	//var foundObject = DynamicTypesManager.makeObject(namespace, type, id, type);
+	//foundObject.setProperty(isFolder,true);
+	return foundObject;
+}
+else {
+	foundObject = System.getModule("com.vmware.coe.dynamicTypes").getObjectFromCache(type,id, 60);
+	if (foundObject != null) return foundObject;
+	var namespace = type.split(".")[0];
+	type = type.split(".")[1];
+	var ns = DynamicTypesManager.getNamespace(namespace);
+	var typeObj = DynamicTypesManager.getType(namespace,type);
+	
+	var sqlDb = System.getModule("com.vmware.library.customProperties").getCustomProperty(ns,"sqlDb");
+	var sqlTableName = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"tableName");
+	var idField = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"idField");
+	var nameField = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"nameField");
+	
+	var sqlTables = sqlDb.getTables();
+	for each (table in sqlTables){
+		if (table.name == sqlTableName){
+			var sqlTable = table;
+			break;
+		}
+	}
+	if (!sqlTable) throw "cannot get table: " + sqlTableName;
+	var columns = System.getModule("com.vmware.coe.sql").getTableColumnNames(sqlTableName,sqlDb);
+	//System.debug("Columns found: "+columns);
+	var params = new Object();
+	params[idField] = id;
+
+	var records = sqlTable.readRecords(params,true);
+	//System.debug("Records found: "+records.length);
+	if (records.length == 1){ // There should be only a single item returned from the queyr
+		var record = records[0];
+		var objProps = new Properties();
+		for each (field in columns){
+			if (field == idField){
+				objProps.put("id", record.getProperty(field));
+			}else if (field == nameField){
+				objProps.put("name", record.getProperty(field));
+			} else {
+				objProps.put(field, record.getProperty(field));
+			}
+		}
+		// Note: .getObject method is related to end user workflows. The .makeObject method is used for DynamicTypes finder actions such as findById, findAll, and findRelation
+		foundObject = System.getModule("com.vmware.coe.dynamicTypes").makeDynamicObjectFromProperties(namespace, type, objProps);
+		if (foundObject != null) System.getModule("com.vmware.coe.dynamicTypes").putObjectInCache(foundObject);
+	}
+	System.debug("Completed query in " + ((new Date()).getTime() - startDate.getTime()) / 1000 + " seconds");
+	return foundObject;
+}]]></script>
+</dunes-script-module>

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="changeVMvRAReservation" result-type="boolean" api-version="6.0.0" id="0656bdd8-5362-4318-b2ec-ae6b1b85e43e" version="0.0.1" allowed-operations="evf" category-name="com.vmware.pso.vcac">
+  <description><![CDATA[This action changes the vRA reservation of the vm to the supplied reservation name.
+Caveats:
+1. The reservation is not checked to see if there is available resource capacity (Memory, Disk) in the supplied reservation name.
+2. No vMotion is explicitly performed.
+3. The primary vCAC Entity of the VM is modified; the CAFE Catalog Resource object must be updated. This can be done by performing and "Edit" Resource Action on the catalogResource]]></description>
+  <param n="vmHostname" t="string"/>
+  <param n="newReservationName" t="string"/>
+  <script encoded="false"><![CDATA[System.log("ChangeVMvRAReservation");
+// module variables
+var vCAC = System.getModule("com.vmware.library.vcac");
+var fmResource = System.getModule("com.fm.resources");
+var PSO = System.getModule("com.vmware.pso.vcac");
+
+// Arrays for links
+var hostReservationToStorageLinks = new Array();
+
+// first get the vCACHost and vCACCAFEHost and vCAC virtualmachine from the hostname
+var vCACHost = fmResource.getResourceConstantsObject("defaultVCACHost");
+var vCACCAFEHost = fmResource.getResourceConstantsObject("defaultVCACCAFEHost");
+
+// get vCAC Entity
+var vCACEntity = PSO.getVirtualMachineEntityByName(vmHostname,vCACHost);
+
+var newReservationEntity = vCAC.getReservationEntityByName(vCACHost,newReservationName);
+var hostReservationToStorageLinks = newReservationEntity.getLink(vCACHost,"HostReservationToStorages");
+
+var hostReservationID = newReservationEntity.getProperty("HostReservationID");
+
+var properties = new Properties();
+var headers = null;
+var name = new Array();
+var value = new Array();
+var links = new Properties();
+name[0] = "HostReservationID";
+value[0] = hostReservationID;
+properties.put(name[0], value[0]);
+links.put("HostReservation",newReservationEntity);
+links.put("HostReservationToStorage",hostReservationToStorageLinks[0]);
+try {
+	vCAC.updateEntity(vCACEntity,properties,links);
+	}
+catch (errorCode) {throw errorCode;}
+/*
+// get the business group name and ID from the new reservation to set the (CAFE) catalog resource
+var provisioningGroups = newReservationEntity.getLink(vCACHost,"ProvisioningGroup");
+var subtenantLabel = provisioningGroups[0].getProperty("GroupName");
+var subtenantRef = provisioningGroups[0].getProperty("GroupID");
+var tenantRef = provisioningGroups[0].getProperty("TenantID");
+
+// get the catalog Resource
+var catalogResource = System.getModule("com.vmware.pso.vcac").getCatalogResourceByName(vCACCAFEHost,vmHostname);
+var catBindingID = catalogResource.providerBinding.getBindingId();
+var catProviderID = catalogResource.providerBinding.getProviderRef().getId();
+
+System.log("Subtenant before: "+catalogResource.organization.getSubtenantLabel());
+
+var restClient = vCACCAFEHost.createRestClient(vCACCAFEServicesEnum.CATALOG_PROVIDER_SERVICE);
+System.log("URL: " + restClient.getUrl());
+var postJSON = {"formValues":{}};
+postJSON = System.getModule("org.dojotoolkit.dojo.json").serialize(postJSON);
+
+//var response = restClient.get("provider/providers/"+catProviderID+"/resources/"+catBindingID);
+var response = restClient.get("consumer/resources/"+catalogResource.id+"/actions");
+var response = restClient.get("providers");
+System.log("Response: "+response);
+
+var catalogResource = System.getModule("com.vmware.pso.vcac").getCatalogResourceByName(vCACCAFEHost,vmHostname);
+System.log("Subtenant after: "+catalogResource.organization.getSubtenantLabel());
+
+restClient.close();
+*/
+return true;]]></script>
+</dunes-script-module>

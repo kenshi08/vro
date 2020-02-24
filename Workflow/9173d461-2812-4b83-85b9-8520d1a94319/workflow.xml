@@ -1,0 +1,874 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item12" object-name="workflow:name=generic" id="9173d461-2812-4b83-85b9-8520d1a94319" version="0.0.60" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[[LiVefire] vRA7 VM Auto-Scale]]></display-name>
+  <position y="45.90909090909091" x="25.0"/>
+  <input>
+    <param name="targetId" type="string">
+      <description><![CDATA[The moid of the VM to modify e.g. vm-148]]></description>
+    </param>
+    <param name="correlationId" type="string">
+      <description><![CDATA[The correlationId for the workflow used for logging purposes. ]]></description>
+    </param>
+    <param name="targetvCenteruuid" type="string">
+      <description><![CDATA[UUID of the vCenter where the target VM resides]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="STATUS" type="string"/>
+  </output>
+  <attrib name="targetVmName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="targetVM" type="VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="statusOut" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+  </attrib>
+  <attrib name="severity" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="eventOut" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="eventDetails" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="vCACEntity" type="vCAC:Entity" read-only="false"/>
+  <attrib name="host" type="vCAC:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='adeaac61-f419-4fc8-927c-8643649df47c'&dunesName='vCAC:VCACHost']]></value>
+    <description><![CDATA[vCloud Automation Center host]]></description>
+  </attrib>
+  <attrib name="vCACVmProperties" type="Properties" read-only="false">
+    <description><![CDATA[Properties of the returned vCAC VM]]></description>
+  </attrib>
+  <attrib name="vCACVmCatalogResource" type="vCACCAFE:CatalogResource" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="applicationScalable" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+    <description><![CDATA[Boolean for whether or not the application deployment is scalable.
+
+Note: Only refers to Application Services deployments.
+Will be false if the deployment is in an unscalable state (such as an error state).]]></description>
+  </attrib>
+  <attrib name="vmScaleOutResourceOperation" type="vCACCAFE:ConsumerResourceOperation" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[The operation that corresponds to the "Scale Out" resource operation in vRA/vCAC.]]></description>
+  </attrib>
+  <attrib name="scaleOutRequest" type="vCACCAFE:CatalogItemRequest" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="requestTimeout" type="number" read-only="false">
+    <value encoded="n"><![CDATA[7200.0]]></value>
+    <description><![CDATA[Timeout]]></description>
+  </attrib>
+  <attrib name="requestResult" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Resource action request result]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="searchString" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Rainpole-I-L-DB]]></value>
+    <description><![CDATA[Full or partial name of object you are looking for.]]></description>
+  </attrib>
+  <attrib name="databaseServerResource" type="vCACCAFE:CatalogResource" read-only="false"/>
+  <attrib name="cafeHost" type="vCACCAFE:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='1ba095b7-7b1d-4daf-96ff-9f5840bd32a7'&dunesName='vCACCAFE:VCACHost']]></value>
+  </attrib>
+  <attrib name="databaseIP" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[IP Address for the Database Server to use as part of the new Web Server deployment request]]></description>
+  </attrib>
+  <attrib name="webServerSearchString" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Rainpole-I-L-Web]]></value>
+  </attrib>
+  <attrib name="requestString" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="newWebServerResource" type="vCACCAFE:CatalogResource" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="newWebServerIP" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="poolMembers" type="Array/CompositeType(ipAddress:string,weight:number):poolMember" read-only="false">
+    <value encoded="n"><![CDATA[#{##}#]]></value>
+  </attrib>
+  <attrib name="loadBalancerSearchString" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Load_Balancer]]></value>
+  </attrib>
+  <attrib name="loadBalancerResource" type="vCACCAFE:CatalogResource" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-note x="3118.5" y="43.95454545454544" w="1023.0" h="158.0" color="bfffbfff">
+    <description><![CDATA[Grab new machine IP, find original load balancer and add IP]]></description>
+  </workflow-note>
+  <workflow-note x="100.0" y="45.45454545454545" w="580.0" h="154.54545454545453" color="ebebb0ff">
+    <description><![CDATA[Validation and Common Starting Tasks]]></description>
+  </workflow-note>
+  <workflow-note x="700.0" y="45.45454545454545" w="520.0" h="154.54545454545453" color="b0ebebff">
+    <description><![CDATA[Resolve to vCAC VM and grab properties]]></description>
+  </workflow-note>
+  <workflow-note x="1978.5" y="43.95454545454547" w="303.0" h="160.0" color="a1a1d7ff">
+    <description><![CDATA[Find Database Server object & IP]]></description>
+  </workflow-note>
+  <workflow-note x="1240.0" y="45.45454545454545" w="720.0" h="158.0" color="ebceb0ff">
+    <description><![CDATA[See if Catalog Item has Scale Operation available]]></description>
+  </workflow-note>
+  <workflow-note x="2318.5" y="43.95454545454544" w="783.0" h="162.0" color="b0ebceff">
+    <description><![CDATA[Provision new machine]]></description>
+  </workflow-note>
+  <workflow-item name="item7" out-name="item8" type="link" linked-workflow-id="ec1a8692-4711-4b73-8de4-e342131a6cb7">
+    <display-name><![CDATA[ValidateTarget]]></display-name>
+    <in-binding>
+      <bind name="targetId" type="string" export-name="targetId"/>
+      <bind name="correlationId" type="string" export-name="correlationId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="status" type="boolean" export-name="statusOut"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item11" type="condition" alt-out-name="item13" comparator="0">
+    <display-name><![CDATA[Valid Target Id]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (statusOut == true) ;]]></script>
+    <in-binding>
+      <bind name="statusOut" type="boolean" export-name="statusOut"/>
+    </in-binding>
+    <condition name="statusOut" type="boolean" comparator="0" label="null">false</condition>
+    <position y="45.40909090909091" x="325.0"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item1" type="condition" alt-out-name="item15" comparator="0">
+    <display-name><![CDATA[Target VM Found]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (statusOut == true) ;]]></script>
+    <in-binding>
+      <bind name="statusOut" type="boolean" export-name="statusOut"/>
+    </in-binding>
+    <condition name="statusOut" type="boolean" comparator="0" label="null">false</condition>
+    <position y="45.40909090909091" x="565.0"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item14" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="109.95454545454544" x="445.0"/>
+  </workflow-item>
+  <workflow-item name="item11" out-name="item9" type="link" linked-workflow-id="6ff24a3a-d83e-47fd-9661-cdfbed7b7c22">
+    <display-name><![CDATA[Find VM by MOID]]></display-name>
+    <in-binding>
+      <bind name="targetId" type="string" export-name="targetId"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetvCenteruuid" type="string" export-name="targetvCenteruuid">
+        <description><![CDATA[UUID of the vCenter where the target VM is located]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="statusOut" type="boolean" export-name="statusOut"/>
+      <bind name="targetVM" type="VC:VirtualMachine" export-name="targetVM"/>
+      <bind name="targetVmName" type="string" export-name="targetVmName"/>
+    </out-binding>
+    <position y="55.40909090909091" x="445.0"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item7" type="task">
+    <display-name><![CDATA[Status Running]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Running";]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="55.40909090909091" x="85.0"/>
+  </workflow-item>
+  <workflow-item name="item13" out-name="item10" type="task">
+    <display-name><![CDATA[Invalid Target]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Validate Target.";
+eventDetails = "Not a valid UUID.";
+severity = "error";]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="325.0"/>
+  </workflow-item>
+  <workflow-item name="item14" type="end" end-mode="0">
+    <position y="154.5" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item15" out-name="item10" type="task">
+    <display-name><![CDATA[Not found]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Find vSphere VM by MOID.";
+eventDetails = "Could not find vSphere VM by MOID.";
+severity = "error";]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="565.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item5" type="link" linked-workflow-id="896b3ecf-c96a-4b8e-b543-8262b9d8bb02">
+    <display-name><![CDATA[get vCAC VM by InstanceUuid]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="targetVM"/>
+      <bind name="vcenterinstanceuuid" type="string" export-name="targetvCenteruuid"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vCACEntity" type="vCAC:Entity" export-name="vCACEntity"/>
+    </out-binding>
+    <position y="55.40909090909091" x="705.0"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item3" type="task" script-module="com.dailyhypervisor.vcac.common/getVirtualMachineProperties">
+    <display-name><![CDATA[getVirtualMachineProperties]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.dailyhypervisor.vcac.common").getVirtualMachineProperties(virtualMachineEntity,vCACHost) ;]]></script>
+    <in-binding>
+      <bind name="virtualMachineEntity" type="vCAC:Entity" export-name="vCACEntity"/>
+      <bind name="vCACHost" type="vCAC:VCACHost" export-name="host"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Properties" export-name="vCACVmProperties"/>
+    </out-binding>
+    <position y="55.40909090909091" x="984.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="task">
+    <display-name><![CDATA[Print VM Properties]]></display-name>
+    <script encoded="false"><![CDATA[//Displaying vCAC VM properties
+if (vCACVmProperties != null) {
+	var log = "";
+	log += "vCAC VM properties :\n";
+	var array = new Array();
+	for each (var key in vCACVmProperties.keys) {
+		array.push(key + " : " + vCACVmProperties.get(key));	
+	}
+	array.sort();
+	
+	for each (var line in array) {
+		log += "\t" + line + "\n";
+	}	
+	System.log(log);	
+}
+if (vCACVmProperties == null)
+{
+	System.log("Properties were null");
+}]]></script>
+    <in-binding>
+      <bind name="vCACVmProperties" type="Properties" export-name="vCACVmProperties"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="1104.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item6" type="task">
+    <display-name><![CDATA[Log VM not found.]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Resolve vCenter VM to vRA VM.";
+eventDetails = "No corresponding vRA VM found.";
+severity = "error";]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="845.0"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item2" type="condition" alt-out-name="item4" comparator="0">
+    <display-name><![CDATA[vCAC VM found?]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (vCACEntity  != null ) ;]]></script>
+    <in-binding>
+      <bind name="vCACEntity" type="vCAC:Entity" export-name="vCACEntity"/>
+    </in-binding>
+    <condition name="vCACEntity" type="vCAC:Entity" comparator="0" label="null"/>
+    <position y="45.40909090909091" x="844.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item16" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="109.95454545454544" x="985.0"/>
+  </workflow-item>
+  <workflow-item name="item16" type="end" end-mode="0">
+    <position y="145.4090909090909" x="1024.5"/>
+  </workflow-item>
+  <workflow-item name="item22" out-name="item20" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="109.95454545454544" x="1564.5"/>
+  </workflow-item>
+  <workflow-item name="item20" type="end" end-mode="0">
+    <position y="154.5" x="1604.5"/>
+  </workflow-item>
+  <workflow-item name="item23" type="end" end-mode="0">
+    <position y="45.40909090909091" x="4244.5"/>
+  </workflow-item>
+  <workflow-item name="item24" out-name="item27" type="condition" alt-out-name="item25" comparator="0">
+    <display-name><![CDATA[Application Scalable?]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (applicationScalable == true) ;]]></script>
+    <in-binding>
+      <bind name="applicationScalable" type="boolean" export-name="applicationScalable"/>
+    </in-binding>
+    <condition name="applicationScalable" type="boolean" comparator="0" label="null">false</condition>
+    <description><![CDATA[Is the application deployment scalable?]]></description>
+    <position y="45.40909090909091" x="1704.5"/>
+  </workflow-item>
+  <workflow-item name="item25" out-name="item22" type="task">
+    <display-name><![CDATA[Log not scalable]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Determine if catalog item is scalable.";
+eventDetails = "Scale Out operation is not available for this catalog item. It may not be scalable, or it may be in an error state and be currently unable to scale. Verify the state directly in vRA.";
+severity = "error";]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="1704.5"/>
+  </workflow-item>
+  <workflow-item name="item27" out-name="item21" type="task">
+    <display-name><![CDATA[Log scalable]]></display-name>
+    <script encoded="false"><![CDATA[System.log("Scale out is available!. Continuing.");]]></script>
+    <in-binding/>
+    <out-binding/>
+    <position y="55.40909090909091" x="1844.5"/>
+  </workflow-item>
+  <workflow-item name="item29" out-name="item31" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Failed to Submit]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Scale Out Deployment.";
+eventDetails = "Failed to submit request to for new machine. Error Code: " + errorCode;
+severity = "error";]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="2464.5"/>
+  </workflow-item>
+  <workflow-item name="item30" type="end" end-mode="0">
+    <position y="154.5" x="2724.5"/>
+  </workflow-item>
+  <workflow-item name="item31" out-name="item30" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="109.95454545454544" x="2684.5"/>
+  </workflow-item>
+  <workflow-item name="item32" out-name="item42" type="task">
+    <display-name><![CDATA[Submitted]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "In Progress";
+eventOut = "Scale Out Deployment.";
+eventDetails = "Request for new machine was submitted successfully! Waiting for completion...";
+severity = "info";
+
+System.log("Scale out request was submitted successfully!");
+
+System.log("Waiting for request to be completed...");]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+    </out-binding>
+    <description><![CDATA[Logging that the request was submitted.]]></description>
+    <position y="55.40909090909091" x="2604.5"/>
+  </workflow-item>
+  <workflow-item name="item34" out-name="item31" type="task">
+    <display-name><![CDATA[Failed to Complete]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Scale Out Deployment.";
+eventDetails = "Request for new machine was submitted successfully, but failed to complete (or we failed to wait for it to complete). Error Code: " + errorCode;
+severity = "error";]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="2784.5"/>
+  </workflow-item>
+  <workflow-item name="item35" out-name="item36" type="task">
+    <display-name><![CDATA[Machine Provisioned]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "In Progress";
+eventOut = "Scale Out Deployment";
+eventDetails = "New machine has been provisioned successfully. Moving on to load balancer...";
+severity = "info";
+
+System.log("Scale out completed! Woohoo!");]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="55.40909090909091" x="2984.5"/>
+  </workflow-item>
+  <workflow-item name="item36" out-name="item43" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="109.95454545454544" x="2984.5"/>
+  </workflow-item>
+  <workflow-item name="item17" out-name="item24" type="link" linked-workflow-id="1928cee4-8091-41ef-ab87-cfac947cd827">
+    <display-name><![CDATA[Catalog Item Scalability Check]]></display-name>
+    <in-binding>
+      <bind name="resource" type="vCACCAFE:CatalogResource" export-name="vCACVmCatalogResource">
+        <description><![CDATA[Resource]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="applicationScalable" type="boolean" export-name="applicationScalable"/>
+      <bind name="vmScaleOutResourceOperation" type="vCACCAFE:ConsumerResourceOperation" export-name="vmScaleOutResourceOperation"/>
+    </out-binding>
+    <position y="55.40909090909091" x="1564.5"/>
+  </workflow-item>
+  <workflow-item name="item18" out-name="item22" type="task">
+    <display-name><![CDATA[Log catalog resource not found]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Determine catalog item/resource from vRA VM object.";
+eventDetails = "Failed to resolve vRA Item/Catalog Resource. Error code: " + errorCode;
+severity = "error";]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="1284.5"/>
+  </workflow-item>
+  <workflow-item name="item19" out-name="item32" catch-name="item29" throw-bind-name="errorCode" type="link" linked-workflow-id="fa7b39fa-13d3-4b90-8a99-4a637b6c5cad">
+    <display-name><![CDATA[Request Web Server VM with WP_DB_HOST]]></display-name>
+    <in-binding>
+      <bind name="WP_DB_HOST" type="string" export-name="databaseIP"/>
+      <bind name="resource" type="vCACCAFE:CatalogResource" export-name="vCACVmCatalogResource"/>
+    </in-binding>
+    <out-binding>
+      <bind name="request" type="vCACCAFE:CatalogItemRequest" export-name="scaleOutRequest"/>
+    </out-binding>
+    <position y="55.40909090909091" x="2464.5"/>
+  </workflow-item>
+  <workflow-item name="item21" out-name="item26" catch-name="item28" throw-bind-name="errorCode" type="link" linked-workflow-id="f78e5933-6e7a-48f2-acc7-251676c4005a">
+    <display-name><![CDATA[Find parent and matching child]]></display-name>
+    <in-binding>
+      <bind name="originalResource" type="vCACCAFE:CatalogResource" export-name="vCACVmCatalogResource"/>
+      <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost"/>
+      <bind name="searchString" type="string" export-name="searchString">
+        <description><![CDATA[Full or partial name of object you are looking for.]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="outputResource" type="vCACCAFE:CatalogResource" export-name="databaseServerResource"/>
+    </out-binding>
+    <description><![CDATA[This workflow takes a catalog resource in vRA and another text string as input, finds the parent object of the catalog resource (such as a deployment).
+
+Then it lists all objects with names containing the string and finds the first one that has the same parent as the original resource.
+
+Could be expanded later to return all resources that match based on certain criteria.]]></description>
+    <position y="55.40909090909091" x="1984.5"/>
+  </workflow-item>
+  <workflow-item name="item26" out-name="item39" type="task">
+    <display-name><![CDATA[Get DB IP from Entity]]></display-name>
+    <script encoded="false"><![CDATA[var vCACVms = Server.findAllForType("vCAC:VirtualMachine");
+
+for each (var vCACVm in vCACVms) {
+  System.log( "Comparing DB Hostname: " + databaseServerResource.name + " to VMID: " + vCACVm.virtualMachineName);
+  if (databaseServerResource.name == vCACVm.virtualMachineName){
+  	System.log("Resolved vCAC VM: " + vCACVm.virtualMachineName);
+  	var databaseEntity = vCACVm.getEntity();
+  	break;
+  }
+}
+ 
+var databaseVMProperties = System.getModule("com.vmware.library.vcac").getPropertiesFromVirtualMachine(host,vCACVm);
+//databaseIP = databaseEntity.getProperty("VirtualMachine.Network0.Address");
+databaseIP = databaseVMProperties.get("VirtualMachine.Network0.Address");
+System.log("Database IP is: " + databaseIP);]]></script>
+    <in-binding>
+      <bind name="databaseIP" type="string" export-name="databaseIP"/>
+      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+      <bind name="databaseServerResource" type="vCACCAFE:CatalogResource" export-name="databaseServerResource"/>
+    </in-binding>
+    <out-binding>
+      <bind name="databaseIP" type="string" export-name="databaseIP"/>
+    </out-binding>
+    <position y="55.40909090909091" x="2124.5"/>
+  </workflow-item>
+  <workflow-item name="item28" out-name="item37" type="task">
+    <display-name><![CDATA[Failed to Submit]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Find database server of deployment.";
+eventDetails = "Failed to locate a database server with name prefix Rainpole-I-L-DB in this deployment. Error Code: " + errorCode;
+severity = "error";]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="1984.5"/>
+  </workflow-item>
+  <workflow-item name="item37" out-name="item38" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="109.95454545454544" x="2124.5"/>
+  </workflow-item>
+  <workflow-item name="item38" type="end" end-mode="0">
+    <position y="154.5" x="2164.5"/>
+  </workflow-item>
+  <workflow-item name="item39" out-name="item40" type="task">
+    <display-name><![CDATA[Submitting]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "In Progress";
+eventOut = "Scale Out Deployment.";
+eventDetails = "Request for new machine is being submitted...";
+severity = "info";]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </out-binding>
+    <description><![CDATA[Logging that the request was submitted.]]></description>
+    <position y="55.40909090909091" x="2304.5"/>
+  </workflow-item>
+  <workflow-item name="item40" out-name="item19" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="109.95454545454544" x="2304.5"/>
+  </workflow-item>
+  <workflow-item name="item33" out-name="item35" catch-name="item34" throw-bind-name="errorCode" type="link" linked-workflow-id="9c9c6ce9-2efe-479b-8184-79e77e8a7714">
+    <display-name><![CDATA[Wait for catalog item request]]></display-name>
+    <in-binding>
+      <bind name="request" type="vCACCAFE:CatalogItemRequest" export-name="scaleOutRequest">
+        <description><![CDATA[Catalog item request]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="requestTimeout">
+        <description><![CDATA[Timeout]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="string" export-name="requestResult">
+        <description><![CDATA[Catalog item request state]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Waits for a catalog item request to complete.]]></description>
+    <position y="55.40909090909091" x="2884.5"/>
+  </workflow-item>
+  <workflow-item name="item42" out-name="item33" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="2744.5"/>
+  </workflow-item>
+  <workflow-item name="item43" out-name="item41" type="task">
+    <display-name><![CDATA[Grab requestId]]></display-name>
+    <script encoded="false"><![CDATA[requestString = scaleOutRequest.id;]]></script>
+    <in-binding>
+      <bind name="scaleOutRequest" type="vCACCAFE:CatalogItemRequest" export-name="scaleOutRequest"/>
+    </in-binding>
+    <out-binding>
+      <bind name="requestString" type="string" export-name="requestString"/>
+    </out-binding>
+    <position y="55.40909090909091" x="3144.5"/>
+  </workflow-item>
+  <workflow-item name="item41" out-name="item44" catch-name="item45" throw-bind-name="errorCode" type="link" linked-workflow-id="d12e5512-06e1-4095-82dc-789551798baa">
+    <display-name><![CDATA[Get catalog resource matching requestId]]></display-name>
+    <in-binding>
+      <bind name="requestString" type="string" export-name="requestString"/>
+      <bind name="filterString" type="string" export-name="webServerSearchString"/>
+      <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="outputResource" type="vCACCAFE:CatalogResource" export-name="newWebServerResource"/>
+    </out-binding>
+    <position y="55.40909090909091" x="3284.5"/>
+  </workflow-item>
+  <workflow-item name="item44" out-name="item48" type="task">
+    <display-name><![CDATA[Get Webserver IP]]></display-name>
+    <script encoded="false"><![CDATA[var vCACVms = Server.findAllForType("vCAC:VirtualMachine");
+
+for each (var vCACVm in vCACVms) {
+  System.log( "Comparing Web Server Hostname: " + newWebServerResource.name + " to VMID: " + vCACVm.virtualMachineName);
+  if (newWebServerResource.name == vCACVm.virtualMachineName){
+  	System.log("Resolved vCAC VM: " + vCACVm.virtualMachineName);
+  	//var machineEntity = vCACVm.getEntity();
+  	break;
+  }
+}
+ 
+var databaseVMProperties = System.getModule("com.vmware.library.vcac").getPropertiesFromVirtualMachine(host,vCACVm);
+//databaseIP = databaseEntity.getProperty("VirtualMachine.Network0.Address");
+newWebServerIP = databaseVMProperties.get("VirtualMachine.Network0.Address");
+System.log("New Web Server IP is: " + newWebServerIP);]]></script>
+    <in-binding>
+      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+      <bind name="newWebServerResource" type="vCACCAFE:CatalogResource" export-name="newWebServerResource"/>
+    </in-binding>
+    <out-binding>
+      <bind name="newWebServerIP" type="string" export-name="newWebServerIP"/>
+    </out-binding>
+    <position y="55.40909090909091" x="3424.5"/>
+  </workflow-item>
+  <workflow-item name="item45" out-name="item46" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Failed to get Catalog Resource]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Scale Out Deployment - Grab New Catalog Resource.";
+eventDetails = "Failed to grab newly deployed machine's catalog resource. Error Code: " + errorCode;
+severity = "error";]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="3284.5"/>
+  </workflow-item>
+  <workflow-item name="item46" out-name="item47" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="155.4090909090909" x="3284.5"/>
+  </workflow-item>
+  <workflow-item name="item47" type="end" end-mode="0">
+    <position y="145.4090909090909" x="3464.5"/>
+  </workflow-item>
+  <workflow-item name="item48" out-name="item49" type="task">
+    <display-name><![CDATA[Place IP into Array]]></display-name>
+    <script encoded="false"><![CDATA[//Drop the IP into the necessary composite array type for the NSX workflow to accept it
+//Just dropping in a single value with set weight of 1 for simplicity, could be expanded
+var poolMember = new Object();
+poolMember.ipAddress = newWebServerIP;
+poolMember.weight = 1;
+poolMembers.push(poolMember);
+
+System.log("Array IP: " + poolMembers[0].ipAddress);]]></script>
+    <in-binding>
+      <bind name="poolMembers" type="Array/CompositeType(ipAddress:string,weight:number):poolMember" export-name="poolMembers"/>
+      <bind name="newWebServerIP" type="string" export-name="newWebServerIP"/>
+    </in-binding>
+    <out-binding>
+      <bind name="poolMembers" type="Array/CompositeType(ipAddress:string,weight:number):poolMember" export-name="poolMembers"/>
+    </out-binding>
+    <position y="55.40909090909091" x="3564.5"/>
+  </workflow-item>
+  <workflow-item name="item49" out-name="item52" catch-name="item50" throw-bind-name="errorCode" type="link" linked-workflow-id="f78e5933-6e7a-48f2-acc7-251676c4005a">
+    <display-name><![CDATA[Find Load Balancer]]></display-name>
+    <in-binding>
+      <bind name="originalResource" type="vCACCAFE:CatalogResource" export-name="vCACVmCatalogResource"/>
+      <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost"/>
+      <bind name="searchString" type="string" export-name="loadBalancerSearchString">
+        <description><![CDATA[Full or partial name of object you are looking for.]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="outputResource" type="vCACCAFE:CatalogResource" export-name="loadBalancerResource"/>
+    </out-binding>
+    <description><![CDATA[This workflow takes a catalog resource in vRA and another text string as input, finds the parent object of the catalog resource (such as a deployment).
+
+Then it lists all objects with names containing the string and finds the first one that has the same parent as the original resource.
+
+Could be expanded later to return all resources that match based on certain criteria.]]></description>
+    <position y="55.40909090909091" x="3704.5"/>
+  </workflow-item>
+  <workflow-item name="item50" out-name="item51" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Failed to find load balancer]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Scale Out Deployment - Find existing load balancer.";
+eventDetails = "Could not find a load balancer in the original deployment. Error Code: " + errorCode;
+severity = "error";]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="3704.5"/>
+  </workflow-item>
+  <workflow-item name="item51" out-name="item47" type="link" linked-workflow-id="161f7106-481b-453b-9e10-cc29acd42fef">
+    <display-name><![CDATA[EventRecorder]]></display-name>
+    <in-binding>
+      <bind name="event" type="string" export-name="eventOut"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="correlationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVmName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="155.4090909090909" x="3704.5"/>
+  </workflow-item>
+  <workflow-item name="item52" out-name="item54" catch-name="item53" throw-bind-name="errorCode" type="link" linked-workflow-id="16404ea7-f949-4262-9f59-f645fa539213">
+    <display-name><![CDATA[Find Edge of LB and add node to pool]]></display-name>
+    <in-binding>
+      <bind name="loadBalancer" type="vCACCAFE:CatalogResource" export-name="loadBalancerResource"/>
+      <bind name="poolMembers" type="Array/CompositeType(ipAddress:string,weight:number):poolMember" export-name="poolMembers">
+        <description><![CDATA[Pool members]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="3864.5"/>
+  </workflow-item>
+  <workflow-item name="item53" out-name="item51" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Failed to find load balancer]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Failed";
+eventOut = "Scale Out Deployment - Add node to load balancer.";
+eventDetails = "Failed to add new node to the load balancer. Error Code: " + errorCode;
+severity = "error";]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="109.95454545454544" x="3864.5"/>
+  </workflow-item>
+  <workflow-item name="item54" out-name="item23" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Success]]></display-name>
+    <script encoded="false"><![CDATA[STATUS = "Success";
+eventOut = "Scale Out Deployment";
+eventDetails = "Everything worked! Amazing.";
+severity = "info";]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="eventOut" type="string" export-name="eventOut"/>
+      <bind name="severity" type="string" export-name="severity"/>
+      <bind name="STATUS" type="string" export-name="STATUS"/>
+    </out-binding>
+    <position y="55.40909090909091" x="4004.5"/>
+  </workflow-item>
+  <workflow-item name="item55" out-name="item17" type="task">
+    <display-name><![CDATA[Print resource name]]></display-name>
+    <script encoded="false"><![CDATA[System.log("vCACVmCatalogResource name is: " + vCACVmCatalogResource.name);]]></script>
+    <in-binding>
+      <bind name="vCACVmCatalogResource" type="vCACCAFE:CatalogResource" export-name="vCACVmCatalogResource"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="1424.5"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item55" catch-name="item18" throw-bind-name="errorCode" type="task" script-module="com.dailyhypervisor.vcac.common/getCatalogResourceForIaasVmEntity">
+    <display-name><![CDATA[getCatalogResourceForIaasVmEntity]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.dailyhypervisor.vcac.common").getCatalogResourceForIaasVmEntity(vcacCafeHost,vcacIaasVmEntity) ;]]></script>
+    <in-binding>
+      <bind name="vcacCafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost">
+        <description><![CDATA[The vCAC catalog host]]></description>
+      </bind>
+      <bind name="vcacIaasVmEntity" type="vCAC:Entity" export-name="vCACEntity">
+        <description><![CDATA[The vCAC IaaS VM entity]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCACCAFE:CatalogResource" export-name="vCACVmCatalogResource"/>
+    </out-binding>
+    <position y="55.90909090909091" x="1285.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="targetId">
+      <desc><![CDATA[The MOID of the VM to modify e.g. vm-148]]></desc>
+    </p-param>
+    <p-param name="correlationId">
+      <desc><![CDATA[The correlationId for the workflow used for logging purposes. ]]></desc>
+    </p-param>
+    <p-param name="targetvCenteruuid">
+      <desc><![CDATA[UUID of the vCenter where the target VM resides]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

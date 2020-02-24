@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="c7f559e4-bb1b-4c68-901c-7964006e89d7" version="0.0.18" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Puppet-MachineProvisioned]]></display-name>
+  <position y="45.90909090909091" x="25.0"/>
+  <input>
+    <param name="requestId" type="string"/>
+    <param name="machine" type="Properties"/>
+    <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
+    <param name="virtualMachineEvent" type="string"/>
+    <param name="lifecycleState" type="Properties"/>
+    <param name="componentId" type="string"/>
+    <param name="blueprintName" type="string"/>
+    <param name="componentTypeId" type="string"/>
+    <param name="endpointId" type="string"/>
+    <param name="workflowNextState" type="string"/>
+    <param name="virtualMachineDeleteProperties" type="Properties"/>
+  </input>
+  <attrib name="vmProperties" type="Properties" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="hostname" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="ipaddress" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="gateway" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="netmask" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="nodeName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="host" type="vCAC:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='62d9f53e-bb2e-44e3-8a2d-be0aba392cd9'&dunesName='vCAC:VCACHost']]></value>
+  </attrib>
+  <attrib name="master" type="Puppet:Master" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='f4e332f9-6178-4b93-886b-e2dc989b7b26'&dunesName='Puppet:Master']]></value>
+    <description><![CDATA[Puppet master]]></description>
+  </attrib>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+    <description><![CDATA[Node username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[11BX4EG75S6CY6CW70V68Z61S73M65Y31U21K259F5BFJ4266084YCB77657Y6CEC740T924A73EZEBE8560I5D16A81Z62E9A4HB1D4951XD75B61BV3D9DBFBGA61777BX2B3D124N435D757V7F6C488O9763378S70AD981M13F289AG89E1190HBB462D1LBAA9B23J]]></value>
+    <description><![CDATA[Node password]]></description>
+  </attrib>
+  <attrib name="installerBaseUrl" type="string" read-only="false">
+    <value encoded="n"><![CDATA[https://puppet-master.nullphase.local:8140/packages]]></value>
+    <description><![CDATA[Installer base url]]></description>
+  </attrib>
+  <attrib name="environment" type="string" read-only="false">
+    <value encoded="n"><![CDATA[production]]></value>
+    <description><![CDATA[Puppet environment (e.g. PROD, QE etc)]]></description>
+  </attrib>
+  <attrib name="registerMasterInHostsFile" type="boolean" read-only="false">
+    <description><![CDATA[Register Puppet master in node's hosts file]]></description>
+  </attrib>
+  <attrib name="certName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Certificate name]]></description>
+  </attrib>
+  <attrib name="lastRunReport" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Agent last run report]]></description>
+  </attrib>
+  <attrib name="lastRunSummary" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Agent last run summary]]></description>
+  </attrib>
+  <attrib name="retry" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[Retry]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="864.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[System.log("------List Properties------");
+System.log("requestId: " + requestId);
+System.log("machine.id: " + machine.get("id"))
+System.log("machine.name: " + machine.get("name"))
+System.log("machine.type: " + machine.get("type"))
+System.log("machine.owner: " + machine.get("owner"))
+System.log("machine.externalReference: " + machine.get("externalReference"))
+//myprop = machine.get("properties");
+//System.log("MyProperties: " + myprop.length)
+System.log("virtualMachineEvent: " + virtualMachineEvent);
+System.log("lifecycleState.event: " + lifecycleState.get("event"))
+System.log("lifecycleState.phase: " + lifecycleState.get("phase"))
+System.log("lifecycleState.state: " + lifecycleState.get("state"))
+System.log("componentId: " + componentId);
+System.log("blueprintName: " + blueprintName );
+System.log("componentTypeId: " + componentTypeId);
+System.log("endpointId: " + endpointId);
+System.log("workflowNextState: " + workflowNextState);
+
+
+var properties = new Properties();
+properties.put("VirtualMachineID", machine.get("id"));
+
+
+var virtualMachineEntity = vCACEntityManager.readModelEntity(host.id, "ManagementModelEntities.svc", "VirtualMachines", properties, null);
+var vmProperties = new Properties();
+
+var virtualMachinePropertiesEntities = virtualMachineEntity.getLink(host, "VirtualMachineProperties");
+for each (var virtualMachinePropertiesEntity in virtualMachinePropertiesEntities) {
+	var propertyName = virtualMachinePropertiesEntity.getProperty("PropertyName");
+	var propertyValue = virtualMachinePropertiesEntity.getProperty("PropertyValue");
+	System.log("Found property " + propertyName + " = " + propertyValue);
+	vmProperties.put(propertyName, propertyValue);
+}
+nodeName = machine.get("name");
+hostname = machine.get("name") + "." + vmProperties.get("VirtualMachine.Network0.DnsSuffix");
+ipaddress = vmProperties.get("VirtualMachine.Network0.Address");
+netmask = vmProperties.get("VirtualMachine.Network0.SubnetMask");
+gateway = vmProperties.get("VirtualMachine.Network0.Gateway");
+]]></script>
+    <in-binding>
+      <bind name="requestId" type="string" export-name="requestId"/>
+      <bind name="machine" type="Properties" export-name="machine"/>
+      <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
+      <bind name="virtualMachineEvent" type="string" export-name="virtualMachineEvent"/>
+      <bind name="lifecycleState" type="Properties" export-name="lifecycleState"/>
+      <bind name="componentId" type="string" export-name="componentId"/>
+      <bind name="blueprintName" type="string" export-name="blueprintName"/>
+      <bind name="componentTypeId" type="string" export-name="componentTypeId"/>
+      <bind name="endpointId" type="string" export-name="endpointId"/>
+      <bind name="workflowNextState" type="string" export-name="workflowNextState"/>
+      <bind name="virtualMachineDeleteProperties" type="Properties" export-name="virtualMachineDeleteProperties"/>
+      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+      <bind name="vmProperties" type="Properties" export-name="vmProperties"/>
+    </in-binding>
+    <out-binding>
+      <bind name="hostname" type="string" export-name="hostname"/>
+      <bind name="ipaddress" type="string" export-name="ipaddress"/>
+      <bind name="gateway" type="string" export-name="gateway"/>
+      <bind name="nodeName" type="string" export-name="nodeName"/>
+      <bind name="netmask" type="string" export-name="netmask"/>
+    </out-binding>
+    <position y="55.40909090909091" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item3" type="link" linked-workflow-id="9beeaf28-8515-4734-af17-e2057680b336">
+    <display-name><![CDATA[Install Linux Agent with SSH]]></display-name>
+    <in-binding>
+      <bind name="master" type="Puppet:Master" export-name="master">
+        <description><![CDATA[Puppet master]]></description>
+      </bind>
+      <bind name="hostname" type="string" export-name="hostname">
+        <description><![CDATA[Node hostname]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[Node username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[Node password]]></description>
+      </bind>
+      <bind name="installerBaseUrl" type="string" export-name="installerBaseUrl">
+        <description><![CDATA[Installer base url]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Installs the Puppet agent on linux node using SSH.]]></description>
+    <position y="55.40909090909091" x="264.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" type="link" linked-workflow-id="37559ce8-25da-402e-ae0c-3a780655aada">
+    <display-name><![CDATA[Configure Linux Agent with SSH]]></display-name>
+    <in-binding>
+      <bind name="master" type="Puppet:Master" export-name="master">
+        <description><![CDATA[Puppet master]]></description>
+      </bind>
+      <bind name="hostname" type="string" export-name="hostname">
+        <description><![CDATA[Node hostname]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[Node username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[Node password]]></description>
+      </bind>
+      <bind name="environment" type="string" export-name="environment">
+        <description><![CDATA[Puppet environment (e.g. PROD, QE etc)]]></description>
+      </bind>
+      <bind name="registerMasterInHostsFile" type="boolean" export-name="registerMasterInHostsFile">
+        <description><![CDATA[Register Puppet master in node's hosts file]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="certName" type="string" export-name="certName">
+        <description><![CDATA[Certificate name]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Configures the Puppet agent on linux node using SSH.]]></description>
+    <position y="55.40909090909091" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item5" type="link" linked-workflow-id="8f68ebb1-31a7-4008-9eda-7b1fc50eae63">
+    <display-name><![CDATA[Sign Node Certificate]]></display-name>
+    <in-binding>
+      <bind name="master" type="Puppet:Master" export-name="master">
+        <description><![CDATA[Puppet master]]></description>
+      </bind>
+      <bind name="nodeName" type="string" export-name="nodeName">
+        <description><![CDATA[Node name]]></description>
+      </bind>
+      <bind name="retry" type="boolean" export-name="retry">
+        <description><![CDATA[Retry]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Sign the node (CSR) on puppet master]]></description>
+    <position y="55.40909090909091" x="544.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item0" type="link" linked-workflow-id="4c0175e9-3446-440b-8380-153c1daa66c1">
+    <display-name><![CDATA[Remediate Linux Node with SSH]]></display-name>
+    <in-binding>
+      <bind name="hostname" type="string" export-name="hostname">
+        <description><![CDATA[Node hostname]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[Node username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[Node password]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="lastRunReport" type="string" export-name="lastRunReport">
+        <description><![CDATA[Agent last run report]]></description>
+      </bind>
+      <bind name="lastRunSummary" type="string" export-name="lastRunSummary">
+        <description><![CDATA[Agent last run summary]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Runs the remediation on node using SSH]]></description>
+    <position y="55.40909090909091" x="684.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="requestId">
+      <desc><![CDATA[requestId]]></desc>
+    </p-param>
+    <p-param name="machine">
+      <desc><![CDATA[machine]]></desc>
+    </p-param>
+    <p-param name="virtualMachineAddOrUpdateProperties">
+      <desc><![CDATA[virtualMachineAddOrUpdateProperties]]></desc>
+    </p-param>
+    <p-param name="virtualMachineEvent">
+      <desc><![CDATA[virtualMachineEvent]]></desc>
+    </p-param>
+    <p-param name="lifecycleState">
+      <desc><![CDATA[lifecycleState]]></desc>
+    </p-param>
+    <p-param name="componentId">
+      <desc><![CDATA[componentId]]></desc>
+    </p-param>
+    <p-param name="blueprintName">
+      <desc><![CDATA[blueprintName]]></desc>
+    </p-param>
+    <p-param name="componentTypeId">
+      <desc><![CDATA[componentTypeId]]></desc>
+    </p-param>
+    <p-param name="endpointId">
+      <desc><![CDATA[endpointId]]></desc>
+    </p-param>
+    <p-param name="workflowNextState">
+      <desc><![CDATA[workflowNextState]]></desc>
+    </p-param>
+    <p-param name="virtualMachineDeleteProperties">
+      <desc><![CDATA[virtualMachineDeleteProperties]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

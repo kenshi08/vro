@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="9ce1d868-9d99-4995-8267-24edc719498c" version="3.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[XaaS Blueprint Bootstrap]]></display-name>
+  <description><![CDATA[Framework for building an XaaS request for blueprint catalog items. ]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="busGroup" type="string"/>
+    <param name="requestor" type="string"/>
+    <param name="osValue" type="string"/>
+  </input>
+  <attrib name="cafeHost" type="vCACCAFE:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='d2d377bd-caee-498b-b789-f1a94a0e0c23'&dunesName='vCACCAFE:VCACHost']]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[/* Remember to assign parameters/attributes to correctly return required values. At minimum these are"
+busGroup - requesting business group
+cafeHost - vRA Cafe Host 
+osCatalogName - Name of blueprint being requested
+*/
+
+// Determine catalog item from business group
+
+var BusinessGroups = vCACCAFEEntitiesFinder.findBusinessGroups(cafeHost , busGroup)
+System.log(BusinessGroups)
+var BusGroupID = BusinessGroups[0].id;
+System.log(BusGroupID)
+var CatalogItems = vCACCAFEEntitiesFinder.findCatalogItems(cafeHost, osCatalogName);
+System.log(CatalogItems)
+System.log(osCatalogName)
+if (CatalogItems != null) {
+	for each (catItem in CatalogItems) {
+		if (catItem.getOrganization().getSubtenantRef() == BusGroupID)
+		{
+		System.log("Catalog " + osCatalogName + " Found");
+		catalogItem = catItem;
+		break;
+		}
+	}
+}else{
+	throw "Catalog Item [" + osCatalogName + "] not found for Business Group [" + busGroup +"]";
+}
+
+var catRequest = vCACCAFERequestsHelper.getProvisioningRequestForCatalogItem(catalogItem) // Get the provisioning request data
+var catRequestData = vCACCAFERequestsHelper.getProvisioningRequestData(catRequest); // Get Request Data from the previsioning request, in JSON format
+
+var catRequestJSON = JSON.parse(catRequestData)
+
+/* 
+Edit request data below this line by using JavaScript dot notation; i.e. catRequestJSON.componentName.data.property. To change CPU on a Windows Blueprint 
+you can do something similar to catRequestJSON.Windows2016.data.cpu = 2 or catRequestJSON.Windows2016.data["cpu"] =  2
+Additionally, you can define new custom properties in here as well. 
+*/
+
+/* Example
+
+catRequestJSON.componentName.data.property = value
+
+*/ 
+
+
+// Code below this line will submit the catalog request
+System.log("Converting request data to JSON String")
+vCACCAFERequestsHelper.setProvisioningRequestData(catRequest, JSON.stringify(catRequestJSON));
+
+System.log("Submitting Catalog Request")
+System.getModule("com.vmware.library.vcaccafe.request").requestCatalogItemWithProvisioningRequest(catalogItem, catRequest);]]></script>
+    <in-binding>
+      <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost"/>
+      <bind name="busGroup" type="string" export-name="busGroup"/>
+      <bind name="requestor" type="string" export-name="requestor"/>
+      <bind name="osValue" type="string" export-name="osValue"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="busGroup">
+      <desc><![CDATA[Business Group (hide)]]></desc>
+    </p-param>
+    <p-param name="requestor">
+      <desc><![CDATA[Requestor (hide)]]></desc>
+    </p-param>
+    <p-param name="osValue">
+      <desc><![CDATA[Operating System]]></desc>
+      <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#Windows#;#string#Ubuntu 16#;#string#Ubuntu 17#;#string#CentOS 7#}#]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

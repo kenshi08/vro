@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVCACVirtualMachineById" result-type="vCAC:VirtualMachine" api-version="6.0.0" id="aa9ffef6-47d8-4dc2-877b-afb86d4e45ae" version="0.0.3" allowed-operations="evf" category-name="com.vmware.pso.vcac">
+  <param n="virtualMachineId" t="string"><![CDATA[Virtual machine name]]></param>
+  <script encoded="false"><![CDATA[if (virtualMachineId == null) { throw 'VirtualMachine ID not provided'; }
+
+var vCACVm;
+var vmList = Server.findAllForType("vCAC:VirtualMachine", "VirtualMachineID eq guid'" + virtualMachineId + "'");
+
+if(vmList != null && vmList.length == 1){
+	vCACVm = vmList[0];	
+} else if(vmList != null && vmList.length > 1){
+	throw 'More than one VM found with ID '+virtualMachineId;
+} else{
+	throw "No VM found with ID " + virtualMachineId;
+}
+
+return vCACVm;]]></script>
+</dunes-script-module>

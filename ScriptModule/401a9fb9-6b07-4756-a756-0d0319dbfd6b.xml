@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createOp" result-type="REST:RESTOperation" api-version="6.0.0" id="401a9fb9-6b07-4756-a756-0d0319dbfd6b" version="0.0.0" allowed-operations="evf" category-name="com.neetcloud.cs.example">
+  <description><![CDATA[Creates a REST Operation from a host but does not add it to the inventory]]></description>
+  <param n="host" t="REST:RESTHost"/>
+  <param n="opName" t="string"/>
+  <param n="opMethod" t="string"/>
+  <param n="opTemplate" t="string"/>
+  <script encoded="false"><![CDATA[var newOp = new RESTOperation(opName);
+//System.log("Creating operation: " + opName + " with host " + host.name);
+newOp.method = opMethod;
+if (opMethod.toUpperCase() === "POST" || opMethod.toUpperCase() === "PUT" || opMethod.toUpperCase() === "PATCH" || opMethod.toUpperCase() === "DELETE" ||  opMethod.toUpperCase() === "GET") {
+	newOp.defaultContentType = "application/json";
+	newOp.addMandatoryHeaderParameter("Content-Type");
+}
+newOp.urlTemplate = opTemplate;
+newOp.host = host;
+System.debug(newOp);
+return newOp;]]></script>
+</dunes-script-module>

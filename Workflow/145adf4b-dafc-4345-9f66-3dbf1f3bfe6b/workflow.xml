@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="145adf4b-dafc-4345-9f66-3dbf1f3bfe6b" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Create Firewall]]></display-name>
+  <description><![CDATA[Creates a Application Firewall layer 3 section]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="connection" type="NSX:Connection">
+      <description><![CDATA[NSX Endpoint (Select from inventory)]]></description>
+    </param>
+    <param name="sectionName" type="string">
+      <description><![CDATA[Name of the Layer 3 Section]]></description>
+    </param>
+    <param name="listRules" type="Array/CompositeType(ruleName:string,enabled:boolean,action:string,direction:string,packetType:string,logging:boolean,appliedToList:Array/string,isSourcesExcluded:boolean,sourcesList:Array/string,isDestinationsExcluded:boolean,destinationsList:Array/string,services:Array/string,serviceGroups:Array/string):NSXFirewallSectionRulesWithSAndSG">
+      <description><![CDATA[List of Firewall Rules]]></description>
+    </param>
+    <param name="operation" type="string">
+      <description><![CDATA[insert_after, insert_before, insert_top, insert_before_default]]></description>
+    </param>
+    <param name="anchorId" type="string">
+      <description><![CDATA[section ID of the anchor section]]></description>
+    </param>
+    <param name="autoSaveDraft" type="string">
+      <description><![CDATA[true or false]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="firewallSection" type="NSX:FirewallSection">
+      <description><![CDATA[Firewall Layer 3 Section]]></description>
+    </param>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Scriptable task]]></display-name>
+    <script encoded="false"><![CDATA[var firewallSectionRestDto = new NSXFirewallSectionRESTDto();
+firewallSectionRestDto.name = sectionName;
+
+var firewallRules = new Array();
+if(listRules != null && listRules.length > 0){
+for(var i=0; i<listRules.length; i++){
+    var listRule = listRules[i];
+  var firewallRule = new NSXFirewallFirewallruleDto();
+  firewallRule.name = listRule.ruleName;
+  if(listRule.enabled == true){firewallRule.disabled = false;}
+  if(listRule.enabled == false){firewallRule.disabled = true;}
+  firewallRule.action = listRule.action;
+  firewallRule.direction = listRule.direction;
+  firewallRule.packetType = listRule.packetType;
+  firewallRule.logged = listRule.logging;
+
+  // Applied to List-
+  var appliedToListDto = new NSXAppliedToListDto();
+  var appliedToListDtoList = new Array();
+  if(listRule.appliedToList != null){
+    for(var j=0; j<listRule.appliedToList.length; j++){
+      var objectInfoAppliedTo = new NSXObjectInfoDto();
+      var split = listRule.appliedToList[j].split(":");
+      var value = split[0];
+      var type = split[1];
+      objectInfoAppliedTo.value = value;
+      objectInfoAppliedTo.type = type;
+
+      appliedToListDtoList.push(objectInfoAppliedTo);
+    }
+    appliedToListDto.appliedToList = appliedToListDtoList;
+    firewallRule.appliedToList = appliedToListDto;
+  }
+  // Sources List -
+  var sources = new NSXFirewallSourcesDto();
+  sources.excluded = listRule.isSourcesExcluded;
+  var sourceList = new Array();
+  if(listRule.sourcesList != null){
+    for(var k=0; k<listRule.sourcesList.length; k++){
+      var objectInfoSources = new NSXObjectInfoDto();
+      var split = listRule.sourcesList[k].split(":");
+      var value = split[0];
+      var type = split[1];
+      objectInfoSources.value = value;
+      objectInfoSources.type = type;
+
+      sourceList.push(objectInfoSources);
+    }
+    sources.sourceList = sourceList;
+    firewallRule.sources = sources;
+  }
+  // Destinations List -
+  var destinations = new NSXFirewallDestinationsDto();
+  destinations.excluded = listRule.isDestinationsExcluded;
+  var destinationList = new Array();
+  if(listRule.destinationsList != null){
+    for(var l=0; l<listRule.destinationsList.length; l++){
+      var objectInfoDestinations = new NSXObjectInfoDto();
+      var split = listRule.destinationsList[l].split(":");
+      var value = split[0];
+      var type = split[1];
+      objectInfoDestinations.value = value;
+      objectInfoDestinations.type = type;
+
+      destinationList.push(objectInfoDestinations);
+    }
+    destinations.destinationList = destinationList;
+    firewallRule.destinations = destinations;
+  }
+
+  // Services -
+  var firewallServicesDto = new NSXFirewallServicesDto();
+  var firewallServicesList = new Array();
+  if(listRule.services != null){
+    for(var m=0; m<listRule.services.length; m++){
+      var firewallService = new NSXFirewallServiceDto();
+        if(listRule.services[m].indexOf(":") > 0){
+        var split = listRule.services[m].split(":");
+        var nameService = split[0];
+        var protocol = split[1];
+        var destinationPort = split[2];
+        var sourcePort = split[3];
+        firewallService.name = nameService;
+        firewallService.protocolName = protocol;
+        firewallService.destinationPort = destinationPort;
+        firewallService.sourcePort = sourcePort;
+      } else {
+        firewallService.value = listRule.services[m];
+      }
+      firewallServicesList.push(firewallService);
+    }
+    firewallServicesDto.serviceList = firewallServicesList;
+    firewallRule.services = firewallServicesDto;
+  }
+
+  // Service Groups -
+  var firewallServicesDto = new NSXFirewallServicesDto();
+  //var firewallServicesList = new Array();
+  if(listRule.serviceGroups != null){
+    for(var n=0; n<listRule.serviceGroups.length; n++){
+      var firewallService = new NSXFirewallServiceDto();
+      if(listRule.serviceGroups[n].indexOf(":") > 0){
+        var split = listRule.serviceGroups[n].split(":");
+        var nameService = split[0];
+        var value = split[1];
+        var type = split[2];
+        var isValid = split[3];
+        firewallService.name = nameService;
+        firewallService.protocolName = protocol;
+        firewallService.destinationPort = destinationPort;
+        firewallService.sourcePort = sourcePort;
+      } else {
+        firewallService.value = listRule.serviceGroups[n];
+      }
+      firewallServicesList.push(firewallService);
+    }
+    firewallServicesDto.serviceList = firewallServicesList;
+    firewallRule.services = firewallServicesDto;
+  }
+  firewallRules.push(firewallRule);
+}
+}
+firewallSectionRestDto.rules = firewallRules;
+
+if(operation == null){operation="";}
+if(anchorId == null){anchorId="";}
+var responseEntity = NSXFirewallRestcontrollerFirewallcontroller.addFirewallConfigLayer3SectionV4(connection, "globalroot-0", operation, anchorId, autoSaveDraft, firewallSectionRestDto);
+var firewallSectionDto =  NSXAppFirewallRestControllerHelper.getFirewallSectionDto(connection,responseEntity);
+firewallSection = NSXAppFirewallManager.constructFirewallSectionInvObj(connection,firewallSectionDto);
+]]></script>
+    <in-binding>
+      <bind name="sectionName" type="string" export-name="sectionName"/>
+      <bind name="operation" type="string" export-name="operation"/>
+      <bind name="autoSaveDraft" type="string" export-name="autoSaveDraft"/>
+      <bind name="connection" type="NSX:Connection" export-name="connection"/>
+      <bind name="anchorId" type="string" export-name="anchorId"/>
+      <bind name="listRules" type="Array/CompositeType(ruleName:string,enabled:boolean,action:string,direction:string,packetType:string,logging:boolean,appliedToList:Array/string,isSourcesExcluded:boolean,sourcesList:Array/string,isDestinationsExcluded:boolean,destinationsList:Array/string,services:Array/string,serviceGroups:Array/string):NSXFirewallSectionRulesWithSAndSG" export-name="listRules"/>
+    </in-binding>
+    <out-binding>
+      <bind name="firewallSection" type="NSX:FirewallSection" export-name="firewallSection"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="connection">
+      <desc><![CDATA[NSX Endpoint - NSX Connection object (Select from the NSX inventory, from the vRO inventory view)]]></desc>
+    </p-param>
+    <p-param name="sectionName">
+      <desc><![CDATA[Name of the Layer 3 Section]]></desc>
+    </p-param>
+    <p-param name="listRules">
+      <desc><![CDATA[List of Firewall Rules]]></desc>
+    </p-param>
+    <p-param name="operation">
+      <desc><![CDATA[Operation (for position of section) insert_after, insert_before, insert_top, insert_before_default]]></desc>
+    </p-param>
+    <p-param name="anchorId">
+      <desc><![CDATA[Anchor ID - section ID of the anchor section]]></desc>
+    </p-param>
+    <p-param name="autoSaveDraft">
+      <desc><![CDATA[Auto save draft - true or false]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

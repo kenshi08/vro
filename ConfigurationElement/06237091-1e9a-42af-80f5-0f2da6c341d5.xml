@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="06237091-1e9a-42af-80f5-0f2da6c341d5" version="0.0.0">
+  <display-name><![CDATA[Version]]></display-name>
+  <atts>
+    <att name="version" type="string" read-only="false">
+      <value encoded="n"><![CDATA[7]]></value>
+      <description><![CDATA[Automation Center Version (6 or 7)]]></description>
+    </att>
+  </atts>
+</config-element>

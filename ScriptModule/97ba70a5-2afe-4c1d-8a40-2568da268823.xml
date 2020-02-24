@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="validateObject" result-type="void" api-version="6.0.0" id="97ba70a5-2afe-4c1d-8a40-2568da268823" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.vcaccafe.util">
+  <description><![CDATA[Validates if an object is null or 'notfound'.]]></description>
+  <param n="object" t="Any"><![CDATA[Object to be validated]]></param>
+  <param n="objectName" t="string"><![CDATA[The type of the object to be used to construct the error message]]></param>
+  <script encoded="false"><![CDATA[if (object == null || object == 'notfound') {
+	throw objectName + " not found!";
+}]]></script>
+</dunes-script-module>

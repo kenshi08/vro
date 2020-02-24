@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="b6d9c58d-0506-4b48-996d-e42739ef4ad1" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[SI CAS - Get VM Details]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="inputProperties" type="Properties"/>
+    <param name="vCenterVM" type="VC:VirtualMachine"/>
+    <param name="userName" type="string"/>
+  </input>
+  <output>
+    <param name="customProperties" type="string"/>
+  </output>
+  <attrib name="resourceId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="memoryMB" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="cpuCount" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="664.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="task">
+    <display-name><![CDATA[get Resource Data]]></display-name>
+    <script encoded="false"><![CDATA[//VM Resource ID for lookup in CAS API
+resourceId = inputProperties['resourceIds'][0]]]></script>
+    <in-binding>
+      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+      <bind name="vCenterVM" type="VC:VirtualMachine" export-name="vCenterVM"/>
+      <bind name="userName" type="string" export-name="userName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="resourceId" type="string" export-name="resourceId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item3" type="link" linked-workflow-id="52824361-6157-488e-a81b-7845c0d2f15f">
+    <display-name><![CDATA[CAS - Get VM Details]]></display-name>
+    <in-binding>
+      <bind name="resourceId" type="string" export-name="resourceId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="memoryMB" type="string" export-name="memoryMB"/>
+      <bind name="cpuCount" type="string" export-name="cpuCount"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="task">
+    <display-name><![CDATA[update Properties]]></display-name>
+    <script encoded="false"><![CDATA[//create update custom properties
+customProperties = new Properties();
+customProperties = inputProperties['customProperties'];
+customProperties['serviceNowCPUCount'] = cpuCount;
+customProperties['serviceNowMemoryInMB'] = memoryMB;]]></script>
+    <in-binding>
+      <bind name="memoryMB" type="string" export-name="memoryMB"/>
+      <bind name="cpuCount" type="string" export-name="cpuCount"/>
+    </in-binding>
+    <out-binding>
+      <bind name="customProperties" type="string" export-name="customProperties"/>
+    </out-binding>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="inputProperties">
+      <desc><![CDATA[inputProperties]]></desc>
+    </p-param>
+    <p-param name="vCenterVM">
+      <desc><![CDATA[vCenterVM]]></desc>
+    </p-param>
+    <p-param name="userName">
+      <desc><![CDATA[userName]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

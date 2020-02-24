@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="findObjectById" result-type="vCAC:VirtualMachine" api-version="6.0.0" id="37094316-5071-4d20-b32b-4fe676db2b21" version="0.0.0" allowed-operations="evf" category-name="com.vmware.autoscale">
+  <param n="vmId" t="string"/>
+  <script encoded="false"><![CDATA[System.log(vmId);
+var tmpVCAC = Server.findAllForType("vCAC:VirtualMachine", "ExternalReferenceId eq '" + vmId + "'");
+System.log(tmpVCAC);
+System.log("Number of found VMs: " + tmpVCAC.length);
+
+for(i=0; i< tmpVCAC.length; i++){
+System.log(tmpVCAC[i]);
+}
+
+return tmpVCAC[0];]]></script>
+</dunes-script-module>

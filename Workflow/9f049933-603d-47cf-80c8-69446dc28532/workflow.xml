@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="9f049933-603d-47cf-80c8-69446dc28532" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Test Get Column Names]]></display-name>
+  <description><![CDATA[This is a test workflow to confirm that the getTableColumnNames action is working properly.]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="tableName" type="string"/>
+    <param name="sqlDb" type="SQL:Database"/>
+  </input>
+  <output>
+    <param name="columnNames" type="Array/string"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task" script-module="com.vmware.coe.sql/getTableColumnNames">
+    <display-name><![CDATA[getTableColumnNames]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.coe.sql").getTableColumnNames(tableName,sqlDb) ;]]></script>
+    <in-binding>
+      <bind name="tableName" type="string" export-name="tableName"/>
+      <bind name="sqlDb" type="SQL:Database" export-name="sqlDb"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Array/string" export-name="columnNames"/>
+    </out-binding>
+    <description><![CDATA[Given a SQL:Database and the name of a table, this action will return an Array of strings containing the column names.]]></description>
+    <position y="55.90909090909091" x="205.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="sqlDb">
+      <desc><![CDATA[sqlDb]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="tableName">
+      <desc><![CDATA[tableName]]></desc>
+      <p-qual kind="ognl" name="linkedEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.library.sql.configuration","getAllTableNames").call( #sqlDb )]]></p-qual>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

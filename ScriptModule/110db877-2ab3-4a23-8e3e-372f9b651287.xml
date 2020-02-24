@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="listProcessesInGuest" result-type="Array/Any" api-version="6.0.0" id="110db877-2ab3-4a23-8e3e-372f9b651287" version="0.0.0" allowed-operations="evf" category-name="com.vmware.tmm.guestops">
+  <description><![CDATA[Invoke ListProcessesInGuest in GuestProcessManager.  Only available in version 5 or later of the vSphere API.
+
+Returns an array of GuestProcessInfo objects.]]></description>
+  <param n="vm" t="VC:VirtualMachine"><![CDATA[VirtualMachine GuestOS]]></param>
+  <param n="username" t="string"><![CDATA[GuestOS username]]></param>
+  <param n="password" t="SecureString"><![CDATA[GuestOS password]]></param>
+  <param n="pids" t="Array/number"><![CDATA[GuestOS PIDs to limit process information on]]></param>
+  <script encoded="false"><![CDATA[// Validate inputs
+
+if ( vm == null ) {
+	throw "Input 'vm' not specified!";
+}
+
+if ( ! typeof vm == "VcVirtualMachine" ) {
+	throw "Input 'vm' not a VcVirtualMachine!";
+}
+
+if ( password == null) {
+	password = "";
+}
+
+if (username == null || username == "") {
+	throw "Input 'username' not specified!";
+}
+
+
+// GuestOperationsManager : GuestProcessManager
+var GuestProcessManager = null;
+try {
+	GuestProcessManager = vm.sdkConnection.guestOperationsManager.processManager;
+} catch(e) {
+	throw e.message;	
+}
+
+
+// GuestAuthentication : NamePasswordAuthentication
+var GuestAuthentication = new VcNamePasswordAuthentication();
+GuestAuthentication.username = username;
+GuestAuthentication.password = password;
+GuestAuthentication.interactiveSession = false;
+
+if ( pids == null && pids.length == 0) {
+	var pids = new Array();
+}
+
+// ListProcessesInGuest()
+var GuestProcInfo = new Array();
+try {
+	GuestProcInfo = GuestProcessManager.listProcessesInGuest(vm, GuestAuthentication, pids);
+} catch(e) {
+	throw e.message;
+}
+
+return GuestProcInfo;]]></script>
+</dunes-script-module>

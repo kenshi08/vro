@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="cookieMode" result-type="Array/string" api-version="6.0.0" id="27b830de-6628-4edd-98f1-9f75c0bb5b84" version="0.0.0" allowed-operations="evf" category-name="com.vmware.nsx.apiselection">
+  <param n="persistenceMethod" t="string"/>
+  <script encoded="false"><![CDATA[if (persistenceMethod == "COOKIE")
+{
+ return ["keepExistingValue","insert","prefix","app"];
+}
+else {
+
+return ["keepExistingValue"];
+	
+}]]></script>
+</dunes-script-module>

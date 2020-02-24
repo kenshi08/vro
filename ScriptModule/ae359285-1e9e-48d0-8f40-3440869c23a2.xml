@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getReservationForVraVm" result-type="vCAC:Reservation" api-version="6.0.0" id="ae359285-1e9e-48d0-8f40-3440869c23a2" version="0.0.0" allowed-operations="vfe" category-name="com.nullphase.local">
+  <param n="virtualMachine" t="vCAC:VirtualMachine"/>
+  <param n="host" t="vCAC:VCACHost"/>
+  <script encoded="false"><![CDATA[// VMware vRealize Orchestrator action sample
+//
+// Get the Reservation of a vRA VM
+// 
+// For vRO/VRA 7.0+
+//
+// Action Inputs:
+// host - vCAC:VCACHost - vRA IaaS Host
+// virtualMachine - vCAC:VirtualMachine - vRA IaaS VM
+//
+// Return type: vCAC:Reservation - the IaaS Reservation of the VM
+
+var id = virtualMachine.getEntity().getProperty("HostReservationID");
+
+var entity;
+
+var idprop = new Properties( { 
+	"HostReservationID" : id
+});
+
+if (!id || id == "") throw "Error getting Reservation ID of VM.";
+
+if (host != null) {
+	entity = vCACEntityManager.readModelEntity(host.id, "ManagementModelEntities.svc", "HostReservations", idprop, null);
+} else {
+	var hosts = Server.findAllForType("vCAC:VCACHost");
+	System.debug("hosts: " + hosts);
+	for each (var host in hosts) {
+		try {
+			entity = vCACEntityManager.readModelEntity(host.id, "ManagementModelEntities.svc", "HostReservations", idprop, null);
+		} catch (e) {
+			throw "Error reading model entity.";
+		}
+	}
+}
+	
+var reservation = entity.getInventoryObject();
+
+if (!reservation) throw "Reservation with ID '" + id + "' not found";
+
+return reservation;]]></script>
+</dunes-script-module>

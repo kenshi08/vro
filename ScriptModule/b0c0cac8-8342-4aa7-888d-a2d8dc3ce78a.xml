@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createOrUpdateVirtualNetwork" result-type="Azure:VirtualNetwork" api-version="6.0.0" id="b0c0cac8-8342-4aa7-888d-a2d8dc3ce78a" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.azure">
+  <param n="connection" t="Azure:Connection"><![CDATA[Azure connection]]></param>
+  <param n="resourceGroup" t="Azure:ResourceGroupExtended"><![CDATA[Resource group]]></param>
+  <param n="location" t="Azure:Location"><![CDATA[Azure location]]></param>
+  <param n="virtualNetworkName" t="string"><![CDATA[Virtual network name]]></param>
+  <param n="subnetName" t="string"><![CDATA[Subnet name]]></param>
+  <param n="addressPrefix" t="string"><![CDATA[Virtual network address space]]></param>
+  <param n="dnsServer" t="string"><![CDATA[DNS server]]></param>
+  <param n="subnetPrefix" t="string"><![CDATA[Subnet address space]]></param>
+  <script encoded="false"><![CDATA[if (!connection) {
+	throw "Connection cannot be null.";
+}
+if (!resourceGroup) {
+	throw "Resource group cannot be null.";
+}
+
+var vnet = new AzureVirtualNetwork(location.name);
+
+//Set address space
+var asp = new AzureAddressSpace();
+asp.addressPrefixes = [addressPrefix];
+vnet.addressSpace = asp;
+
+//Set DHCP options
+var dop = new AzureDhcpOptions();
+dop.dnsServers = [dnsServer];
+vnet.dhcpOptions = dop;
+
+//Set sub-net
+var subnet = new AzureSubnet(subnetPrefix);
+subnet.name = subnetName;
+vnet.subnets = [subnet];
+
+connection.networkClient.virtualNetworksOperations.createOrUpdate(resourceGroup.name, virtualNetworkName, vnet);
+
+return resourceGroup.getVirtualNetworkByName(virtualNetworkName);]]></script>
+</dunes-script-module>

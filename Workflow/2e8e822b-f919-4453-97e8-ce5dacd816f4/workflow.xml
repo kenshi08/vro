@@ -1,0 +1,259 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item10" object-name="workflow:name=generic" id="2e8e822b-f919-4453-97e8-ce5dacd816f4" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Scale Down Blueprint Layer based on VM MOID]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="targetId" type="string"/>
+  </input>
+  <attrib name="vcacVirtualMachine" type="vCAC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="vcacVmEntity" type="vCAC:Entity" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="vcacCafeHost" type="vCACCAFE:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='86324f9f-7b62-4866-a074-1d7b268dd551'&dunesName='vCACCAFE:VCACHost']]></value>
+    <description><![CDATA[The vCAC catalog host]]></description>
+  </attrib>
+  <attrib name="cafeVirtualMachine" type="vCACCAFE:CatalogResource" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="cafeApplicationDeployment" type="vCACCAFE:CatalogResource" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="actionQuery" type="string" read-only="false">
+    <value encoded="n"><![CDATA[composition.resource.action.deployment.scalein]]></value>
+    <description><![CDATA[Query]]></description>
+  </attrib>
+  <attrib name="vCACHost" type="vCAC:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='e3a968ae-4497-4b38-bb8c-4d0e0b1f713b'&dunesName='vCAC:VCACHost']]></value>
+  </attrib>
+  <attrib name="virtualMachineProperties" type="Properties" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="scaleOutActionOps" type="vCACCAFE:ConsumerResourceOperation" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='86324f9f-7b62-4866-a074-1d7b268dd551/5d9e2e1b-dfd8-43fe-8f19-e3b580e4c237/089d93d2-28bd-4af5-81b1-db399ce8d3f0'&dunesName='vCACCAFE:ConsumerResourceOperation']]></value>
+  </attrib>
+  <attrib name="allActionOps" type="Array/vCACCAFE:ConsumerResourceOperation" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="BlueprintId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Property VirtualMachine.Cafe.Blueprint.Id]]></description>
+  </attrib>
+  <attrib name="componentId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Property VirtualMachine.Cafe.Blueprint.Component.Id]]></description>
+  </attrib>
+  <attrib name="clusterNodeCount" type="number" read-only="false">
+    <description><![CDATA[New Node Cluser Size]]></description>
+  </attrib>
+  <attrib name="resourceActionRequest" type="vCACCAFE:ResourceActionRequest" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-note x="200.0" y="36.36363636363636" w="580.0" h="64.0">
+    <description><![CDATA[Get Virtual Machine Information]]></description>
+  </workflow-note>
+  <workflow-note x="218.0" y="107.0909090909091" w="564.0" h="75.0" color="b0ebebff">
+    <description><![CDATA[Get deployment data]]></description>
+  </workflow-note>
+  <workflow-note x="218.0" y="188.90909090909088" w="564.0" h="74.0" color="bfffbfff">
+    <description><![CDATA[Prepare request]]></description>
+  </workflow-note>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="199.95454545454544" x="844.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item1" type="task" script-module="com.vmware.library.vcaccafe.request/getAvailableResourceActions">
+    <display-name><![CDATA[getAvailableResourceActions]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vcaccafe.request").getAvailableResourceActions(resource,query) ;]]></script>
+    <in-binding>
+      <bind name="resource" type="vCACCAFE:CatalogResource" export-name="cafeApplicationDeployment">
+        <description><![CDATA[Resource]]></description>
+      </bind>
+      <bind name="query" type="string" export-name="actionQuery">
+        <description><![CDATA[Query]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Array/vCACCAFE:ConsumerResourceOperation" export-name="allActionOps"/>
+    </out-binding>
+    <description><![CDATA[Gets the available resource actions for a resource.]]></description>
+    <position y="137.22727272727272" x="364.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item6" type="task">
+    <display-name><![CDATA[getEntityFromVCACVM]]></display-name>
+    <script encoded="false"><![CDATA[vcacVm = vCACVM.getEntity();
+System.log("VCAC entity " + vcacVm);]]></script>
+    <in-binding>
+      <bind name="vCACVM" type="vCAC:VirtualMachine" export-name="vcacVirtualMachine">
+        <description><![CDATA[vCAC virtual machine]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="vcacVm" type="vCAC:Entity" export-name="vcacVmEntity"/>
+    </out-binding>
+    <position y="55.40909090909091" x="364.5"/>
+  </workflow-item>
+  <workflow-item name="item11" out-name="item3" type="task">
+    <display-name><![CDATA[Get Parent Deployment]]></display-name>
+    <script encoded="false"><![CDATA[var parentRef = cafeVirtualMachine.getParentResourceRef();
+cafeApplicationDeployment = vCACCAFEEntitiesFinder.findCatalogResources(vcacCafeHost , parentRef.getLabel())[0];
+]]></script>
+    <in-binding>
+      <bind name="cafeVirtualMachine" type="vCACCAFE:CatalogResource" export-name="cafeVirtualMachine"/>
+      <bind name="vcacCafeHost" type="vCACCAFE:VCACHost" export-name="vcacCafeHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="cafeApplicationDeployment" type="vCACCAFE:CatalogResource" export-name="cafeApplicationDeployment"/>
+    </out-binding>
+    <position y="137.22727272727272" x="224.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[Get Scale Out Ops]]></display-name>
+    <script encoded="false"><![CDATA[providerOperationId = "composition.resource.action.deployment.scalein";
+
+for each (var action in allActionOps) {
+	if (action.bindingId == providerOperationId) {
+		scaleOutActionOps = action;
+		break;
+	}
+}]]></script>
+    <in-binding>
+      <bind name="allActionOps" type="Array/vCACCAFE:ConsumerResourceOperation" export-name="allActionOps"/>
+    </in-binding>
+    <out-binding>
+      <bind name="scaleOutActionOps" type="vCACCAFE:ConsumerResourceOperation" export-name="scaleOutActionOps"/>
+    </out-binding>
+    <position y="137.22727272727272" x="504.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item5" type="task">
+    <display-name><![CDATA[Get VM Properties]]></display-name>
+    <script encoded="false"><![CDATA[BlueprintId = virtualMachineProperties.get("VirtualMachine.Cafe.Blueprint.Id");
+componentId = virtualMachineProperties.get("VirtualMachine.Cafe.Blueprint.Component.Id");]]></script>
+    <in-binding>
+      <bind name="virtualMachineProperties" type="Properties" export-name="virtualMachineProperties"/>
+    </in-binding>
+    <out-binding>
+      <bind name="BlueprintId" type="string" export-name="BlueprintId"/>
+      <bind name="componentId" type="string" export-name="componentId"/>
+    </out-binding>
+    <position y="137.22727272727272" x="644.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item12" type="link" linked-workflow-id="6f2a9b40-564d-4226-a1c8-3f13226eacfb">
+    <display-name><![CDATA[Submitt to vRA]]></display-name>
+    <in-binding>
+      <bind name="operation" type="vCACCAFE:ConsumerResourceOperation" export-name="scaleOutActionOps">
+        <description><![CDATA[Resource operation]]></description>
+      </bind>
+      <bind name="BlueprintId" type="string" export-name="BlueprintId">
+        <description><![CDATA[Property VirtualMachine.Cafe.Blueprint.Id]]></description>
+      </bind>
+      <bind name="componentId" type="string" export-name="componentId">
+        <description><![CDATA[Property VirtualMachine.Cafe.Blueprint.Component.Id]]></description>
+      </bind>
+      <bind name="clusterNodeCount" type="number" export-name="clusterNodeCount">
+        <description><![CDATA[New Node Cluser Size]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCACCAFE:ResourceActionRequest" export-name="resourceActionRequest"/>
+    </out-binding>
+    <position y="209.95454545454544" x="504.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item8" type="link" linked-workflow-id="c997e6e1-ea06-4ebd-897d-397cea9f39ee">
+    <display-name><![CDATA[Count VMs in Layer]]></display-name>
+    <in-binding>
+      <bind name="layerName" type="string" export-name="componentId"/>
+      <bind name="deployment" type="vCACCAFE:CatalogResource" export-name="cafeApplicationDeployment"/>
+      <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="vcacCafeHost"/>
+      <bind name="vcacHost" type="vCAC:VCACHost" export-name="vCACHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="layerCount" type="number" export-name="clusterNodeCount"/>
+    </out-binding>
+    <position y="209.95454545454544" x="224.5"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item0" type="link" linked-workflow-id="8c275d1d-c296-4975-adca-c915f33cc96e">
+    <display-name><![CDATA[Wait for resource action request]]></display-name>
+    <in-binding>
+      <bind name="request" type="vCACCAFE:ResourceActionRequest" export-name="resourceActionRequest">
+        <description><![CDATA[Resource action request]]></description>
+      </bind>
+      <bind name="timeout" type="number" explicitly-not-bound="true" export-name="NULL">
+        <description><![CDATA[Timeout]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="string" explicitly-not-bound="true" export-name="NULL">
+        <description><![CDATA[Resource action request state]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Waits for a resource action request to complete.]]></description>
+    <position y="209.95454545454544" x="644.5"/>
+  </workflow-item>
+  <workflow-item name="item8" prototype-id="decrease-counter" out-name="item4" content-mode="x" type="task">
+    <display-name><![CDATA[Decrease counter]]></display-name>
+    <script encoded="false"><![CDATA[//Auto-generated script
+counter = counter-1;]]></script>
+    <in-binding>
+      <bind name="counter" type="number" export-name="clusterNodeCount">
+        <description><![CDATA[counter to decrement]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="counter" type="number" export-name="clusterNodeCount">
+        <description><![CDATA[counter decremented]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Decrement a counter by one]]></description>
+    <position y="209.95454545454544" x="364.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item7" type="task" script-module="com.vmware.autoscale/findObjectById">
+    <display-name><![CDATA[findObjectById]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.autoscale").findObjectById(vmId) ;]]></script>
+    <in-binding>
+      <bind name="vmId" type="string" export-name="targetId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCAC:VirtualMachine" export-name="vcacVirtualMachine"/>
+    </out-binding>
+    <position y="55.90909090909091" x="225.0"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item9" type="task" script-module="com.vmware.autoscale/getCatalogResourceForIaasVmEntity">
+    <display-name><![CDATA[getCatalogResourceForIaasVmEntity]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.autoscale").getCatalogResourceForIaasVmEntity(vcacCafeHost,vcacIaasVmEntity) ;]]></script>
+    <in-binding>
+      <bind name="vcacCafeHost" type="vCACCAFE:VCACHost" export-name="vcacCafeHost">
+        <description><![CDATA[The vCAC catalog host]]></description>
+      </bind>
+      <bind name="vcacIaasVmEntity" type="vCAC:Entity" export-name="vcacVmEntity">
+        <description><![CDATA[The vCAC IaaS VM entity]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="vCACCAFE:CatalogResource" export-name="cafeVirtualMachine"/>
+    </out-binding>
+    <position y="55.40909090909091" x="504.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item11" type="task" script-module="com.vmware.autoscale/getVirtualMachineProperties">
+    <display-name><![CDATA[getVirtualMachineProperties]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.autoscale").getVirtualMachineProperties(virtualMachineEntity,vCACHost) ;]]></script>
+    <in-binding>
+      <bind name="virtualMachineEntity" type="vCAC:Entity" export-name="vcacVmEntity"/>
+      <bind name="vCACHost" type="vCAC:VCACHost" export-name="vCACHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Properties" export-name="virtualMachineProperties"/>
+    </out-binding>
+    <position y="55.40909090909091" x="644.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="targetId">
+      <desc><![CDATA[targetId]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

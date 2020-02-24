@@ -1,0 +1,530 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item15" object-name="workflow:name=generic" id="43c43ba6-dde7-4dc1-a780-54e68108ace4" version="0.0.17" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[NetworkConfiguration]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="vm" type="VC:VirtualMachine">
+      <description><![CDATA[VirtualMachine]]></description>
+    </param>
+    <param name="VmProperties" type="Properties"/>
+  </input>
+  <output>
+    <param name="exitCode" type="number">
+      <description><![CDATA[GuestOS program exit code]]></description>
+    </param>
+  </output>
+  <attrib name="programPath" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[GuestOS executable path]]></description>
+  </attrib>
+  <attrib name="programArguments" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[GuestOS program arguments]]></description>
+  </attrib>
+  <attrib name="programEnvironVars" type="Array/string" read-only="false">
+    <description><![CDATA[GuestOS environment variables for program (optional)]]></description>
+  </attrib>
+  <attrib name="programWorkingDir" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[GuestOS program working directory (optional)]]></description>
+  </attrib>
+  <attrib name="timeout" type="number" read-only="false">
+    <value encoded="n"><![CDATA[300.0]]></value>
+    <description><![CDATA[Timeout for program execution (in seconds)]]></description>
+  </attrib>
+  <attrib name="username" type="string" read-only="false">
+    <value encoded="n"><![CDATA[root]]></value>
+    <description><![CDATA[GuestOS username]]></description>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false">
+    <value encoded="n"><![CDATA[8A55614D2777613727653315216C7C748DE6CD7E898558EAD22EAC0F791FF5D48FB5D3192F35B85E67EC6090B8A43136BF]]></value>
+    <description><![CDATA[GuestOS password]]></description>
+  </attrib>
+  <attrib name="interval" type="number" read-only="false">
+    <value encoded="n"><![CDATA[15.0]]></value>
+    <description><![CDATA[Interval (seconds) between process information queries]]></description>
+  </attrib>
+  <attrib name="killOnTimeout" type="boolean" read-only="false">
+    <description><![CDATA[Terminte GuestOS program when timeout is exceeded]]></description>
+  </attrib>
+  <attrib name="pollingRate" type="number" read-only="false">
+    <value encoded="n"><![CDATA[15.0]]></value>
+  </attrib>
+  <workflow-note x="200.0" y="45.45454545454545" w="400.0" h="46.0">
+    <description><![CDATA[Network Configuration]]></description>
+  </workflow-note>
+  <workflow-note x="618.0" y="43.45454545454545" w="264.0" h="50.0" color="a1d7a1ff">
+    <description><![CDATA[Configure Network File]]></description>
+  </workflow-note>
+  <workflow-note x="1458.0" y="43.45454545454545" w="264.0" h="50.0" color="d7bca1ff">
+    <description><![CDATA[Restart Network Services]]></description>
+  </workflow-note>
+  <workflow-note x="898.0" y="43.45454545454545" w="264.0" h="50.0" color="bfdfffff">
+    <description><![CDATA[Configure DNS Resolv.conf]]></description>
+  </workflow-note>
+  <workflow-note x="1178.0" y="43.45454545454545" w="264.0" h="50.0" color="bfbfffff">
+    <description><![CDATA[Configure Host File]]></description>
+  </workflow-note>
+  <workflow-note x="1738.0" y="43.45454545454545" w="264.0" h="50.0" color="ffbfffff">
+    <description><![CDATA[Restart Network Services]]></description>
+  </workflow-note>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="2344.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item5" type="link" linked-workflow-id="27629b97-3a23-4084-bdbc-5fefba9af7a3">
+    <display-name><![CDATA[Run NetConf]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="programPath" type="string" export-name="programPath">
+        <description><![CDATA[GuestOS executable path]]></description>
+      </bind>
+      <bind name="programArguments" type="string" export-name="programArguments">
+        <description><![CDATA[GuestOS program arguments]]></description>
+      </bind>
+      <bind name="programEnvironVars" type="Array/string" export-name="programEnvironVars">
+        <description><![CDATA[GuestOS environment variables for program (optional)]]></description>
+      </bind>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir">
+        <description><![CDATA[GuestOS program working directory (optional)]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout for program execution (in seconds)]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="interval" type="number" export-name="interval">
+        <description><![CDATA[Interval (seconds) between process information queries]]></description>
+      </bind>
+      <bind name="killOnTimeout" type="boolean" export-name="killOnTimeout">
+        <description><![CDATA[Terminte GuestOS program when timeout is exceeded]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="exitCode" type="number" export-name="exitCode">
+        <description><![CDATA[GuestOS program exit code]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Executes a local program in the target GuestOS.  
+
+Leverages the vSphere 5.x GuestOperationsManager object and is not backwards compatible with previous versions of vSphere.]]></description>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="task">
+    <display-name><![CDATA[Config NetConf]]></display-name>
+    <script encoded="false"><![CDATA[ipaddress = VmProperties.get("VirtualMachine.Network0.Address");
+netmask = VmProperties.get("VirtualMachine.Network0.SubnetMask");
+gateway = VmProperties.get("VirtualMachine.Network0.Gateway");
+
+var netconf = "\"\
+DEVICE=eth0\n\
+BOOTPROTO=none\n\
+ONBOOT=yes\n\
+TYPE=Ethernet\n\
+IPADDR=" + ipaddress + "\n\
+NETMASK=" + netmask + "\n\
+GATEWAY=" + gateway + "\n\
+USERCTL=no\n\
+NM_CONTROLLED=no\n\
+\"";
+
+programPath = "/bin/echo";
+programWorkingDir = "/tmp";
+programArguments = netconf + " > /etc/sysconfig/network-scripts/ifcfg-eth0";]]></script>
+    <in-binding>
+      <bind name="VmProperties" type="Properties" export-name="VmProperties"/>
+    </in-binding>
+    <out-binding>
+      <bind name="programPath" type="string" export-name="programPath"/>
+      <bind name="programArguments" type="string" export-name="programArguments"/>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item13" type="link" linked-workflow-id="27629b97-3a23-4084-bdbc-5fefba9af7a3">
+    <display-name><![CDATA[Restart Network]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="programPath" type="string" export-name="programPath">
+        <description><![CDATA[GuestOS executable path]]></description>
+      </bind>
+      <bind name="programArguments" type="string" export-name="programArguments">
+        <description><![CDATA[GuestOS program arguments]]></description>
+      </bind>
+      <bind name="programEnvironVars" type="Array/string" export-name="programEnvironVars">
+        <description><![CDATA[GuestOS environment variables for program (optional)]]></description>
+      </bind>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir">
+        <description><![CDATA[GuestOS program working directory (optional)]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout for program execution (in seconds)]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="interval" type="number" export-name="interval">
+        <description><![CDATA[Interval (seconds) between process information queries]]></description>
+      </bind>
+      <bind name="killOnTimeout" type="boolean" export-name="killOnTimeout">
+        <description><![CDATA[Terminte GuestOS program when timeout is exceeded]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="exitCode" type="number" export-name="exitCode">
+        <description><![CDATA[GuestOS program exit code]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Executes a local program in the target GuestOS.  
+
+Leverages the vSphere 5.x GuestOperationsManager object and is not backwards compatible with previous versions of vSphere.]]></description>
+    <position y="55.40909090909091" x="1884.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item3" type="task">
+    <display-name><![CDATA[Config Restart]]></display-name>
+    <script encoded="false"><![CDATA[programPath = "/sbin/service";
+programArguments = "network restart"
+//programPath = "/sbin/reboot";
+//programArguments = ""
+programWorkingDir = "/tmp";]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="programPath" type="string" export-name="programPath"/>
+      <bind name="programArguments" type="string" export-name="programArguments"/>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir"/>
+    </out-binding>
+    <position y="55.40909090909091" x="1744.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item6" type="task">
+    <display-name><![CDATA[Config Network File]]></display-name>
+    <script encoded="false"><![CDATA[hostname = vm.name + "." + VmProperties.get("VirtualMachine.Network0.DnsSuffix");
+
+var networkfile = "\"\
+NETWORKING=yes\n\
+HOSTNAME=" + hostname + "\n\
+\"";
+
+programPath = "/bin/echo";
+programWorkingDir = "/tmp";
+programArguments = networkfile + " > /etc/sysconfig/network";]]></script>
+    <in-binding>
+      <bind name="VmProperties" type="Properties" export-name="VmProperties"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding>
+      <bind name="programPath" type="string" export-name="programPath"/>
+      <bind name="programArguments" type="string" export-name="programArguments"/>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir"/>
+    </out-binding>
+    <position y="55.40909090909091" x="624.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item7" type="link" linked-workflow-id="27629b97-3a23-4084-bdbc-5fefba9af7a3">
+    <display-name><![CDATA[Run NetConf]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="programPath" type="string" export-name="programPath">
+        <description><![CDATA[GuestOS executable path]]></description>
+      </bind>
+      <bind name="programArguments" type="string" export-name="programArguments">
+        <description><![CDATA[GuestOS program arguments]]></description>
+      </bind>
+      <bind name="programEnvironVars" type="Array/string" export-name="programEnvironVars">
+        <description><![CDATA[GuestOS environment variables for program (optional)]]></description>
+      </bind>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir">
+        <description><![CDATA[GuestOS program working directory (optional)]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout for program execution (in seconds)]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="interval" type="number" export-name="interval">
+        <description><![CDATA[Interval (seconds) between process information queries]]></description>
+      </bind>
+      <bind name="killOnTimeout" type="boolean" export-name="killOnTimeout">
+        <description><![CDATA[Terminte GuestOS program when timeout is exceeded]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="exitCode" type="number" export-name="exitCode">
+        <description><![CDATA[GuestOS program exit code]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Executes a local program in the target GuestOS.  
+
+Leverages the vSphere 5.x GuestOperationsManager object and is not backwards compatible with previous versions of vSphere.]]></description>
+    <position y="55.40909090909091" x="764.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item8" type="task">
+    <display-name><![CDATA[Config Resolv.conf]]></display-name>
+    <script encoded="false"><![CDATA[domain = VmProperties.get("VirtualMachine.Network0.DnsSuffix");
+nameserver = VmProperties.get("VirtualMachine.Network0.PrimaryDns");
+
+var resolv = "\"\
+domain "+ domain +"\n\
+search " + domain + "\n\
+nameserver " + nameserver + "\n\
+\"";
+
+programPath = "/bin/echo";
+programWorkingDir = "/tmp";
+programArguments = resolv + " > /etc/resolv.conf";]]></script>
+    <in-binding>
+      <bind name="VmProperties" type="Properties" export-name="VmProperties"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding>
+      <bind name="programPath" type="string" export-name="programPath"/>
+      <bind name="programArguments" type="string" export-name="programArguments"/>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir"/>
+    </out-binding>
+    <position y="55.40909090909091" x="904.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item9" type="link" linked-workflow-id="27629b97-3a23-4084-bdbc-5fefba9af7a3">
+    <display-name><![CDATA[Run NetConf]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="programPath" type="string" export-name="programPath">
+        <description><![CDATA[GuestOS executable path]]></description>
+      </bind>
+      <bind name="programArguments" type="string" export-name="programArguments">
+        <description><![CDATA[GuestOS program arguments]]></description>
+      </bind>
+      <bind name="programEnvironVars" type="Array/string" export-name="programEnvironVars">
+        <description><![CDATA[GuestOS environment variables for program (optional)]]></description>
+      </bind>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir">
+        <description><![CDATA[GuestOS program working directory (optional)]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout for program execution (in seconds)]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="interval" type="number" export-name="interval">
+        <description><![CDATA[Interval (seconds) between process information queries]]></description>
+      </bind>
+      <bind name="killOnTimeout" type="boolean" export-name="killOnTimeout">
+        <description><![CDATA[Terminte GuestOS program when timeout is exceeded]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="exitCode" type="number" export-name="exitCode">
+        <description><![CDATA[GuestOS program exit code]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Executes a local program in the target GuestOS.  
+
+Leverages the vSphere 5.x GuestOperationsManager object and is not backwards compatible with previous versions of vSphere.]]></description>
+    <position y="55.40909090909091" x="1044.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item10" type="task">
+    <display-name><![CDATA[config host file]]></display-name>
+    <script encoded="false"><![CDATA[hostname = vm.name;
+FQDname = vm.name + "." + VmProperties.get("VirtualMachine.Network0.DnsSuffix");
+ipaddress = VmProperties.get("VirtualMachine.Network0.Address");
+
+var hostfile = ipaddress + "\t" + hostname + "\t" + FQDname;
+
+programPath = "/bin/echo";
+programWorkingDir = "/tmp";
+programArguments = hostfile + " >> /etc/hosts";]]></script>
+    <in-binding>
+      <bind name="VmProperties" type="Properties" export-name="VmProperties"/>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding>
+      <bind name="programPath" type="string" export-name="programPath"/>
+      <bind name="programArguments" type="string" export-name="programArguments"/>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir"/>
+    </out-binding>
+    <position y="55.40909090909091" x="1184.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item12" type="link" linked-workflow-id="27629b97-3a23-4084-bdbc-5fefba9af7a3">
+    <display-name><![CDATA[Run NetConf]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="programPath" type="string" export-name="programPath">
+        <description><![CDATA[GuestOS executable path]]></description>
+      </bind>
+      <bind name="programArguments" type="string" export-name="programArguments">
+        <description><![CDATA[GuestOS program arguments]]></description>
+      </bind>
+      <bind name="programEnvironVars" type="Array/string" export-name="programEnvironVars">
+        <description><![CDATA[GuestOS environment variables for program (optional)]]></description>
+      </bind>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir">
+        <description><![CDATA[GuestOS program working directory (optional)]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout for program execution (in seconds)]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="interval" type="number" export-name="interval">
+        <description><![CDATA[Interval (seconds) between process information queries]]></description>
+      </bind>
+      <bind name="killOnTimeout" type="boolean" export-name="killOnTimeout">
+        <description><![CDATA[Terminte GuestOS program when timeout is exceeded]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="exitCode" type="number" export-name="exitCode">
+        <description><![CDATA[GuestOS program exit code]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Executes a local program in the target GuestOS.  
+
+Leverages the vSphere 5.x GuestOperationsManager object and is not backwards compatible with previous versions of vSphere.]]></description>
+    <position y="55.40909090909091" x="1324.5"/>
+  </workflow-item>
+  <workflow-item name="item11" out-name="item4" type="link" linked-workflow-id="27629b97-3a23-4084-bdbc-5fefba9af7a3">
+    <display-name><![CDATA[Remove Net Rule]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VirtualMachine GuestOS]]></description>
+      </bind>
+      <bind name="programPath" type="string" export-name="programPath">
+        <description><![CDATA[GuestOS executable path]]></description>
+      </bind>
+      <bind name="programArguments" type="string" export-name="programArguments">
+        <description><![CDATA[GuestOS program arguments]]></description>
+      </bind>
+      <bind name="programEnvironVars" type="Array/string" export-name="programEnvironVars">
+        <description><![CDATA[GuestOS environment variables for program (optional)]]></description>
+      </bind>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir">
+        <description><![CDATA[GuestOS program working directory (optional)]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout for program execution (in seconds)]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[GuestOS username]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[GuestOS password]]></description>
+      </bind>
+      <bind name="interval" type="number" export-name="interval">
+        <description><![CDATA[Interval (seconds) between process information queries]]></description>
+      </bind>
+      <bind name="killOnTimeout" type="boolean" export-name="killOnTimeout">
+        <description><![CDATA[Terminte GuestOS program when timeout is exceeded]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="exitCode" type="number" export-name="exitCode">
+        <description><![CDATA[GuestOS program exit code]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Executes a local program in the target GuestOS.  
+
+Leverages the vSphere 5.x GuestOperationsManager object and is not backwards compatible with previous versions of vSphere.]]></description>
+    <position y="55.40909090909091" x="1604.5"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item11" type="task">
+    <display-name><![CDATA[Config Net Rule]]></display-name>
+    <script encoded="false"><![CDATA[programPath = "/bin/rm";
+programArguments = "/etc/udev/rules.d/70-persistent-net.rules"
+programWorkingDir = "/tmp";]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="programPath" type="string" export-name="programPath"/>
+      <bind name="programArguments" type="string" export-name="programArguments"/>
+      <bind name="programWorkingDir" type="string" export-name="programWorkingDir"/>
+    </out-binding>
+    <position y="55.40909090909091" x="1464.5"/>
+  </workflow-item>
+  <workflow-item name="item13" out-name="item14" type="task">
+    <display-name><![CDATA[Reboot]]></display-name>
+    <script encoded="false"><![CDATA[vm.rebootGuest();]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="2024.5"/>
+  </workflow-item>
+  <workflow-item name="item14" out-name="item0" type="task" script-module="com.vmware.library.vc.vm.tools/vim3WaitForPrincipalIP">
+    <display-name><![CDATA[vim3WaitForPrincipalIP]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vc.vm.tools").vim3WaitForPrincipalIP(vm,timeout,interval) ;]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VM to wait for IP]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout for the operation [min]]]></description>
+      </bind>
+      <bind name="interval" type="number" export-name="interval">
+        <description><![CDATA[Interval for polling rate [s]]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" explicitly-not-bound="true"/>
+    </out-binding>
+    <description><![CDATA[Return IP if found. Else return empty string.
+Exception:
+- Timeout: timeout reached]]></description>
+    <position y="55.40909090909091" x="2164.5"/>
+  </workflow-item>
+  <workflow-item name="item15" out-name="item2" type="task" script-module="com.vmware.library.vc.vm.tools/vim3WaitToolsStarted">
+    <display-name><![CDATA[vim3WaitToolsStarted]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.vc.vm.tools").vim3WaitToolsStarted(vm,pollingRate,timeout) ;]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[VM in which the action look to get the new DNS Name]]></description>
+      </bind>
+      <bind name="pollingRate" type="number" export-name="pollingRate">
+        <description><![CDATA[Time between all request information on the tools [seconds]]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout before throwing a timeout exception [minutes]]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Wait for the VMware tools to be up and the guest running
+
+Exception:
+- Timeout: When timeout is reached
+- ReferenceError: When vm is not set correctly]]></description>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vm">
+      <desc><![CDATA[VirtualMachine GuestOS]]></desc>
+    </p-param>
+    <p-param name="VmProperties">
+      <desc><![CDATA[VmProperties]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

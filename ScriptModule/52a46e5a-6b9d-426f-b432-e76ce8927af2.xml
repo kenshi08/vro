@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVcacVmCatalogResource" result-type="vCACCAFE:CatalogResource" api-version="6.0.0" id="52a46e5a-6b9d-426f-b432-e76ce8927af2" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.library.vcac">
+  <param n="vcacVmId" t="string"/>
+  <script encoded="false"><![CDATA[var catalogResources = Server.findAllForType("VCACCAFE:CatalogResource");
+
+for each (var catalogResource in catalogResources) {
+	var vcacHost = System.getModule("com.vmware.coe.library.vcac").getVcacHost(catalogResource) ;	
+	var providerBinding = catalogResource.getProviderBinding();
+	var bindingId = providerBinding.getBindingId();
+	if (bindingId == vcacVmId) return catalogResource; 
+}
+return null;]]></script>
+</dunes-script-module>

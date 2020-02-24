@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="formatShellArguments" result-type="string" api-version="6.0.0" id="38699edd-fc54-4742-9292-b98907e2c749" version="0.0.0" allowed-operations="evf" category-name="com.vmware.o11n.plugin.puppet">
+  <param n="args" t="Array/string"/>
+  <script encoded="false"><![CDATA[var command = "";
+
+for each (var arg in args) {
+	if (command !== "") {
+		command += " ";
+	}
+
+	command += System.getModule("com.vmware.o11n.plugin.puppet").escapeShellArgument(arg);
+}
+
+return command;]]></script>
+</dunes-script-module>

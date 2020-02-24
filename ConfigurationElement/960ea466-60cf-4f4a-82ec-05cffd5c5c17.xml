@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="960ea466-60cf-4f4a-82ec-05cffd5c5c17" version="0.0.0">
+  <display-name><![CDATA[CAFE]]></display-name>
+  <atts>
+    <att name="cafeHost" type="vCACCAFE:VCACHost" read-only="false">
+      <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='d2d377bd-caee-498b-b789-f1a94a0e0c23'&dunesName='vCACCAFE:VCACHost']]></value>
+      <description><![CDATA[vCAC CAFE host]]></description>
+    </att>
+  </atts>
+</config-element>

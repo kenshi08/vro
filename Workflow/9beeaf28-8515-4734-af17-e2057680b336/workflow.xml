@@ -1,0 +1,635 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="9beeaf28-8515-4734-af17-e2057680b336" version="0.0.6" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Install Linux Agent with SSH]]></display-name>
+  <description><![CDATA[Installs the Puppet agent on linux node using SSH.]]></description>
+  <ref-types><![CDATA[>(Puppet:Master)]]></ref-types>
+  <position y="45.40909090909091" x="65.0"/>
+  <input>
+    <param name="master" type="Puppet:Master">
+      <description><![CDATA[Puppet master]]></description>
+    </param>
+    <param name="hostname" type="string">
+      <description><![CDATA[Node hostname]]></description>
+    </param>
+    <param name="username" type="string">
+      <description><![CDATA[Node username]]></description>
+    </param>
+    <param name="password" type="SecureString">
+      <description><![CDATA[Node password]]></description>
+    </param>
+    <param name="installerBaseUrl" type="string">
+      <description><![CDATA[Installer base url]]></description>
+    </param>
+  </input>
+  <attrib name="installScript" type="Text" read-only="false">
+    <value encoded="n"><![CDATA[#! /bin/bash
+
+export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+function fail() {
+   echo "==={{ ERROR BEGIN }}==="
+   echo "$1"
+   echo "==={{ ERROR END }}==="
+
+   exit 1
+}
+
+function fedora_repo() {
+    cat >/etc/yum.repos.d/puppet.repo <<EOFYUMREPO
+[puppetlabs]
+name=Puppetlabs
+baseurl=${puppet_repo_baseurl}/fedora/f\$releasever/products/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=${puppet_repo_baseurl}/RPM-GPG-KEY-puppetlabs
+EOFYUMREPO
+}
+
+function el_repo() {
+    cat >/etc/yum.repos.d/puppet.repo <<EOFYUMREPO
+[puppetlabs]
+name=Puppetlabs
+baseurl=${puppet_repo_baseurl}/el/\$releasever/products/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=${puppet_repo_baseurl}/RPM-GPG-KEY-puppetlabs
+[puppetlabs-deps]
+name=Puppetlabs Dependencies
+baseurl=${puppet_repo_baseurl}/el/\$releasever/dependencies/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=${puppet_repo_baseurl}/RPM-GPG-KEY-puppetlabs
+EOFYUMREPO
+}
+
+function rpm_install() {
+    # Setup the yum Puppet repository
+    #rpm -q fedora-release && fedora_repo || el_repo
+
+    # Install Puppet rpm package
+    yum install -y puppet || fail "Failed to install using yum. exitCode=$?"
+}
+
+function apt_install() {
+    # Download and install the puppetlabs apt public
+    apt-key adv --recv-key --keyserver pool.sks-keyservers.net 4BD6EC30
+
+    # We need to grab the distro and release in order to populate
+    # the apt repo details. We are assuming that the lsb_release command
+    # will be available as even puppet has it (lsb_base) package as
+    # dependency.
+
+    # Since puppet requires lsb-release I believe this is ok to use for
+    # the purpose of distro and release discovery.
+    apt-get update
+    apt-get -y install lsb-release
+    distro=$(lsb_release -i | cut -f 2 | tr "[:upper:]" "[:lower:]")
+    release=$(lsb_release -c | cut -f 2)
+
+    # Setup the apt Puppet repository
+    cat > /etc/apt/sources.list.d/puppetlabs.list <<EOFAPTREPO
+deb ${puppet_repo_baseurl}/ ${release} main
+EOFAPTREPO
+
+    apt-get update
+
+    # Install Puppet deb package
+    apt-get -y install puppet || fail "Failed to install using apt. exitCode=$?"
+}
+
+function install_puppet_community() {
+    # Which package manager?
+    if [[ -f /etc/redhat-release ]]; then
+      #if [[ -z "${puppet_repo_baseurl}" ]]; then
+        #puppet_repo_baseurl="http://yum.puppetlabs.com"
+      #fi
+      echo "Package manager: yum"
+      echo "Repository base URL: ${puppet_repo_baseurl}"
+      rpm_install
+    elif [[ -f /etc/debian_version ]]; then
+      if [[ -z "${puppet_repo_baseurl}" ]]; then
+        puppet_repo_baseurl="http://apt.puppetlabs.com"
+      fi
+      echo "Package manager: apt"
+      echo "Repository base URL: ${puppet_repo_baseurl}"
+      apt_install
+    else
+        fail "This OS is not supported by Puppet plugin installer."
+    fi
+}
+
+# Check if puppet already installed
+version=`puppet --version --color=false 2>&1`
+if [[ $? -eq 0 ]]; then
+   fail "Puppet is already installed, version=$version"
+fi
+
+echo "Installation script has started..."
+
+install_puppet_community
+
+echo "All Done."
+
+exit 0]]></value>
+    <description><![CDATA[Puppet agent install script]]></description>
+  </attrib>
+  <attrib name="installEnterpriseScript" type="Text" read-only="false">
+    <value encoded="n"><![CDATA[#! /bin/bash
+set -u
+
+# Some utility functions.
+function fail() {
+   echo "==={{ ERROR BEGIN }}==="
+   echo "$1"
+   echo "==={{ ERROR END }}==="
+
+   exit 1
+}
+
+# Check if puppet already installed
+version=`puppet --version --color=false 2>&1`
+if [[ $? -eq 0 ]]; then
+   fail "Puppet is already installed, version=$version"
+fi
+
+puppet_hostname=${puppet_hostname-}
+puppet_repo_baseurl=${puppet_repo_baseurl-}
+puppet_version=${puppet_version-current}
+
+if [[ ! ${puppet_repo_baseurl} ]]; then
+  [[ ${puppet_hostname} ]] || fail "Specify puppet_hostname or puppet_repo_baseurl env variables"
+  puppet_repo_baseurl="https://${puppet_hostname}:8140/packages"
+else
+  puppet_hostname=`echo "${puppet_repo_baseurl}" | awk -F/ '{print $3}' | awk -F: '{print $1}'`
+fi
+
+[[ ${puppet_version} ]] || fail "puppet_version env variable is empty"
+
+echo "puppet_hostname: ${puppet_hostname}"
+echo "puppet_repo_baseurl: ${puppet_repo_baseurl}"
+echo "puppet_version: ${puppet_version}"
+
+PE_LINK_VER=${puppet_version}
+
+##############################################################################
+# We need to know what the PE platform tag is for this node, which requires
+# digging through a bunch of data to extract it.  This is currently the best
+# mechanism available to do this, which is copied from the PE
+# installer itself.
+if [ -z "${PLATFORM_NAME:-""}" -o -z "${PLATFORM_RELEASE:-""}" ]; then
+    # First try identifying using lsb_release.  This takes care of Ubuntu
+    # (lsb-release is part of ubuntu-minimal).
+    if type lsb_release > /dev/null 2>&1; then
+        t_prepare_platform=`lsb_release -icr 2>&1`
+
+        PLATFORM_NAME="$(printf "${t_prepare_platform?}" | grep -E '^Distributor ID:' | cut -s -d: -f2 | sed 's/[[:space:]]//' | tr '[[:upper:]]' '[[:lower:]]')"
+
+        # Sanitize name for unusual platforms
+        case "${PLATFORM_NAME?}" in
+            redhatenterpriseserver | redhatenterpriseclient | redhatenterpriseas | redhatenterprisees | enterpriseenterpriseserver | redhatenterpriseworkstation | redhatenterprisecomputenode | oracleserver)
+                PLATFORM_NAME=rhel
+                ;;
+            enterprise* )
+                PLATFORM_NAME=centos
+                ;;
+            scientific | scientifics | scientificsl )
+                PLATFORM_NAME=rhel
+                ;;
+            'suse linux' )
+                PLATFORM_NAME=sles
+                ;;
+            amazonami )
+                PLATFORM_NAME=amazon
+                ;;
+        esac
+
+        # Release
+        PLATFORM_RELEASE="$(printf "${t_prepare_platform?}" | grep -E '^Release:' | cut -s -d: -f2 | sed 's/[[:space:]]//g')"
+
+        # Sanitize release for unusual platforms
+        case "${PLATFORM_NAME?}" in
+            centos | rhel )
+                # Platform uses only number before period as the release,
+                # e.g. "CentOS 5.5" is release "5"
+                PLATFORM_RELEASE="$(printf "${PLATFORM_RELEASE?}" | cut -d. -f1)"
+                ;;
+            debian )
+                # Platform uses only number before period as the release,
+                # e.g. "Debian 6.0.1" is release "6"
+                PLATFORM_RELEASE="$(printf "${PLATFORM_RELEASE?}" | cut -d. -f1)"
+                if [ ${PLATFORM_RELEASE} = "testing" ] ; then
+                    PLATFORM_RELEASE=7
+                fi
+                ;;
+        esac
+    # Test for Solaris.
+    elif [ "x$(uname -s)" = "xSunOS" ]; then
+        PLATFORM_NAME="solaris"
+        t_platform_release="$(uname -r)"
+        # JJM We get back 5.10 but we only care about the right side of the decimal.
+        PLATFORM_RELEASE="${t_platform_release##*.}"
+    elif [ "x$(uname -s)" = "xAIX" ] ; then
+        PLATFORM_NAME="aix"
+        t_platform_release="$(oslevel | cut -d'.' -f1,2)"
+        PLATFORM_RELEASE="${t_platform_release}"
+
+        # Test for RHEL variant. RHEL, CentOS, OEL
+    elif [ -f /etc/redhat-release -a -r /etc/redhat-release -a -s /etc/redhat-release ]; then
+        # Oracle Enterprise Linux 5.3 and higher identify the same as RHEL
+        if grep -qi 'red hat enterprise' /etc/redhat-release; then
+            PLATFORM_NAME=rhel
+        elif grep -qi 'centos' /etc/redhat-release; then
+            PLATFORM_NAME=centos
+        elif grep -qi 'scientific' /etc/redhat-release; then
+            PLATFORM_NAME=rhel
+        fi
+        # Release - take first digit after ' release ' only.
+        PLATFORM_RELEASE="$(sed 's/.*\ release\ \([[:digit:]]\).*/\1/g;q' /etc/redhat-release)"
+        # Test for Cumulus releases
+    elif [ -r "/etc/os-release" ] && grep -E "Cumulus Linux" "/etc/os-release" &> /dev/null ; then
+        PLATFORM_NAME=cumulus
+        PLATFORM_RELEASE=`grep -E "VERSION_ID" "/etc/os-release" | cut -d'=' -f2 | cut -d'.' -f'1,2'`
+        # Test for Debian releases
+    elif [ -f /etc/debian_version -a -r /etc/debian_version -a -s /etc/debian_version ]; then
+        t_prepare_platform__debian_version_file="/etc/debian_version"
+        t_prepare_platform__debian_version=`cat /etc/debian_version`
+
+        if cat "${t_prepare_platform__debian_version_file?}" | grep -E '^[[:digit:]]' > /dev/null; then
+            PLATFORM_NAME=debian
+            PLATFORM_RELEASE="$(printf "${t_prepare_platform__debian_version?}" | sed 's/\..*//')"
+        elif cat "${t_prepare_platform__debian_version_file?}" | grep -E '^wheezy' > /dev/null; then
+            PLATFORM_NAME=debian
+            PLATFORM_RELEASE="7"
+        fi
+    elif [ -f /etc/SuSE-release -a -r /etc/SuSE-release ]; then
+        t_prepare_platform__suse_version=`cat /etc/SuSE-release`
+
+        if printf "${t_prepare_platform__suse_version?}" | grep -E 'Enterprise Server'; then
+            PLATFORM_NAME=sles
+            t_version=`/bin/cat /etc/SuSE-release | grep VERSION | sed 's/^VERSION = \(\d*\)/\1/' `
+            t_patchlevel=`cat /etc/SuSE-release | grep PATCHLEVEL | sed 's/^PATCHLEVEL = \(\d*\)/\1/' `
+            PLATFORM_RELEASE="${t_version}"
+        fi
+    elif [ -f /etc/system-release ]; then
+        if grep -qi 'amazon linux' /etc/system-release; then
+            PLATFORM_NAME=amazon
+            PLATFORM_RELEASE=6
+        else
+            fail "$(cat /etc/system-release) is not a supported platform for Puppet Enterprise v${puppet_version}
+                    Please visit http://links.puppetlabs.com/puppet_enterprise_${PE_LINK_VER?}_platform_support to request support for this platform."
+
+        fi
+    elif [ -z "${PLATFORM_NAME:-""}" ]; then
+        fail "$(uname -s) is not a supported platform for Puppet Enterprise v${puppet_version}
+            Please visit http://links.puppetlabs.com/puppet_enterprise_${PE_LINK_VER?}_platform_support to request support for this platform."
+    fi
+fi
+
+if [ -z "${PLATFORM_NAME:-""}" -o -z "${PLATFORM_RELEASE:-""}" ]; then
+    fail "Unknown platform"
+fi
+# Architecture
+if [ -z "${PLATFORM_ARCHITECTURE:-""}" ]; then
+    case "${PLATFORM_NAME?}" in
+        solaris | aix )
+            PLATFORM_ARCHITECTURE="$(uname -p)"
+            if [ "${PLATFORM_ARCHITECTURE}" = "powerpc" ] ; then
+                PLATFORM_ARCHITECTURE='power'
+            fi
+            ;;
+        *)
+            PLATFORM_ARCHITECTURE="`uname -m`"
+            ;;
+    esac
+
+    case "${PLATFORM_ARCHITECTURE?}" in
+        x86_64)
+            case "${PLATFORM_NAME?}" in
+                ubuntu | debian )
+                    PLATFORM_ARCHITECTURE=amd64
+                    ;;
+            esac
+            ;;
+        i686)
+            PLATFORM_ARCHITECTURE=i386
+            ;;
+        ppc)
+            PLATFORM_ARCHITECTURE=powerpc
+            ;;
+    esac
+fi
+
+# Tag
+if [ -z "${PLATFORM_TAG:-""}" ]; then
+    case "${PLATFORM_NAME?}" in
+        # Enterprise linux (centos & rhel) share the same packaging
+        # Amazon linux is similar enough for our packages
+        rhel | centos | amazon )
+            PLATFORM_TAG="el-${PLATFORM_RELEASE?}-${PLATFORM_ARCHITECTURE?}"
+            ;;
+        *)
+            PLATFORM_TAG="${PLATFORM_NAME?}-${PLATFORM_RELEASE?}-${PLATFORM_ARCHITECTURE?}"
+            ;;
+    esac
+fi
+
+# This is the end of the code copied from the upstream installer.
+##############################################################################
+
+
+# el-6-x86_64.bash
+install_agent_el() {
+  # setup repo - begin
+  cat <<REPO > /etc/yum.repos.d/pe_repo.repo
+[puppetlabs-pepackages]
+name=Puppet Labs PE Packages \$releasever - \$basearch
+baseurl=${puppet_repo_baseurl}/${puppet_version}/$1
+enabled=1
+gpgcheck=1
+sslverify=False
+proxy=_none_
+gpgkey=${puppet_repo_baseurl}/GPG-KEY-puppetlabs
+REPO
+  # setup repo - end
+
+  yum install -y pe-agent || fail "Failed to install using yum. exitCode=$?"
+}
+
+# sles-11-x86_64.bash
+function install_agent_sles() {
+  # setup repo - begin
+  gpg_file=$(mktemp)
+  curl -sk ${puppet_repo_baseurl}/GPG-KEY-puppetlabs -o "${gpg_file?}"
+  rpm --import "${gpg_file?}"
+  rm "${gpg_file?}"
+
+  zypper addrepo -t rpm-md ${puppet_repo_baseurl}/${puppet_version}/$1?ssl_verify=no puppet-enterprise
+  zypper refresh puppet-enterprise
+  zypper --non-interactive dist-upgrade --from puppet-enterprise
+  #setup repo - end
+
+  zypper install -y pe-agent || fail "Failed to install using zypper. exitCode=$?"
+}
+
+# debian-7-amd64.bash
+function install_agent_debian() {
+  # setup repo - begin
+  apt-get update -qq
+  apt-get install --yes apt-transport-https
+
+  mkdir -p /etc/apt/sources.list.d /etc/apt/apt.conf.d
+  echo "deb ${puppet_repo_baseurl}/${puppet_version}/$1 ./" >  /etc/apt/sources.list.d/puppet-enterprise-installer.list
+  curl -sk ${puppet_repo_baseurl}/GPG-KEY-puppetlabs | apt-key add -
+  echo -e "Acquire::https::${puppet_hostname}::Verify-Peer false;\nAcquire::https::${puppet_hostname}::Verify-Host false;\nAcquire::http::Proxy::${puppet_hostname} DIRECT;" > /etc/apt/apt.conf.d/90pe-repo
+  apt-get update -qq
+  # setup repo - end
+
+  DEBIAN_FRONTEND=noninteractive apt-get install -y -o Apt::Get::Purge=false -o Dpkg::Options::='--force-confold' -o Dpkg::Options::='--force-confdef' --no-install-recommends pe-agent || fail "Failed to install using apt. exitCode=$?"
+
+  echo "START=yes" > /etc/default/pe-puppet
+}
+
+# ubuntu-12.04-amd64.bash
+function install_agent_ubuntu() {
+  install_agent_debian $@
+}
+
+# calling the install agent function. Extract platform name from the platform tag.
+install_agent_function=install_agent_$(echo $PLATFORM_TAG | cut -s -d- -f1)
+
+echo calling $install_agent_function
+
+$install_agent_function ${PLATFORM_TAG} || fail "Error running install agent function for $install_agent_function"
+########Updated Bootcamp Code################
+function ensure_link() {
+/opt/puppet/bin/puppet resource file "${1?}" ensure=link
+target="${2?}"
+}
+function ensure_agent_links() {
+target_path="/usr/local/bin"
+pe_path="/opt/puppet/bin"
+if mkdir -p "${target_path}" && [ -w "${target_path}" ]; then
+for bin in facter puppet pe-man hiera; do
+ensure_link "${target_path}/${bin}" "${pe_path}/${bin}"
+done
+else
+echo "!!! WARNING: ${target_path} is inaccessible; unable to
+create convenience symlinks for puppet, hiera, facter and pe-man.
+These executables may be found in ${pe_path?}." 1>&2
+fi
+}
+ensure_agent_links
+########################################
+# ...and we should be good.
+exit 0]]></value>
+    <description><![CDATA[Puppet Enterprise agent install script]]></description>
+  </attrib>
+  <attrib name="installScript_bak" type="Text" read-only="false">
+    <value encoded="n"><![CDATA[#! /bin/bash
+
+export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+function fail() {
+   echo "==={{ ERROR BEGIN }}==="
+   echo "$1"
+   echo "==={{ ERROR END }}==="
+
+   exit 1
+}
+
+function fedora_repo() {
+    cat >/etc/yum.repos.d/puppet.repo <<EOFYUMREPO
+[puppetlabs]
+name=Puppetlabs
+baseurl=${puppet_repo_baseurl}/fedora/f\$releasever/products/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=${puppet_repo_baseurl}/RPM-GPG-KEY-puppetlabs
+EOFYUMREPO
+}
+
+function el_repo() {
+    cat >/etc/yum.repos.d/puppet.repo <<EOFYUMREPO
+[puppetlabs]
+name=Puppetlabs
+baseurl=${puppet_repo_baseurl}/el/\$releasever/products/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=${puppet_repo_baseurl}/RPM-GPG-KEY-puppetlabs
+[puppetlabs-deps]
+name=Puppetlabs Dependencies
+baseurl=${puppet_repo_baseurl}/el/\$releasever/dependencies/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=${puppet_repo_baseurl}/RPM-GPG-KEY-puppetlabs
+EOFYUMREPO
+}
+
+function rpm_install() {
+    # Setup the yum Puppet repository
+    rpm -q fedora-release && fedora_repo || el_repo
+
+    # Install Puppet rpm package
+    yum install -y puppet || fail "Failed to install using yum. exitCode=$?"
+}
+
+function apt_install() {
+    # Download and install the puppetlabs apt public
+    apt-key adv --recv-key --keyserver pool.sks-keyservers.net 4BD6EC30
+
+    # We need to grab the distro and release in order to populate
+    # the apt repo details. We are assuming that the lsb_release command
+    # will be available as even puppet has it (lsb_base) package as
+    # dependency.
+
+    # Since puppet requires lsb-release I believe this is ok to use for
+    # the purpose of distro and release discovery.
+    apt-get update
+    apt-get -y install lsb-release
+    distro=$(lsb_release -i | cut -f 2 | tr "[:upper:]" "[:lower:]")
+    release=$(lsb_release -c | cut -f 2)
+
+    # Setup the apt Puppet repository
+    cat > /etc/apt/sources.list.d/puppetlabs.list <<EOFAPTREPO
+deb ${puppet_repo_baseurl}/ ${release} main
+EOFAPTREPO
+
+    apt-get update
+
+    # Install Puppet deb package
+    apt-get -y install puppet || fail "Failed to install using apt. exitCode=$?"
+}
+
+function install_puppet_community() {
+    # Which package manager?
+    if [[ -f /etc/redhat-release ]]; then
+      if [[ -z "${puppet_repo_baseurl}" ]]; then
+        puppet_repo_baseurl="http://yum.puppetlabs.com"
+      fi
+      echo "Package manager: yum"
+      echo "Repository base URL: ${puppet_repo_baseurl}"
+      rpm_install
+    elif [[ -f /etc/debian_version ]]; then
+      if [[ -z "${puppet_repo_baseurl}" ]]; then
+        puppet_repo_baseurl="http://apt.puppetlabs.com"
+      fi
+      echo "Package manager: apt"
+      echo "Repository base URL: ${puppet_repo_baseurl}"
+      apt_install
+    else
+        fail "This OS is not supported by Puppet plugin installer."
+    fi
+}
+
+# Check if puppet already installed
+version=`puppet --version --color=false 2>&1`
+if [[ $? -eq 0 ]]; then
+   fail "Puppet is already installed, version=$version"
+fi
+
+echo "Installation script has started..."
+
+install_puppet_community
+
+echo "All Done."
+
+exit 0]]></value>
+  </attrib>
+  <workflow-item name="item2" out-name="item0" type="task">
+    <display-name><![CDATA[Install]]></display-name>
+    <script encoded="false"><![CDATA[var installScriptPath = "/tmp/puppet_install.sh";
+var masterHostname = master.host;
+var isEnterprise = master.enterprise;
+var masterVersion = master.version;
+var session;
+try {
+	// ssh session to node
+	session = new SSHSession(hostname, username);
+	session.connectWithPassword(password);
+
+	// create tmp file
+	var localFile = System.createTempFile();
+	var localFilePath = localFile.path;
+
+	// copy content to tmp file
+	localFile.write(isEnterprise ? installEnterpriseScript : installScript);
+    System.log("isEnterprise?= " + isEnterprise);
+	// copy file to node
+	System.log("Copying puppet agent install script, file=" + installScriptPath);
+
+	var exitCode = session.putFile(localFilePath, installScriptPath);
+	localFile.deleteFile();
+	if (exitCode !== 0) {
+	    throw "Failed to create puppet agent installation script. exitCode=" + exitCode;
+	}
+
+	// execute the copied script file
+	System.log("Running install script");
+
+	var command = "puppet_repo_baseurl=" + System.getModule("com.vmware.o11n.plugin.puppet").escapeShellArgument(installerBaseUrl) +
+				    " puppet_hostname=" + System.getModule("com.vmware.o11n.plugin.puppet").escapeShellArgument(masterHostname) +
+				    " puppet_version=" + System.getModule("com.vmware.o11n.plugin.puppet").escapeShellArgument(masterVersion) +
+					" bash " + installScriptPath;
+
+	session.executeCommand(command, true);
+
+	System.log("Install Puppet agent result. exitCode=" + session.exitCode + " output=" + session.output + " error=" + session.error);
+	if (session.exitCode !== 0) {
+		var error = System.getModule("com.vmware.o11n.plugin.puppet.node").getSectionText("ERROR", session.output);
+		if (!error) {
+			error = "Failed to install agent. exitCode=" + session.exitCode;
+		}
+
+		throw error;
+	}
+}
+finally {
+	if (session) {
+		try {
+			session.disconnect();
+		}
+		catch(e) {
+		}
+	}
+}
+]]></script>
+    <in-binding>
+      <bind name="master" type="Puppet:Master" export-name="master"/>
+      <bind name="installScript" type="Text" export-name="installScript"/>
+      <bind name="installerBaseUrl" type="string" export-name="installerBaseUrl"/>
+      <bind name="hostname" type="string" export-name="hostname"/>
+      <bind name="username" type="string" export-name="username"/>
+      <bind name="password" type="SecureString" export-name="password"/>
+      <bind name="installEnterpriseScript" type="Text" export-name="installEnterpriseScript"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Install agent on linux node]]></description>
+    <position y="55.40909090909091" x="164.5"/>
+  </workflow-item>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="325.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="master">
+      <desc><![CDATA[Puppet Master]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual name="contextualParameter" type="void"><![CDATA[__NULL__]]></p-qual>
+    </p-param>
+    <p-param name="installerBaseUrl">
+      <desc><![CDATA[Installer Base URL]]></desc>
+    </p-param>
+    <p-param name="hostname">
+      <desc><![CDATA[Hostname]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual kind="static" name="inetAddress" type="String"><![CDATA[Host name or IP address]]></p-qual>
+    </p-param>
+    <p-param name="username">
+      <desc><![CDATA[Username]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="password">
+      <desc><![CDATA[Password]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

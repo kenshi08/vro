@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="dfd22ca2-98df-4367-b478-3a4c16f38467" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[1 - Define Plug-in Namespace and DB]]></display-name>
+  <description><![CDATA[This workflow defines your Dynamic Type Plug-in Namespace (root) and adds the SQL:Database as a custom property for use throughout the workflows/actions shipped with this package.]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="namespace" type="string">
+      <description><![CDATA[Namespace]]></description>
+    </param>
+    <param name="sqlDb" type="SQL:Database">
+      <description><![CDATA[Database to bind Namespace to]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="namespaceOut" type="DynamicTypes:DynamicNamespaceDefinition"/>
+  </output>
+  <attrib name="newNamespace" type="DynamicTypes:DynamicNamespaceDefinition" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="key" type="string" read-only="false">
+    <value encoded="n"><![CDATA[sqlDb]]></value>
+    <description><![CDATA[Custom property key]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="664.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="link" linked-workflow-id="5b8ff1c1-7f21-442a-956b-f28599ec422c">
+    <display-name><![CDATA[Define Namespace]]></display-name>
+    <in-binding>
+      <bind name="namespace" type="string" export-name="namespace"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="DynamicTypes:DynamicNamespaceDefinition" export-name="newNamespace"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item3" type="task" script-module="com.vmware.library.customProperties/setCustomProperty">
+    <display-name><![CDATA[setCustomProperty]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.customProperties").setCustomProperty(object,key,value) ;]]></script>
+    <in-binding>
+      <bind name="object" type="Any" export-name="newNamespace">
+        <description><![CDATA[Object to which affect the custome property]]></description>
+      </bind>
+      <bind name="key" type="string" export-name="key">
+        <description><![CDATA[Custom property key]]></description>
+      </bind>
+      <bind name="value" type="Any" export-name="sqlDb">
+        <description><![CDATA[Custom property value]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Set a custom property on an object]]></description>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" type="task">
+    <display-name><![CDATA[Set Output]]></display-name>
+    <script encoded="false"><![CDATA[var namespaceOut = newNamespace;]]></script>
+    <in-binding>
+      <bind name="newNamespace" type="DynamicTypes:DynamicNamespaceDefinition" export-name="newNamespace"/>
+    </in-binding>
+    <out-binding>
+      <bind name="namespaceOut" type="DynamicTypes:DynamicNamespaceDefinition" export-name="namespaceOut"/>
+    </out-binding>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="namespace">
+      <desc><![CDATA[namespace]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="sqlDb">
+      <desc><![CDATA[Database to bind Namespace to]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

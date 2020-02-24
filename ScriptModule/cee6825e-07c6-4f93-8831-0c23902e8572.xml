@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getBlueprintResources" result-type="Array/ResourceElement" api-version="6.0.0" id="cee6825e-07c6-4f93-8831-0c23902e8572" version="0.0.1" allowed-operations="evf" category-name="com.vmware.coe.vra.content">
+  <script encoded="false"><![CDATA[var resourceElementCategory = Server.getResourceElementCategoryWithPath("Blueprints");
+return resourceElementCategory.resourceElements;]]></script>
+</dunes-script-module>

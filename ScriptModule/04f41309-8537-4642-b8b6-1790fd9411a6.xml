@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="triggerManifestReload" result-type="void" api-version="6.0.0" id="04f41309-8537-4642-b8b6-1790fd9411a6" version="0.0.0" allowed-operations="evf" category-name="com.vmware.o11n.plugin.puppet.manifest">
+  <param n="master" t="Puppet:Master"/>
+  <param n="environment" t="string"/>
+  <param n="dataDir" t="string"/>
+  <script encoded="false"><![CDATA[var manifest = "";
+
+if (environment) {
+	var result = System.getModule("com.vmware.o11n.plugin.puppet").executeCommand(master, "puppet", ["config", "print", "manifest", "--environment", environment, "--color=false"]);
+	if (result.exitCode === 0 && /\.pp$/.test(result.output.trim())) {
+		manifest = result.output.trim();
+		System.log("Found manifest file path from manifest config");
+	} else {
+		System.warn("Failed to get manifest config. exitCode=" + result.exitCode + " environment=" + environment);
+	}
+}
+
+if (!manifest && dataDir) {
+	// Search for site.pp file in parent directories
+	var result = System.getModule("com.vmware.o11n.plugin.puppet").executeCommand(master, "bash", ["-c", "dir=\"" + dataDir + "\"; while [[ $dir =~ ^/ ]]; do [[ -e \"$dir/site.pp\" ]] && echo \"$dir/site.pp\" && exit 0; dir=${dir%/*}; done; exit 1"]);
+	if (result.exitCode === 0 && /\.pp$/.test(result.output.trim())) {
+		manifest = result.output.trim();
+		System.log("Found manifest file path from searching in parent directories");
+	} else {
+		System.warn("Failed to get manifest file path from searching in parent directories. exitCode=" + result.exitCode + " datadir=" + dataDir);
+	}
+}
+
+if (!manifest) {
+	throw "Failed to get manifest config (location of site.pp file). environment=" + environment + " dataDir=" + dataDir;
+}
+
+var result = System.getModule("com.vmware.o11n.plugin.puppet").executeCommand(master, "touch", [manifest]);
+if (result.exitCode !== 0) {
+	throw "Failed to touch manifest file '" + manifest + "'";
+}
+]]></script>
+</dunes-script-module>

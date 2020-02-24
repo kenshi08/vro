@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<endpoint nativeId="a3765bf3-6599-478b-8706-0faa8b14922d" pluginVersion="1.1.4">
+    <properties>
+        <property type="password" name="password">vcoencrypted:RVB9eAaJsWHP4Nwsy08mUQ==</property>
+        <property type="string" name="name">CMDB</property>
+        <property type="string" name="id">33765482-555d-4a24-a7f6-254baeadc377</property>
+        <property type="string" name="type">MS SQL</property>
+        <property type="string" name="sessionMode">Shared Session</property>
+        <property type="string" name="tables1">Assets</property>
+        <property type="string" name="tables2">trace_xe_action_map</property>
+        <property type="string" name="url">jdbc:jtds:sqlserver://mssql-01a.nullphase.local:1433/CMDB</property>
+        <property type="string" name="tables3">trace_xe_event_map</property>
+        <property type="string" name="username">sa</property>
+    </properties>
+</endpoint>

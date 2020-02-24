@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getConfigurationElementByName" result-type="ConfigurationElement" api-version="6.0.0" id="4b880b86-2d36-4a07-bfe0-96c0114611bf" version="0.0.0" allowed-operations="evf" category-name="com.neetcloud.cs.example">
+  <description><![CDATA[Gets Configuration Element Attribute Value
+
+categoryPath format:  <FolderName>/<SubFolderName/
+elementName: Name of Configuration Element
+attributeName: Name of Attribute]]></description>
+  <param n="configtName" t="string"/>
+  <param n="configPath" t="string"/>
+  <script encoded="false"><![CDATA[var category = Server.getConfigurationElementCategoryWithPath(configPath);
+
+if (category == null) {
+	throw "Configuration element category '" + configPath + "' not found!";
+}
+
+var elements = category.configurationElements;
+	
+for (i = 0; i < elements.length; i++) {
+	if (elements[i].name == configtName) {	
+			return elements[i]
+		}
+	}
+
+
+
+]]></script>
+</dunes-script-module>

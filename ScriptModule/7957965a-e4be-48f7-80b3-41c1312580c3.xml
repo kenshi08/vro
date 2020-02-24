@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="findAll" result-type="Array" api-version="6.0.0" id="7957965a-e4be-48f7-80b3-41c1312580c3" version="0.0.2" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes.sql">
+  <param n="type" t="string"><![CDATA[Type]]></param>
+  <script encoded="false"><![CDATA[var startDate = new Date();
+
+System.debug("com.vmware.coe.dynamicTypes.sql/findAll - type :" + type);
+// Check and retrieve from cache:
+var objects = System.getModule("com.vmware.coe.dynamicTypes").getAllObjectsForTypeFromCache(type, 20);
+if (objects != null) return objects;
+
+// This is in case several findAll are running at the same time. It prevents doing other requests until the first one is completed
+System.getModule("com.vmware.coe.dynamicTypes").putInCache(type + "-all", "Populating");
+try {
+	var namespace = type.split(".")[0];
+	type = type.split(".")[1];
+	var ns = DynamicTypesManager.getNamespace(namespace);
+	var typeObj = DynamicTypesManager.getType(namespace,type);
+	
+	var sqlDb = System.getModule("com.vmware.library.customProperties").getCustomProperty(ns,"sqlDb");
+	var sqlTableName = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"tableName");
+	var idField = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"idField");
+	var nameField = System.getModule("com.vmware.library.customProperties").getCustomProperty(typeObj,"nameField");
+	
+	var sqlTables = sqlDb.getTables();
+	for each (table in sqlTables){
+		if (table.name == sqlTableName){
+			var sqlTable = table;
+			break;
+		}
+	}
+	if (!sqlTable) throw "cannot get table: " + sqlTableName;
+	var columns = System.getModule("com.vmware.coe.sql").getTableColumnNames(sqlTableName,sqlDb);
+	System.debug("Columns found: "+columns);
+	
+	var records = sqlTable.readRecords(null,false);
+	System.debug("Records found: "+records.length);
+	var objects = new Array();
+	for each (var record in  records) {
+		var objProps = new Properties();
+		for each (field in columns){
+			if (field == idField){
+				objProps.put("id", record.getProperty(field));
+			}else if (field == nameField){
+				objProps.put("name", record.getProperty(field));
+			} else {
+				objProps.put(field, record.getProperty(field));
+			}
+		}
+		// Note: .getObject method is related to end user workflows. The .makeObject method is used for DynamicTypes finder actions such as findById, findAll, and findRelation
+		objects.push(System.getModule("com.vmware.coe.dynamicTypes").makeDynamicObjectFromProperties(namespace, type, objProps));
+	}
+	
+	if (objects.length >0) {
+		System.getModule("com.vmware.coe.dynamicTypes").putAllObjectsForTypeInCache(type, objects);
+		System.log("Completed query in " + ((new Date()).getTime() - startDate.getTime()) / 1000 + " seconds");
+	}
+	System.log(objects);
+	
+} catch(e) {
+	System.error("com.vmware.coe.dynamicTypes.sql / finaAll ERROR: "+e);
+} finally {
+	System.getModule("com.vmware.coe.dynamicTypes").putInCache(type + "-all", "");
+	return objects;
+}]]></script>
+</dunes-script-module>

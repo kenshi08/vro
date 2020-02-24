@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="f78e5933-6e7a-48f2-acc7-251676c4005a" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Find parent and matching child]]></display-name>
+  <description><![CDATA[This workflow takes a catalog resource in vRA and another text string as input, finds the parent object of the catalog resource (such as a deployment).
+
+Then it lists all objects with names containing the string and finds the first one that has the same parent as the original resource.
+
+Could be expanded later to return all resources that match based on certain criteria.]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="originalResource" type="vCACCAFE:CatalogResource"/>
+    <param name="cafeHost" type="vCACCAFE:VCACHost"/>
+    <param name="searchString" type="string">
+      <description><![CDATA[Full or partial name of object you are looking for.]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="outputResource" type="vCACCAFE:CatalogResource"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Paternity test]]></display-name>
+    <script encoded="false"><![CDATA[var parentCatalogResource = System.getModule("com.vmware.coe.vra").getCatalogResourceDeployment(originalResource);
+System.log("Parent catalog resource name of " + originalResource.name + " is: " + parentCatalogResource.name);
+
+System.log("Listing all catalog resources matching or containing the search string: " + searchString);
+var resultArray = new Array();
+resultArray = vCACCAFEEntitiesFinder.findCatalogResources(cafeHost, searchString);
+
+//For every match, find the one who's parent matches the original catalog resource.
+for each (var matchingResource in resultArray) {
+  System.log(matchingResource.name);
+var matchingResourceParent = System.getModule("com.vmware.coe.vra").getCatalogResourceDeployment(matchingResource);
+if (matchingResourceParent.name == parentCatalogResource.name)
+{
+System.log("This resource belongs to the same parent as " + originalResource.name);
+outputResource = matchingResource;
+break;
+}
+}]]></script>
+    <in-binding>
+      <bind name="originalResource" type="vCACCAFE:CatalogResource" export-name="originalResource"/>
+      <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost"/>
+      <bind name="searchString" type="string" export-name="searchString"/>
+    </in-binding>
+    <out-binding>
+      <bind name="outputResource" type="vCACCAFE:CatalogResource" export-name="outputResource"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="originalResource">
+      <desc><![CDATA[originalResource]]></desc>
+    </p-param>
+    <p-param name="cafeHost">
+      <desc><![CDATA[cafeHost]]></desc>
+    </p-param>
+    <p-param name="searchString">
+      <desc><![CDATA[Full or partial name of object you are looking for.]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

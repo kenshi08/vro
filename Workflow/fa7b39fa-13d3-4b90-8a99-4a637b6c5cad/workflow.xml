@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="fa7b39fa-13d3-4b90-8a99-4a637b6c5cad" version="0.0.5" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Request Web Server VM with WP_DB_HOST]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="WP_DB_HOST" type="string"/>
+    <param name="resource" type="vCACCAFE:CatalogResource"/>
+  </input>
+  <output>
+    <param name="request" type="vCACCAFE:CatalogItemRequest">
+      <description><![CDATA[Request]]></description>
+    </param>
+  </output>
+  <attrib name="item" type="vCACCAFE:CatalogItem" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='1ba095b7-7b1d-4daf-96ff-9f5840bd32a7/37b1f5c0-36e7-43f8-9ab5-7e1a4614a386/2e773e64-b7b8-483d-b813-900b9044c580'&dunesName='vCACCAFE:CatalogItem']]></value>
+    <description><![CDATA[Catalog item]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="664.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" catch-name="item0" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Request web tier]]></display-name>
+    <script encoded="false"><![CDATA[/* Only valid if ran from vRA
+var executionContext = System.getContext();
+var catalogRequestId = executionContext.getParameter("__asd_catalogRequestId");
+var requestedFor = executionContext.getParameter("__asd_requestedFor");
+*/
+var host = vCACCAFEEntitiesFinder.getHostForEntity(item);
+
+var tenantRef = item.getOrganization().getTenantLabel();
+var subTenantRef = item.getOrganization().getSubtenantRef();
+var requestedFor = "rpadmin@corp.local"; //hardcoded here but could be passed as input
+
+var restClient = host.createRestClient('com.vmware.csp.core.cafe.catalog.api');
+var body = {
+  "@type" : "CatalogItemRequest",
+  "catalogItemRef" : {
+    "id" : item.id
+  },
+  "organization": {
+    "tenantRef": tenantRef,
+    "subtenantRef": subTenantRef
+  },
+  "requestedFor": requestedFor,
+  "state" : "SUBMITTED",
+  "requestNumber" : 0,
+  "requestData" : {
+    "entries" : [ {
+      "key" : "requestedFor",
+      "value" : {
+        "type" : "string",
+        "value" : requestedFor
+      }
+    }, {
+      "key" : "provider-Wordpress_Services_1",
+      "value" : {
+        "type" : "complex",
+        "values" : {
+          "entries" : [ {
+            "key" : "WP_DB_HOST",
+            "value" : {
+              "type" : "string",
+              "value" : WP_DB_HOST
+            }
+          } ]
+        }
+      }
+    }, {
+      "key" : "description"
+    }, {
+      "key" : "reasons"
+    } ]
+  }
+};
+var response = restClient.post('/consumer/requests/', JSON.stringify(body));
+var requestUrl = response.getHeadersProperty("Location")[0];
+System.log(requestUrl);
+var requestUrlItems = requestUrl.split("/");
+var requestId = requestUrlItems.pop();
+request = vCACCAFEEntitiesFinder.getCatalogItemRequest(host , requestId);
+]]></script>
+    <in-binding>
+      <bind name="item" type="vCACCAFE:CatalogItem" export-name="item"/>
+      <bind name="WP_DB_HOST" type="string" export-name="WP_DB_HOST"/>
+    </in-binding>
+    <out-binding>
+      <bind name="request" type="vCACCAFE:CatalogItemRequest" export-name="request"/>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item1" type="task">
+    <display-name><![CDATA[Logging]]></display-name>
+    <script encoded="false"><![CDATA[System.log(resource.name + " is about to be scaled.");]]></script>
+    <in-binding>
+      <bind name="resource" type="vCACCAFE:CatalogResource" export-name="resource"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.90909090909091" x="205.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="WP_DB_HOST">
+      <desc><![CDATA[WP_DB_HOST]]></desc>
+    </p-param>
+    <p-param name="resource">
+      <desc><![CDATA[resource]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="16404ea7-f949-4262-9f59-f645fa539213" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Find Edge of LB and add node to pool]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="loadBalancer" type="vCACCAFE:CatalogResource"/>
+    <param name="poolMembers" type="Array/CompositeType(ipAddress:string,weight:number):poolMember">
+      <description><![CDATA[Pool members]]></description>
+    </param>
+  </input>
+  <attrib name="edgeLongString" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="edgeId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="connection" type="NSX:Connection" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='256b942b-18e2-4113-ba3f-d0099ea25489'&dunesName='NSX:Connection']]></value>
+    <description><![CDATA[NSX endpoint]]></description>
+  </attrib>
+  <attrib name="poolId" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[#{#string#1#}#]]></value>
+    <description><![CDATA[Pool ids]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="664.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item3" type="task">
+    <display-name><![CDATA[Find Edge]]></display-name>
+    <script encoded="false"><![CDATA[edgeLongString = loadBalancer.resourceData.get("ExternalId");
+edgeId = edgeLongString.value;
+System.log("Edge ID of this load balancer is: " + edgeId);]]></script>
+    <in-binding>
+      <bind name="loadBalancer" type="vCACCAFE:CatalogResource" export-name="loadBalancer"/>
+      <bind name="edgeLongString" type="string" export-name="edgeLongString"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="37a90a93-3cc1-4bb5-aebb-9ba1743a9676">
+    <display-name><![CDATA[Add VMs to existing load balancer pools]]></display-name>
+    <in-binding>
+      <bind name="connection" type="NSX:Connection" export-name="connection">
+        <description><![CDATA[NSX endpoint]]></description>
+      </bind>
+      <bind name="edgeId" type="string" export-name="edgeId">
+        <description><![CDATA[Edge id]]></description>
+      </bind>
+      <bind name="poolId" type="Array/string" export-name="poolId">
+        <description><![CDATA[Pool ids]]></description>
+      </bind>
+      <bind name="poolMembers" type="Array/CompositeType(ipAddress:string,weight:number):poolMember" export-name="poolMembers">
+        <description><![CDATA[Pool members]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Adds VMs as members to existing load balancer pools]]></description>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item2" type="task">
+    <display-name><![CDATA[Log servers]]></display-name>
+    <script encoded="false"><![CDATA[for each (var entry in ipAddress) {
+  System.log("Adding server " + entry + " to load balancer " + loadBalancer.name + " on " + edgeId);
+}
+
+]]></script>
+    <in-binding>
+      <bind name="loadBalancer" type="vCACCAFE:CatalogResource" export-name="loadBalancer"/>
+      <bind name="ipAddress" type="Array/string" export-name="poolMembers.ipAddress"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="loadBalancer">
+      <desc><![CDATA[loadBalancer]]></desc>
+    </p-param>
+    <p-param name="poolMembers">
+      <desc><![CDATA[Pool members]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

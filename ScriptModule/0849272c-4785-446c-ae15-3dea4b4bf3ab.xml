@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="isDefaultClassParameterValue" result-type="boolean" api-version="6.0.0" id="0849272c-4785-446c-ae15-3dea4b4bf3ab" version="0.0.0" allowed-operations="evf" category-name="com.vmware.o11n.plugin.puppet">
+  <param n="value" t="Any"/>
+  <script encoded="false"><![CDATA[return typeof(value) === "string" && /^default \([\s\S]*\)$/.test(value);]]></script>
+</dunes-script-module>

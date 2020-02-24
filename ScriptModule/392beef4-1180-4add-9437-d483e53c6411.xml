@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCafeHostForCafeObject" result-type="vCACCAFE:VCACHost" api-version="6.0.0" id="392beef4-1180-4add-9437-d483e53c6411" version="0.0.0" allowed-operations="evf" category-name="com.vmware.pso.vcaccafe">
+  <param n="vCACCAFEObject" t="Any"><![CDATA[Any vCAC Cafe Object]]></param>
+  <script encoded="false"><![CDATA[if (vCACCAFEObject == null) { throw "No Cafe object was input."; }
+
+var vcoId = vCACCAFEObject.vcoId;
+if (isSet(vcoId)) {
+	var hostId = vCACCAFEObject.vcoId.toString().split('/')[0];
+	var cafeHost = Server.findForType("vCACCAFE:VCACHost",hostId);
+} else {
+	throw "The vcoId property is not set.";
+}
+
+return cafeHost;
+
+// ---------------------------------------------------------------
+function isSet(s){
+    return s!=null && s!=undefined && s!="";
+}
+]]></script>
+</dunes-script-module>

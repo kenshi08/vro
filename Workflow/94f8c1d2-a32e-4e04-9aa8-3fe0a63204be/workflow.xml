@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="Workflow:name=generic" id="94f8c1d2-a32e-4e04-9aa8-3fe0a63204be" version="1.1.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Disable a user]]></display-name>
+  <description><![CDATA[Disables a user from an Active Directory instance.]]></description>
+  <ref-types><![CDATA[>(AD:User)]]></ref-types>
+  <position y="20.0" x="180.0"/>
+  <input>
+    <param name="user" type="AD:User">
+      <description><![CDATA[User to disable]]></description>
+    </param>
+  </input>
+  <attrib name="enable" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+  </attrib>
+  <workflow-item name="item2" type="end" end-mode="0">
+    <position y="150.0" x="180.0"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item2" type="task" script-module="com.vmware.library.microsoft.activeDirectory/setUserEnable">
+    <display-name><![CDATA[setUserEnable]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.microsoft.activeDirectory").setUserEnable(user,enable) ;]]></script>
+    <in-binding>
+      <bind name="enable" type="boolean" export-name="enable">
+        <description><![CDATA[Enable or disable?]]></description>
+      </bind>
+      <bind name="user" type="AD:User" export-name="user">
+        <description><![CDATA[User to enable or disable]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Allows to enable or disable a user in the Active Directory.]]></description>
+    <position y="100.0" x="140.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="user">
+      <desc><![CDATA[User to disable]]></desc>
+      <p-qual name="show-select-as" type="string"><![CDATA[live-search]]></p-qual>
+      <p-qual name="contextualParameter" type="void"><![CDATA[]]></p-qual>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

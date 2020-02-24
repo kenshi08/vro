@@ -1,0 +1,428 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item8" object-name="workflow:name=generic" id="80bef211-83a6-41f2-b676-9cd137eafb11" version="0.0.33" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Update Virtual Server]]></display-name>
+  <description><![CDATA[
+VMware PSO I&A Selva 08/2015]]></description>
+  <position y="99.95454545454544" x="45.0"/>
+  <input>
+    <param name="edgeName" type="string">
+      <description><![CDATA[Edge Name]]></description>
+    </param>
+    <param name="virtualServerName" type="string">
+      <description><![CDATA[Virtual Server Name]]></description>
+    </param>
+    <param name="type" type="string"/>
+    <param name="serviceEnable" type="string">
+      <description><![CDATA[Enable Disable Service]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="error" type="string">
+      <description><![CDATA[errorContent]]></description>
+    </param>
+  </output>
+  <attrib name="method" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest method]]></description>
+  </attrib>
+  <attrib name="uri" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest url]]></description>
+  </attrib>
+  <attrib name="body" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest body]]></description>
+  </attrib>
+  <attrib name="xmlContentObj" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rest xml content]]></description>
+  </attrib>
+  <attrib name="edgeId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Edge ID]]></description>
+  </attrib>
+  <attrib name="virtualServerId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Virtual Server ID]]></description>
+  </attrib>
+  <attrib name="nsxRestHost" type="REST:RESTHost" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[NSX Rest Host]]></description>
+  </attrib>
+  <attrib name="applicationProfileId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Application Profile ID]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Error Code]]></description>
+  </attrib>
+  <attrib name="rollbackVirtualServer" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rollback Virtual Server Body]]></description>
+  </attrib>
+  <attrib name="rollbackAppService" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Rollback Application Service Body]]></description>
+  </attrib>
+  <attrib name="currentProtocol" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="errorContent" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-note x="140.0" y="100.0" w="500.0" h="54.54545454545454">
+    <description><![CDATA[Get Virtual Server Config]]></description>
+  </workflow-note>
+  <workflow-note x="680.0" y="100.0" w="320.0" h="54.54545454545454">
+    <description><![CDATA[Update Application  Profile and Virtual Server]]></description>
+  </workflow-note>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="99.95454545454544" x="1064.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item2" catch-name="item11" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get Virtual Server Config]]></display-name>
+    <script encoded="false"><![CDATA[System.debug("Get Virtual Server Configuration -> " + virtualServerName);
+method = "GET";
+uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+body = "";
+
+var request = nsxRestHost.createRequest(method, uri, body);
+request.contentType = "application/xml";
+xmlContentObj = request.execute().contentAsString;
+
+var int1 = xmlContentObj.indexOf("<protocol>") + "<protocol>".length;
+var int2 = xmlContentObj.indexOf("</protocol>");
+var currentProtocol = xmlContentObj.substring(int1, int2);]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="xmlContentObj" type="string" export-name="xmlContentObj"/>
+      <bind name="currentProtocol" type="string" export-name="currentProtocol"/>
+    </out-binding>
+    <position y="109.95454545454544" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" catch-name="item11" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Update Virtual Server Config]]></display-name>
+    <script encoded="false"><![CDATA[	System.log("Updating Virtual Server -> " + virtualServerName);
+	method = "PUT";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+	xmlContentObj = xmlContentObj.substring("<?xml version='1.0' encoding='UTF-8'?>".length, xmlContentObj.length);
+
+	rollbackVirtualServer = xmlContentObj; //Rollback body
+
+	var int1 = xmlContentObj.indexOf("<protocol>") + "<protocol>".length;
+	var int2 = xmlContentObj.indexOf("</protocol>");
+	var currentProtocol = xmlContentObj.substring(int1, int2);
+
+	var int3 = xmlContentObj.indexOf("<enabled>") + "<enabled>".length;
+	var int4 = xmlContentObj.indexOf("</enabled>");
+	var currentEnabled = xmlContentObj.substring(int3, int4);
+
+	System.log(" >>>>>>>>>>> serviceEnable = " + serviceEnable);
+
+	if (serviceEnable == "" || serviceEnable == "keepExistingValue" || serviceEnable == null) {
+	 serviceEnable = currentEnabled;
+	 body = xmlContentObj.replace("<enabled>true</enabled>", "<enabled>" + currentEnabled + "</enabled>");
+	 body = xmlContentObj.replace("<enabled>false</enabled>", "<enabled>" + currentEnabled + "</enabled>");
+	}
+	System.log(" >>>>>>>>>>> Type = " + type);
+	if (type == "" || type == "keepExistingValue" || type == null) {
+	 type = currentProtocol;
+	}
+
+	if (serviceEnable == "true") {
+	 //System.log("Service Enabled");
+	 // var enableServiceValue = "<enabled>true</enabled>";
+	 body = xmlContentObj.replace("<enabled>true</enabled>", "<enabled>true</enabled>");
+	 body = xmlContentObj.replace("<enabled>false</enabled>", "<enabled>true</enabled>");
+	 body = body.replace("<protocol>" + currentProtocol + "</protocol>", "<protocol>" + type + "</protocol>");
+
+	 /**************************************************************************************	 
+	  // If UDP load balancing option is needed uncomment. Additionaly, Acceleration option needs
+	  // to be enabled
+	  
+		 if (type == "UDP"){
+		    body = body.replace("<accelerationEnabled>false</accelerationEnabled>","<accelerationEnabled>true</accelerationEnabled>");
+		    body = body.replace("<accelerationEnabled>true</accelerationEnabled>","<accelerationEnabled>true</accelerationEnabled>");
+		    body = body.replace("<protocol>"+currentProtocol+"</protocol>","<protocol>"+type+"</protocol>");
+		  }
+		  else {
+		    body = body.replace("<protocol>"+currentProtocol+"</protocol>","<protocol>"+type+"</protocol>");
+		  }
+	  *****************************************************************************************/
+	} else {
+	 body = xmlContentObj.replace("<enabled>false</enabled>", "<enabled>false</enabled>");
+	 body = xmlContentObj.replace("<enabled>true</enabled>", "<enabled>false</enabled>");
+	 body = body.replace("<protocol>" + currentProtocol + "</protocol>", "<protocol>" + type + "</protocol>");
+
+	 /* ************************************************************************************	 
+	 // If UDP load balancing option is needed uncomment. Additionaly, Acceleration option needs
+	 // to be enabled
+	  
+	 	if (type == "UDP"){
+	     body = body.replace("<accelerationEnabled>false</accelerationEnabled>","<accelerationEnabled>true</accelerationEnabled>");
+	 	    body = body.replace("<accelerationEnabled>true</accelerationEnabled>","<accelerationEnabled>true</accelerationEnabled>");
+	 	    body = body.replace("<protocol>"+currentProtocol+"</protocol>","<protocol>"+type+"</protocol>");
+	   }
+	 	  else{
+	 	    body = body.replace("<protocol>"+currentProtocol+"</protocol>","<protocol>"+type+"</protocol>");
+	 	  }
+	 }
+	 *****************************************************************************************/
+	}
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	var response = request.execute();
+	var statusCode = response.statusCode;
+	System.log("Status code: " + statusCode);
+	//System.log("uri: "+uri );
+	//System.log("Body: " + body);
+
+	if (statusCode == 204) {
+	 System.log("Update Virtual Server: Updated protocol for Virtual Server Successfully!");
+	} else {
+	 System.error("Update Virtual Server failed, Cleaning up settings...");
+	 errorContent = response.contentAsString;
+	 //Rollback Virtual Server Settings
+	 var requestvirt = nsxRestHost.createRequest("PUT", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId, rollbackAppService);
+	 requestvirt.contentType = "application/xml";
+	 var responsevirt = requestvirt.execute();
+	 if (responsevirt.statusCode == 204) {
+	  System.log("Application Profile Settings reverted back");
+	 } else {
+	  throw "Failed to roll back application server changes, please contact operation to fix";
+	 }
+	 throw errorContent;
+	}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="xmlContentObj" type="string" export-name="xmlContentObj"/>
+      <bind name="serviceEnable" type="string" export-name="serviceEnable"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+      <bind name="type" type="string" export-name="type"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="applicationProfileId" type="string" export-name="applicationProfileId"/>
+      <bind name="rollbackAppService" type="string" export-name="rollbackAppService"/>
+    </in-binding>
+    <out-binding>
+      <bind name="body" type="string" export-name="body"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="rollbackVirtualServer" type="string" export-name="rollbackVirtualServer"/>
+      <bind name="xmlContentObj" type="string" export-name="xmlContentObj"/>
+      <bind name="errorContent" type="string" export-name="errorContent"/>
+    </out-binding>
+    <position y="109.95454545454544" x="844.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" catch-name="item11" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get EdgeId and virtualServerId]]></display-name>
+    <script encoded="false"><![CDATA[	var virtualServerMatchCounter = 0;
+	// var edgeId
+	// Create a REST call to query all edges configured
+	System.log("nsxRestHost :" + nsxRestHost);
+	var request = nsxRestHost.createRequest("GET", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers");
+	//System.log("Request URL: " + request.fullUrl);
+
+	// Execute the request
+
+	var response = request.execute();
+	var foundRule = false;
+
+
+
+	// Evaluate the Response
+
+	if (response.statusCode == 200) {
+	 // Get XML response from NSX
+	 var responseXML = XMLManager.fromString(response.ContentAsString);
+	 var virtualServerNameList = responseXML.documentElement.getElementsByTagName("name");
+	 var virtualServerIdList = responseXML.documentElement.getElementsByTagName("virtualServerId");
+
+	 // loop through list of edge names in the response. 
+	 for (x = 0; x < virtualServerNameList.length; x++) {
+	  if (virtualServerNameList.item(x).firstChild.textContent == virtualServerName) {
+	   virtualServerId = virtualServerIdList.item(x).firstChild.textContent;
+	   virtualServerID = virtualServerId;
+	   //NSXurl = nsxConnectionList[v].url;
+	   virtualServerMatchCounter++;
+	   //System.log("Virtual Server ID for " +virtualServerNameList.item(x).firstChild.textContent + " is >> " + virtualServerIdList.item(x).firstChild.textContent)
+	   System.log("Virtual Server ID: " + virtualServerId);
+	   // System.log("NSX URL for " +edgeNameList.item(x).firstChild.textContent + " is >> " + NSXurl)
+	   if (virtualServerMatchCounter > 1) {
+	    throw "Multiple virtualservers with the same virtual server name (" + virtualServerName + ") found";
+	   }
+	  }
+	 }
+	}
+
+	if (virtualServerId == null) {
+	 System.error("Virtual Server -> " + virtualServerName + " doesn't exist");
+	 throw "Virtual Server -> " + virtualServerName + " doesn't exist";
+	}]]></script>
+    <in-binding>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="virtualServerName" type="string" export-name="virtualServerName"/>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+    </out-binding>
+    <position y="109.95454545454544" x="284.5"/>
+  </workflow-item>
+  <workflow-item name="item10" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="190.86363636363635" x="1064.5"/>
+  </workflow-item>
+  <workflow-item name="item11" out-name="item10" type="task">
+    <display-name><![CDATA[Error Handling]]></display-name>
+    <script encoded="false"><![CDATA[errorContent = errorCode;]]></script>
+    <in-binding>
+      <bind name="errorCode" type="string" export-name="errorCode"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+    </out-binding>
+    <position y="200.86363636363635" x="504.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item16" catch-name="item11" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Get App Profile]]></display-name>
+    <script encoded="false"><![CDATA[	method = "GET";
+	uri = "api/4.0/edges/" + edgeId + "/loadbalancer/config/virtualservers/" + virtualServerId;
+	body = "";
+
+	var request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	response = request.execute().contentAsString;
+
+	var app1 = response.indexOf("<applicationProfileId>") + "<applicationProfileId>".length;
+	var app2 = response.indexOf("</applicationProfileId>");
+
+	applicationProfileId = response.substring(app1, app2);]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="body" type="string" export-name="body"/>
+    </in-binding>
+    <out-binding>
+      <bind name="applicationProfileId" type="string" export-name="applicationProfileId"/>
+    </out-binding>
+    <position y="109.95454545454544" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item16" out-name="item1" catch-name="item11" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Update Application Service]]></display-name>
+    <script encoded="false"><![CDATA[	method = "GET";
+	uri = "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId;
+	body = "";
+
+	request = nsxRestHost.createRequest(method, uri, body);
+	request.contentType = "application/xml";
+	/*var response = request.execute(); */
+	var response1 = request.execute().contentAsString;
+
+	var Body = response1;
+	//APplication Service Rollback
+	rollbackAppService = Body.substring("<?xml version='1.0' encoding='UTF-8'?>".length, Body.length);
+
+	var ind1 = response1.indexOf("<template>") + "<template>".length;
+	var ind2 = response1.indexOf("</template>");
+	currentProtocol = response1.substring(ind1, ind2);
+
+	var ind3 = response1.indexOf("<sslPassthrough>") + "<sslPassthrough>".length;
+	var ind4 = response1.indexOf("</sslPassthrough>");
+	currentSslPassthrough = response1.substring(ind3, ind4);
+
+	var ind5 = response1.indexOf("<persistence>") + "<persistence>".length;
+	var ind6 = response1.indexOf("</persistence>");
+	var currentPersistence = response1.substring(ind5, ind6);
+	if (ind6 == -1) {
+	 currentPersistence = "";
+	}
+
+	if (type == "" || type == "keepExistingValue" || type == null) {
+	 type = currentProtocol;
+	}
+
+	response1 = response1.substring("<?xml version='1.0' encoding='UTF-8'?>".length, response1.length);
+
+	body = response1.replace("<template>" + currentProtocol + "</template>", "<template>" + type + "</template>");
+
+	if (type == "https" || type == "HTTPS") {
+	 body = body.replace("<template>" + currentProtocol + "</template>", "<template>" + type + "</template>");
+	 body = body.replace("<sslPassthrough>" + currentSslPassthrough + "</sslPassthrough>", "<sslPassthrough>true</sslPassthrough>");
+	}
+
+	body = body.replace("<persistence>" + currentPersistence + "</persistence>", "");
+
+	var request2 = nsxRestHost.createRequest("PUT", "/api/4.0/edges/" + edgeId + "/loadbalancer/config/applicationprofiles/" + applicationProfileId, body);
+	//System.log("Request URL: " + request.fullUrl);
+
+	// Execute the request
+	request2.contentType = "application/xml";
+	var response2 = request2.execute();
+	var statusCode = response2.statusCode;
+
+	if (statusCode == 204) {
+	 System.log("Update Virtual Server: Updated protocal for application services!");
+	} else {
+	 System.error("Update Application Profile failed!");
+	 errorContent = response2.contentAsString;
+	 throw errorContent;
+	}]]></script>
+    <in-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="applicationProfileId" type="string" export-name="applicationProfileId"/>
+      <bind name="type" type="string" export-name="type"/>
+      <bind name="virtualServerId" type="string" export-name="virtualServerId"/>
+      <bind name="rollbackVirtualServer" type="string" export-name="rollbackVirtualServer"/>
+    </in-binding>
+    <out-binding>
+      <bind name="errorContent" type="string" export-name="error"/>
+      <bind name="rollbackAppService" type="string" export-name="rollbackAppService"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+    </out-binding>
+    <position y="109.95454545454544" x="704.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item3" catch-name="item11" throw-bind-name="errorCode" type="link" linked-workflow-id="d02637fa-eb7c-4d09-8ccb-56f87715170d">
+    <display-name><![CDATA[Get NSX and EdgeId]]></display-name>
+    <in-binding>
+      <bind name="edgeName" type="string" export-name="edgeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="edgeId" type="string" export-name="edgeId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+    </out-binding>
+    <position y="109.95454545454544" x="144.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="edgeName">
+      <desc><![CDATA[edgeName]]></desc>
+    </p-param>
+    <p-param name="virtualServerName">
+      <desc><![CDATA[virtualServerName]]></desc>
+    </p-param>
+    <p-param name="type">
+      <desc><![CDATA[protocol]]></desc>
+      <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#keepExistingValue#;#string#HTTP#;#string#HTTPS#;#string#TCP#}#]]></p-qual>
+      <p-qual kind="static" name="defaultValue" type="string"><![CDATA[keepExistingValue]]></p-qual>
+    </p-param>
+    <p-param name="serviceEnable">
+      <desc><![CDATA[serviceEnable
+(true or false)]]></desc>
+      <p-qual kind="static" name="genericEnumeration" type="Array/string"><![CDATA[#{#string#keepExistingValue#;#string#true#;#string#false#}#]]></p-qual>
+      <p-qual kind="static" name="defaultValue" type="string"><![CDATA[keepExistingValue]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

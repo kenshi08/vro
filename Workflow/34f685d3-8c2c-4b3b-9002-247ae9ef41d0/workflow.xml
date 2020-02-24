@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="34f685d3-8c2c-4b3b-9002-247ae9ef41d0" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Destroy box]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="machineName" type="string"/>
+  </input>
+  <attrib name="vcacHost" type="vCACCAFE:VCACHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='59abc383-e214-4d8c-af7d-97b66df34bbe'&dunesName='vCACCAFE:VCACHost']]></value>
+  </attrib>
+  <attrib name="Blueprint" type="vCACCAFE:CatalogItem" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='59abc383-e214-4d8c-af7d-97b66df34bbe/636d20ad-f9b6-4ba8-a797-7a3328237272/37ad4d28-f563-4202-9d74-b43cfbeaf794'&dunesName='vCACCAFE:CatalogItem']]></value>
+  </attrib>
+  <attrib name="outputMachineResource" type="vCACCAFE:CatalogResource" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="524.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[[REST] request Item]]></display-name>
+    <script encoded="false"><![CDATA[var resourceAction = {
+"@type":"ResourceActionRequest", 
+"resourceRef":{"id":Machine.id}, 
+"resourceActionRef":{"id":"9232f9a7-82c0-4e92-8d0a-6676b2acee62"},
+"organization":{"tenantRef":"nullphase", 
+//"tenaresourceItemntLabel":"Corp", 
+"subtenantRef":Machine.organization.getSubtenantRef(), 
+"subtenantLabel":Machine.organization.getSubtenantLabel()},
+"state":"SUBMITTED", "requestNumber":0,
+"requestData":{"entries":[]}
+}
+
+var catalogRest = vcacHost.createRestClient(vCACCAFEServicesEnum.CATALOG_SERVICE);
+var response = catalogRest.post("consumer/requests",resourceAction);
+System.log(response);
+]]></script>
+    <in-binding>
+      <bind name="vcacHost" type="vCACCAFE:VCACHost" export-name="vcacHost"/>
+      <bind name="Name" type="string" export-name="machineName"/>
+      <bind name="Machine" type="vCACCAFE:CatalogResource" export-name="outputMachineResource"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="task">
+    <display-name><![CDATA[Get Resource]]></display-name>
+    <script encoded="false"><![CDATA[var items = JSON.parse(itemJson);
+if(items == null || items.length == 0){
+   System.error("No items parsed.");
+}else{
+    var item = items[0];
+    System.log("Item json: " + item);
+	var itemName = item.name;
+	System.log("Item name: " + itemName);
+	var founditems = vCACCAFEEntitiesFinder.findCatalogResources(vcacHost, itemName);
+	if (founditems != null)
+	{
+		for (var i in founditems)
+		{
+			if (founditems[i].name == itemName)
+			{
+				outputMachineResource = founditems[i];
+			}
+		}
+	}
+	
+	if(outputMachineResource == null){
+	   System.error("Item not found with name: " + itemName);
+	}else{
+	   System.log("Found resource with id: " + outputMachineResource.id);
+	}
+}]]></script>
+    <in-binding>
+      <bind name="vcacHost" type="vCACCAFE:VCACHost" export-name="vcacHost"/>
+      <bind name="itemJson" type="string" export-name="machineName"/>
+      <bind name="catalogBlueprint" type="vCACCAFE:CatalogItem" export-name="Blueprint"/>
+    </in-binding>
+    <out-binding>
+      <bind name="outputMachineResource" type="vCACCAFE:CatalogResource" export-name="outputMachineResource"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <desc><![CDATA[Provision vCAC 6 IaaS Blueprint]]></desc>
+    <p-param name="machineName">
+      <desc><![CDATA[Machine Name]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

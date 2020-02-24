@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="7b33aaa2-cc27-4570-88a2-80f6fe90ab35" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[vRA_EBS_Ansible]]></display-name>
+  <position y="45.8984375" x="20.0"/>
+  <input>
+    <param name="payload" type="Properties"/>
+  </input>
+  <output>
+    <param name="result" type="string"/>
+    <param name="errorText" type="string"/>
+    <param name="result_1" type="number"/>
+  </output>
+  <attrib name="ipaddress" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="51.8984375" x="620.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="link" linked-workflow-id="1564b28d-8741-4816-9c05-1c6bf4408797">
+    <display-name><![CDATA[Ansible-AddNode]]></display-name>
+    <in-binding>
+      <bind name="ipaddr" type="string" export-name="ipaddress"/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="string" export-name="result"/>
+      <bind name="errorText" type="string" export-name="errorText"/>
+      <bind name="result_1" type="number" export-name="result_1"/>
+    </out-binding>
+    <description><![CDATA[ ]]></description>
+    <position y="54.8984375" x="315.0"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="8b087395-ebc0-4bf3-9e49-e6ba32155682">
+    <display-name><![CDATA[Ansible_Execute]]></display-name>
+    <in-binding/>
+    <out-binding/>
+    <description><![CDATA[ ]]></description>
+    <position y="58.8984375" x="450.0"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item1" type="task">
+    <display-name><![CDATA[vRA_Payload]]></display-name>
+    <script encoded="false"><![CDATA[var executionContext = System.getContext();
+
+System.log("BlueprintName: " + payload.get("blueprintName")) ;
+System.log("ComponentId: " + payload.get("componentId")) ;
+System.log("ComponentTypeId: " + payload.get("componentTypeId")) ;
+System.log("EndpointId: " + payload.get("endpointId")) ;
+System.log("RequestId: " + payload.get("requestId")) ;
+System.log("VirtualMachineEvent: " + payload.get("virtualMachineEvent")) ;
+System.log("WorkflowNextState: " + payload.get("workflowNextState")) ;
+
+var lifecycleState = payload.get("lifecycleState") ;
+System.log("State: " + lifecycleState.get("state")) ;
+System.log("Phase: " + lifecycleState.get("phase")) ;
+System.log("Event: " + lifecycleState.get("event")) ;
+
+var machine = payload.get("machine");
+System.log("ID: " + machine.get("id"));
+System.log("Name: " + machine.get("name"));
+System.log("ExternalReference: " + machine.get("externalReference"));
+System.log("Owner: " + machine.get("owner"));
+System.log("Type: " + machine.get("type"));
+System.log("Properties: " + machine.get("properties"));
+
+var vmProperties = machine.get("properties");
+
+for each (var key in vmProperties.keys) {
+	System.log("Key: "+key+" Value: "+vmProperties.get(key));
+}
+
+//Get custom properties from vRA and store in an attribute
+System.log('Getting the custom properties needed') ;
+//var vmname = machine.get("name") ;
+var ipaddress = vmProperties.get("VirtualMachine.Network0.Address") ;
+//var myscript =  vRAVMProperties.get("myscript") ;]]></script>
+    <in-binding>
+      <bind name="payload" type="Properties" export-name="payload"/>
+    </in-binding>
+    <out-binding>
+      <bind name="ipaddress" type="string" export-name="ipaddress"/>
+    </out-binding>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="50.8984375" x="162.0"/>
+  </workflow-item>
+  <presentation/>
+</workflow>

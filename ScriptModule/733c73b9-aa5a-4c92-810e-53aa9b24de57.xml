@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getDbObject" result-type="Any" api-version="6.0.0" id="733c73b9-aa5a-4c92-810e-53aa9b24de57" version="0.0.2" allowed-operations="evf" category-name="com.vmware.coe.dynamicTypes.sql">
+  <param n="type" t="string"><![CDATA[Type of object to retrieve in format Namespace.class]]></param>
+  <param n="objectId" t="string"/>
+  <script encoded="false"><![CDATA[var namespace = type.split(".")[0];
+var class = type.split(".")[1];
+// Note: .getObject method is related to end user workflows. The .makeObject method is used for DynamicTypes finder actions such as findById, findAll, and findRelation
+
+return DynamicTypesManager.getObject(namespace, class, objectId);
+]]></script>
+</dunes-script-module>

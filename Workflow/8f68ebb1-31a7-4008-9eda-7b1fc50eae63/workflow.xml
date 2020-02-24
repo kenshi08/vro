@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item5" object-name="workflow:name=generic" id="8f68ebb1-31a7-4008-9eda-7b1fc50eae63" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Sign Node Certificate]]></display-name>
+  <description><![CDATA[Sign the node (CSR) on puppet master]]></description>
+  <ref-types><![CDATA[>(Puppet:Master)]]></ref-types>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="master" type="Puppet:Master">
+      <description><![CDATA[Puppet master]]></description>
+    </param>
+    <param name="nodeName" type="string">
+      <description><![CDATA[Node name]]></description>
+    </param>
+    <param name="retry" type="boolean">
+      <description><![CDATA[Retry]]></description>
+    </param>
+  </input>
+  <attrib name="signed" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Signed flag]]></description>
+  </attrib>
+  <attrib name="timeout" type="number" read-only="false">
+    <value encoded="n"><![CDATA[120.0]]></value>
+    <description><![CDATA[Timeout interval]]></description>
+  </attrib>
+  <attrib name="interval" type="number" read-only="false">
+    <value encoded="n"><![CDATA[5.0]]></value>
+    <description><![CDATA[Interval]]></description>
+  </attrib>
+  <attrib name="start" type="Date" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Start date]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Could not find certificate request]]></value>
+    <description><![CDATA[Error code]]></description>
+  </attrib>
+  <workflow-item name="item1" out-name="item7" type="task">
+    <display-name><![CDATA[Sign Cert]]></display-name>
+    <script encoded="false"><![CDATA[// Make sure node name is in lowercase
+nodeName = nodeName.toLowerCase();
+
+var result = System.getModule("com.vmware.o11n.plugin.puppet").executeCommand(master, "puppet", ["cert", "sign", nodeName, "--color=false"]);
+if (result.exitCode === 0) {
+	signed = true;
+	System.log("Cert signed. nodeName=" + nodeName);
+}
+else {
+	System.log("Cert sign result. nodeName=" + nodeName + " exitCode=" + result.exitCode + " output=" + result.output + " error=" + result.error);
+
+	// TODO: Check only exit code 24? or != 0
+	if (result.exitCode === 24) {
+		// Could not find certificate request
+	}
+
+	result = System.getModule("com.vmware.o11n.plugin.puppet").executeCommand(master, "puppet", ["cert", "list", nodeName, "--color=false"]);
+	if (result.exitCode === 0 && result.output.substring(0,1) === "+") {
+		// Already signed
+		signed = true;
+
+		System.log("Cert already signed. nodeName=" + nodeName);
+	}
+	else {
+		System.log("Cert list result. nodeName=" + nodeName + " exitCode=" + result.exitCode + " output=" + result.output + " error=" + result.error);
+	}
+}]]></script>
+    <in-binding>
+      <bind name="master" type="Puppet:Master" export-name="master"/>
+      <bind name="nodeName" type="string" export-name="nodeName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="signed" type="boolean" export-name="signed"/>
+    </out-binding>
+    <description><![CDATA[Certification signing]]></description>
+    <position y="55.40909090909091" x="324.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item1" type="task">
+    <display-name><![CDATA[Init]]></display-name>
+    <script encoded="false"><![CDATA[start = new Date();]]></script>
+    <in-binding/>
+    <out-binding>
+      <bind name="start" type="Date" export-name="start"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item6" prototype-id="sleep" out-name="item1" content-mode="x" type="task">
+    <display-name><![CDATA[Sleep]]></display-name>
+    <script encoded="false"><![CDATA[//Auto-generated script
+if ( sleepTime != null )  {
+	System.sleep(sleepTime*1000);
+}
+else  {
+	throw "'sleepTime' is NULL";
+}
+]]></script>
+    <in-binding>
+      <bind name="sleepTime" type="number" export-name="interval">
+        <description><![CDATA[Time to sleep in seconds]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Sleep a given number of seconds]]></description>
+    <position y="109.95454545454544" x="324.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item6" type="custom-condition" alt-out-name="item2">
+    <display-name><![CDATA[Retry?]]></display-name>
+    <script encoded="false"><![CDATA[return retry && (new Date().getTime() - start.getTime()) / 1000 < timeout;]]></script>
+    <in-binding>
+      <bind name="timeout" type="number" export-name="timeout"/>
+      <bind name="start" type="Date" export-name="start"/>
+      <bind name="retry" type="boolean" export-name="retry"/>
+    </in-binding>
+    <position y="99.95454545454544" x="504.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item0" type="condition" alt-out-name="item3" comparator="0">
+    <display-name><![CDATA[Signed?]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (signed == true) ;]]></script>
+    <in-binding>
+      <bind name="signed" type="boolean" export-name="signed"/>
+    </in-binding>
+    <condition name="signed" type="boolean" comparator="0" label="null">false</condition>
+    <position y="45.40909090909091" x="504.5"/>
+  </workflow-item>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="685.0"/>
+  </workflow-item>
+  <workflow-item name="item2" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="99.95454545454544" x="684.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="master">
+      <desc><![CDATA[Puppet Master]]></desc>
+      <p-qual name="contextualParameter" type="void"><![CDATA[__NULL__]]></p-qual>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="nodeName">
+      <desc><![CDATA[Node Name]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="retry">
+      <desc><![CDATA[Retry]]></desc>
+      <p-qual kind="static" name="defaultValue" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getAvailableResourceActions" result-type="Array/vCACCAFE:ConsumerResourceOperation" api-version="6.0.0" id="82afbea7-efd5-4476-88a3-1b76de3a60b5" version="1.0.0" allowed-operations="vf" category-name="com.vmware.library.vcaccafe.request">
+  <description><![CDATA[Gets the available resource actions for a resource.]]></description>
+  <param n="resource" t="vCACCAFE:CatalogResource"><![CDATA[Resource]]></param>
+  <param n="query" t="string"><![CDATA[Query]]></param>
+  <script encoded="false"><![CDATA[if (resource == null) {
+	return null;
+}
+return vCACCAFEEntitiesFinder.getCatalogResourceActions(resource);]]></script>
+</dunes-script-module>

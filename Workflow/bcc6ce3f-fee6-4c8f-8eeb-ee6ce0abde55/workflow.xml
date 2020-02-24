@@ -1,0 +1,256 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="bcc6ce3f-fee6-4c8f-8eeb-ee6ce0abde55" version="0.0.14" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Power Off VM]]></display-name>
+  <description><![CDATA[Power off a managed VM in Cloud Automation Center.
+Copyright 2016, VMware, Inc. All Rights Reserved.]]></description>
+  <position y="9.045454545454543" x="45.0"/>
+  <input>
+    <param name="vCACVm" type="vCAC:VirtualMachine">
+      <description><![CDATA[vCAC Virtual Machine]]></description>
+    </param>
+    <param name="vCACVmName" type="string">
+      <description><![CDATA[VM Name]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="finalResult" type="string"/>
+  </output>
+  <attrib name="vm" type="vCAC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[vCAC vm]]></description>
+  </attrib>
+  <attrib name="vmName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[vCAC vm name]]></description>
+  </attrib>
+  <attrib name="opName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Power Off]]></value>
+    <description><![CDATA[Operation Name]]></description>
+  </attrib>
+  <attrib name="result" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Resource action request state]]></description>
+  </attrib>
+  <attrib name="state" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[State of VM]]></description>
+  </attrib>
+  <attrib name="timeout" type="number" read-only="false">
+    <value encoded="n"><![CDATA[1800.0]]></value>
+    <description><![CDATA[Timeout of operation]]></description>
+  </attrib>
+  <attrib name="interval" type="number" read-only="false">
+    <value encoded="n"><![CDATA[15.0]]></value>
+    <description><![CDATA[Interval between operation]]></description>
+  </attrib>
+  <attrib name="startTime" type="number" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Start time of workflow]]></description>
+  </attrib>
+  <attrib name="waitDate" type="date" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Wait date]]></description>
+  </attrib>
+  <attrib name="desiredState" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Off]]></value>
+    <description><![CDATA[Desired state of VM.]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+    <description><![CDATA[Global error code.]]></description>
+  </attrib>
+  <attrib name="inputs" type="Properties" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Input parameters]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="9.045454545454543" x="1124.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item9" type="task">
+    <display-name><![CDATA[init]]></display-name>
+    <script encoded="false"><![CDATA[vm        = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineByNameOrObject(vCACVmName,vCACVm) ;
+vmName    = vm.virtualMachineName;
+inputs    = new Properties();
+startTime = new Date().getTime();
+
+System.log('Initiating '+opName+' request for '+vmName);
+]]></script>
+    <in-binding>
+      <bind name="opName" type="string" export-name="opName"/>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vCACVm"/>
+      <bind name="vCACVmName" type="string" export-name="vCACVmName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vm" type="vCAC:VirtualMachine" export-name="vm"/>
+      <bind name="vmName" type="string" export-name="vmName"/>
+      <bind name="startTime" type="number" export-name="startTime"/>
+      <bind name="inputs" type="Properties" export-name="inputs"/>
+    </out-binding>
+    <position y="19.045454545454543" x="124.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item3" type="link" linked-workflow-id="aab62bf6-4992-438e-90ac-690037f9b5cf">
+    <display-name><![CDATA[Run Resource Action On VM]]></display-name>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[vCAC Virtual Machine]]></description>
+      </bind>
+      <bind name="opName" type="string" export-name="opName"/>
+      <bind name="inputs" type="Properties" export-name="inputs"/>
+      <bind name="vCACVmName" type="string" explicitly-not-bound="true"/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="string" export-name="result">
+        <description><![CDATA[Resource action request state]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Run a resource action on a managed VM in Cloud Automation Center.]]></description>
+    <position y="19.045454545454543" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item7" type="custom-condition" alt-out-name="item5">
+    <display-name><![CDATA[successful?]]></display-name>
+    <script encoded="false"><![CDATA[return (result != null && result.toLowerCase() == 'successful');
+]]></script>
+    <in-binding>
+      <bind name="result" type="string" export-name="result"/>
+    </in-binding>
+    <position y="9.045454545454543" x="604.5"/>
+  </workflow-item>
+  <workflow-item name="item5" type="end" end-mode="0">
+    <position y="63.59090909090908" x="644.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item8" type="task" script-module="com.vmware.pso.vcac/getVCACVirtualMachineState">
+    <display-name><![CDATA[get vm state]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineState(vCACVm) ;]]></script>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[vCAC Virtual Machine]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" export-name="state"/>
+    </out-binding>
+    <description><![CDATA[Get current state of the vCAC:VirtualMachine.
+
+Input: vCAC:VirtualMachine
+Return: string]]></description>
+    <position y="19.045454545454543" x="724.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item4" type="custom-condition" alt-out-name="item10">
+    <display-name><![CDATA[desired state?]]></display-name>
+    <script encoded="false"><![CDATA[System.log("State:"+state);
+
+return (state == desiredState);]]></script>
+    <in-binding>
+      <bind name="state" type="string" export-name="state"/>
+      <bind name="desiredState" type="string" export-name="desiredState"/>
+    </in-binding>
+    <position y="9.045454545454543" x="844.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item11" catch-name="item6" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[set wait time]]></display-name>
+    <script encoded="false"><![CDATA[var now = new Date().getTime();
+if (now - startTime > timeout*60*1000) {
+	throw "Ran out of time";
+}
+waitDate = new Date();
+waitDate.setSeconds(waitDate.getSeconds() + interval);
+]]></script>
+    <in-binding>
+      <bind name="startTime" type="number" export-name="startTime"/>
+      <bind name="timeout" type="number" export-name="timeout"/>
+      <bind name="interval" type="number" export-name="interval"/>
+      <bind name="state" type="string" export-name="state"/>
+    </in-binding>
+    <out-binding>
+      <bind name="waitDate" type="date" export-name="waitDate"/>
+    </out-binding>
+    <position y="73.59090909090908" x="844.5"/>
+  </workflow-item>
+  <workflow-item name="item11" prototype-id="wait-until-date" out-name="item7" content-mode="x" type="task">
+    <display-name><![CDATA[Wait until date]]></display-name>
+    <script encoded="false"><![CDATA[//Auto-generated script
+if (waitDate != null) {
+	System.waitUntil(waitDate,1000);
+}
+else  {
+	throw "'waitDate' is NULL";
+}
+]]></script>
+    <in-binding>
+      <bind name="waitDate" type="date" export-name="waitDate">
+        <description><![CDATA[Wait date]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Wait until date]]></description>
+    <position y="73.59090909090908" x="724.5"/>
+  </workflow-item>
+  <workflow-item name="item9" out-name="item12" type="task" script-module="com.vmware.pso.vcac/getVCACVirtualMachineState">
+    <display-name><![CDATA[get vm state]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.pso.vcac").getVCACVirtualMachineState(vCACVm) ;]]></script>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vm">
+        <description><![CDATA[vCAC Virtual Machine]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" export-name="state"/>
+    </out-binding>
+    <description><![CDATA[Get current state of the vCAC:VirtualMachine.
+
+Input: vCAC:VirtualMachine
+Return: string]]></description>
+    <position y="19.045454545454543" x="244.5"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item13" type="custom-condition" alt-out-name="item2">
+    <display-name><![CDATA[desired state?]]></display-name>
+    <script encoded="false"><![CDATA[System.log("State:"+state);
+
+return (state == desiredState);]]></script>
+    <in-binding>
+      <bind name="state" type="string" export-name="state"/>
+      <bind name="desiredState" type="string" export-name="desiredState"/>
+    </in-binding>
+    <position y="9.045454545454543" x="364.5"/>
+  </workflow-item>
+  <workflow-item name="item13" type="end" end-mode="0">
+    <position y="63.59090909090908" x="405.0"/>
+  </workflow-item>
+  <workflow-item name="item14" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="63.59090909090908" x="1124.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item0" type="task">
+    <display-name><![CDATA[set outputs]]></display-name>
+    <script encoded="false"><![CDATA[finalResult = result;
+]]></script>
+    <in-binding>
+      <bind name="result" type="string" export-name="result"/>
+    </in-binding>
+    <out-binding>
+      <bind name="finalResult" type="string" export-name="finalResult"/>
+    </out-binding>
+    <position y="19.045454545454543" x="964.5"/>
+  </workflow-item>
+  <workflow-item name="item6" out-name="item14" type="task">
+    <display-name><![CDATA[set outputs]]></display-name>
+    <script encoded="false"><![CDATA[finalResult = result;
+]]></script>
+    <in-binding>
+      <bind name="result" type="string" export-name="result"/>
+    </in-binding>
+    <out-binding>
+      <bind name="finalResult" type="string" export-name="finalResult"/>
+    </out-binding>
+    <position y="73.59090909090908" x="964.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vCACVm">
+      <desc><![CDATA[vCAC Virtual Machine]]></desc>
+    </p-param>
+    <p-param name="vCACVmName">
+      <desc><![CDATA[VM Name]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

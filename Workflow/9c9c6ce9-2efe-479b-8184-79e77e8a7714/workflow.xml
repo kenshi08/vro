@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="9c9c6ce9-2efe-479b-8184-79e77e8a7714" version="1.0.3" api-version="6.0.0" allowed-operations="vf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Wait for catalog item request]]></display-name>
+  <description><![CDATA[Waits for a catalog item request to complete.]]></description>
+  <ref-types><![CDATA[>(vCACCAFE:CatalogItemRequest)]]></ref-types>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="request" type="vCACCAFE:CatalogItemRequest">
+      <description><![CDATA[Catalog item request]]></description>
+    </param>
+    <param name="timeout" type="number">
+      <description><![CDATA[Timeout]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="result" type="string">
+      <description><![CDATA[Catalog item request state]]></description>
+    </param>
+  </output>
+  <attrib name="trigger" type="Trigger" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="664.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Create trigger]]></display-name>
+    <script encoded="false"><![CDATA[System.log("Creating trigger for catalog item request '" + request.vcoId + "'...")
+trigger = vCACCAFERequestsHelper.createTriggerForCatalogItemRequest(request, timeout);
+System.log("Trigger created.")]]></script>
+    <in-binding>
+      <bind name="request" type="vCACCAFE:CatalogItemRequest" export-name="request"/>
+      <bind name="timeout" type="number" export-name="timeout"/>
+    </in-binding>
+    <out-binding>
+      <bind name="trigger" type="Trigger" export-name="trigger"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item3" catch-name="item5" throw-bind-name="errorCode" type="waiting-event">
+    <display-name><![CDATA[Waiting event]]></display-name>
+    <in-binding>
+      <bind name="trigger.ref" type="Trigger" export-name="trigger">
+        <description><![CDATA[Trigger waiting until specified event before continuing workflow execution.]]></description>
+      </bind>
+    </in-binding>
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item0" catch-name="item4" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[Extract result]]></display-name>
+    <script encoded="false"><![CDATA[var result = vCACCAFERequestsHelper.extractTriggerResult(trigger);
+System.log("Catalog item request '" + request.vcoId + "' result '" + result + "'.");
+
+if (result != "SUCCESSFUL") {
+    vCACCAFEEntitiesFinder.invalidateEntity(request);
+    request = vCACCAFEEntitiesFinder.getCatalogItemRequest(vCACCAFEEntitiesFinder.getHostForEntity(request), request.id);
+	if (request.requestCompletion == null) {
+		System.error("No request completion details available!");
+	} else {
+		System.error("Request completion details: " + request.requestCompletion.getCompletionDetails());
+	}
+	throw result;
+}]]></script>
+    <in-binding>
+      <bind name="request" type="vCACCAFE:CatalogItemRequest" export-name="request"/>
+      <bind name="trigger" type="Trigger" export-name="trigger"/>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="string" export-name="result"/>
+    </out-binding>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <workflow-item name="item4" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="109.04545454545453" x="525.0"/>
+  </workflow-item>
+  <workflow-item name="item5" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="109.04545454545453" x="385.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="request">
+      <desc><![CDATA[Catalog item request]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+      <p-qual name="contextualParameter" type="void"><![CDATA[__NULL__]]></p-qual>
+      <p-qual kind="static" name="show-select-as" type="string"><![CDATA[list]]></p-qual>
+    </p-param>
+    <p-param name="timeout">
+      <desc><![CDATA[Timeout in seconds]]></desc>
+      <p-qual kind="static" name="defaultValue" type="number"><![CDATA[0.0]]></p-qual>
+      <p-qual kind="static" name="minNumberValue" type="Number"><![CDATA[0]]></p-qual>
+    </p-param>
+  </presentation>
+</workflow>

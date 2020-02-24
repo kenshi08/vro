@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="05857f4a-9ed4-419c-9507-4954c8cb8bb8" version="0.0.5" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Execute REST call (xml)]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="nsxManagerRestHost" type="REST:RESTHost">
+      <description><![CDATA[REST host connection to NSX manager]]></description>
+    </param>
+    <param name="method" type="string"/>
+    <param name="uri" type="string"/>
+    <param name="body" type="string"/>
+  </input>
+  <output>
+    <param name="xmlContentObj" type="string"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="task">
+    <display-name><![CDATA[Create and execute REST call]]></display-name>
+    <script encoded="false"><![CDATA[System.log('Generate and execute REST call');
+
+var request = nsxManagerRestHost.createRequest(method,uri,body);
+
+request.contentType = "application/xml";
+
+System.log("METHOD: " + method + "\tURI: " + request.fullUrl);
+
+// Execute the request
+var response = request.execute();
+//Analize response code
+var code = response.statusCode;
+System.log(response.contentAsString);
+if (code >= 200 && code <= 204) {
+	var xmlContentObj = manageResponse(method,response);
+}
+else if (code >= 400 && code <= 404) {
+	var xmlContentObj = manageResponse(method,response);
+	switch (code){
+		case 400:
+			throw "Bad request";
+			break;
+		case 401:
+			throw "Not authorized";
+			break;
+		case 403:
+			throw "Forbidden";
+			break;
+		case 404:
+			throw "Not found";
+			break;
+	}
+}
+else {
+	System.log("Response code: " + code);
+	throw "Server error - See documentation";
+}
+
+function manageResponse(method, response){
+    if (method == "GET") { 
+   //var responseContent = XMLManager.fromString(response.contentAsString);
+   var responseContent = response.contentAsString;
+  }else{
+  var responseContent = "";
+}
+
+   System.log("Response code: " + response.statusCode);
+   System.log("Response content: " + responseContent);
+   return responseContent;
+}
+]]></script>
+    <in-binding>
+      <bind name="nsxManagerRestHost" type="REST:RESTHost" export-name="nsxManagerRestHost"/>
+      <bind name="method" type="string" export-name="method"/>
+      <bind name="uri" type="string" export-name="uri"/>
+      <bind name="body" type="string" export-name="body"/>
+    </in-binding>
+    <out-binding>
+      <bind name="xmlContentObj" type="string" export-name="xmlContentObj"/>
+    </out-binding>
+    <position y="46.31818181818181" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="nsxManagerRestHost">
+      <desc><![CDATA[REST host connection to NSX manager]]></desc>
+    </p-param>
+    <p-param name="method">
+      <desc><![CDATA[method]]></desc>
+    </p-param>
+    <p-param name="uri">
+      <desc><![CDATA[uri]]></desc>
+    </p-param>
+    <p-param name="body">
+      <desc><![CDATA[body]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

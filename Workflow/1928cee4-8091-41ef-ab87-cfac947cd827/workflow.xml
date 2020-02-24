@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="1928cee4-8091-41ef-ab87-cfac947cd827" version="0.0.29" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Catalog Item Scalability Check]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="resource" type="vCACCAFE:CatalogResource">
+      <description><![CDATA[Resource]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="applicationScalable" type="boolean"/>
+    <param name="vmScaleOutResourceOperation" type="vCACCAFE:ConsumerResourceOperation"/>
+  </output>
+  <attrib name="actionResult" type="Array/vCACCAFE:ConsumerResourceOperation" read-only="false"/>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="704.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item4" type="task" script-module="com.vmware.library.vcaccafe.request/getAvailableResourceActions">
+    <display-name><![CDATA[getAvailableResourceActions]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vcaccafe.request").getAvailableResourceActions(resource,query) ;]]></script>
+    <in-binding>
+      <bind name="resource" type="vCACCAFE:CatalogResource" export-name="resource">
+        <description><![CDATA[Resource]]></description>
+      </bind>
+      <bind name="query" type="string" explicitly-not-bound="true">
+        <description><![CDATA[Query]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Array/vCACCAFE:ConsumerResourceOperation" export-name="actionResult"/>
+    </out-binding>
+    <description><![CDATA[Gets the available resource actions for a resource.]]></description>
+    <position y="55.40909090909091" x="404.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item0" type="task">
+    <display-name><![CDATA[Scalable?]]></display-name>
+    <script encoded="false"><![CDATA[applicationScalable = false;
+
+System.log("Available Operations:");
+
+for each (var availableOperation in availableOperations) {
+  System.log(availableOperation.name + " - " + availableOperation.bindingId);
+
+if (availableOperation.name == "Scale Out")
+{
+	//System.log("--------------------- Scalable!");
+	applicationScalable = true;
+	vmScaleOutResourceOperation = availableOperation;
+	//System.log(vmScaleOutResourceOperation.name + " - " + vmScaleOutResourceOperation.bindingId);
+}
+  }]]></script>
+    <in-binding>
+      <bind name="availableOperations" type="Array/vCACCAFE:ConsumerResourceOperation" export-name="actionResult"/>
+    </in-binding>
+    <out-binding>
+      <bind name="vmScaleOutResourceOperation" type="vCACCAFE:ConsumerResourceOperation" export-name="vmScaleOutResourceOperation"/>
+      <bind name="applicationScalable" type="boolean" export-name="applicationScalable"/>
+    </out-binding>
+    <position y="55.40909090909091" x="524.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="resource">
+      <desc><![CDATA[Resource]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

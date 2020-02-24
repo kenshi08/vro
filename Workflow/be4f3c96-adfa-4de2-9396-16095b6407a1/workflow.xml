@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="be4f3c96-adfa-4de2-9396-16095b6407a1" version="0.0.4" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Get approval properties from vRA]]></display-name>
+  <description><![CDATA[Workflows Developed by: Gary Coburn - http://www.extendingclouds.com
+Documentation coming soon
+Tested Product Versions: 
+	vRA 7.0.1
+Disclaimer: 
+These workflows have been created entirely for educational and informational purpose. They do not come with any warranty or support but will provide a good base understanding of how you can accomplish your goals. These are not intended for production. Use at your own risk.
+]]></description>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="payload" type="Properties"/>
+  </input>
+  <output>
+    <param name="approved" type="boolean"/>
+    <param name="fieldValues" type="Properties"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Get Prop, Pass Approval]]></display-name>
+    <script encoded="false"><![CDATA[
+//collect payload and extract properties
+var sourceInfo = payload.get("sourceInfo") ;
+System.log("Class ID: " + sourceInfo.get("externalClassId")) ;
+System.log("externalInstanceId: " + sourceInfo.get("externalInstanceId")) ;
+System.log("Service ID: " + sourceInfo.get("serviceId")) ;
+
+var fieldNames = payload.get("fieldNames") ;
+if (fieldNames != null) {
+	var log = "";
+	log += "Approval Level properties :\n";
+	var array = new Array();
+	for each (var key in fieldNames.keys) {
+		array.push(key + " : " + fieldNames.get(key));	
+	}
+	array.sort();
+	
+	for each (var line in array) {
+		log += "\t" + line + "\n";
+	}	
+	System.log(log);	
+}
+
+var requestInfo = payload.get("requestInfo") ;
+System.log("Requested For: " + requestInfo.get("requestedFor")) ;
+System.log("Approval Level Name: " + requestInfo.get("approvalLevelName")) ;
+System.log("Reason: " + requestInfo.get("reason")) ;
+System.log("Requested By: " + requestInfo.get("requestedBy")) ;
+System.log("Item Name: " + requestInfo.get("itemName")) ;
+System.log("Request Ref: " + requestInfo.get("requestRef")) ;
+System.log("Approval Request ID: " + requestInfo.get("approvalRequestId")) ;
+System.log("Description: " + requestInfo.get("description")) ;
+System.log("Business Group ID: " + requestInfo.get("subenantId")) ;
+System.log("Item Description: " + requestInfo.get("itemDescription")) ;
+System.log("Created Date: " + requestInfo.get("createdDate")) ;
+
+var approvalLevelArr = requestInfo.get("approvalLevel") ;
+System.log("App Level - App Level ID: " + approvalLevelArr.get("approvalLevelId")) ;
+System.log("App Level - App Level Name: " + approvalLevelArr.get("approvalLevelName")) ;
+
+
+var fieldValues = payload.get("fieldValues") ;
+if (fieldValues != null) {
+	var log = "";
+	log += "vRA VM properties :\n";
+	var array = new Array();
+	for each (var key in fieldValues.keys) {
+		array.push(key + " : " + fieldValues.get(key));	
+	}
+	array.sort();
+	
+	for each (var line in array) {
+		log += "\t" + line + "\n";
+	}	
+	System.log(log);	
+}
+var reference = sourceInfo.get("externalInstanceId");
+
+//set approval from here
+approved = true;
+
+]]></script>
+    <in-binding>
+      <bind name="payload" type="Properties" export-name="payload"/>
+    </in-binding>
+    <out-binding>
+      <bind name="approved" type="boolean" export-name="approved"/>
+      <bind name="fieldValues" type="Properties" export-name="fieldValues"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="payload">
+      <desc><![CDATA[payload]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

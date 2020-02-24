@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVCACVirtualMachineByName" result-type="vCAC:VirtualMachine" api-version="6.0.0" id="0e824e5a-47a9-431e-bc82-8bbbd8e2198e" version="1.0.0" allowed-operations="evf" category-name="com.vmware.pso.vcac">
+  <param n="vmName" t="string"><![CDATA[Virtual machine name]]></param>
+  <script encoded="false"><![CDATA[if (vmName == null) { throw 'VM Name not provided'; }
+
+var vCACVm;
+var vCACVms = Server.findAllForType("vCAC:VirtualMachine", "VirtualMachineName eq '" + vmName + "' and IsManaged eq true");
+
+if(vCACVms != null && vCACVms.length == 1) {
+	vCACVm = vCACVms[0];	
+} else if (vCACVms.length > 1) {
+	throw "More than one virtual machine found with name "+vmName;
+} else {
+	throw "No vCAC virtual machine found with name " + vmName;
+}
+
+return vCACVm;]]></script>
+</dunes-script-module>

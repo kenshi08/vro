@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="Workflow:name=generic" id="5d387585-b2e0-4484-848c-b0297225eda3" version="0.2.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[ Create simple virtual machine]]></display-name>
+  <description><![CDATA[Creates a virtual machine with the most common devices and configuration options.]]></description>
+  <ref-types><![CDATA[(VC:VmFolder)]]></ref-types>
+  <position y="20.0" x="180.0"/>
+  <input>
+    <param name="vmName" type="string">
+      <description><![CDATA[Virtual machine name]]></description>
+    </param>
+    <param name="vmGuestOs" type="VC:VirtualMachineGuestOsIdentifier">
+      <description><![CDATA[Guest operating system to use with the virtual machine]]></description>
+    </param>
+    <param name="vmFolder" type="VC:VmFolder">
+      <description><![CDATA[Virtual machine folder]]></description>
+    </param>
+    <param name="vmResourcePool" type="VC:ResourcePool">
+      <description><![CDATA[Resource pool in which to create the virtual machine]]></description>
+    </param>
+    <param name="vmHost" type="VC:HostSystem">
+      <description><![CDATA[Host on which to create the virtual machine]]></description>
+    </param>
+    <param name="vmDiskSize" type="number">
+      <description><![CDATA[Size of virtual disk in GB]]></description>
+    </param>
+    <param name="vmMemorySize" type="number">
+      <description><![CDATA[Virtual machine's memory size in MB]]></description>
+    </param>
+    <param name="vmNbOfCpus" type="number">
+      <description><![CDATA[Number of virtual processors]]></description>
+    </param>
+    <param name="vmNetwork" type="VC:Network">
+      <description><![CDATA[The network to connect to]]></description>
+    </param>
+    <param name="vmDatastore" type="VC:Datastore">
+      <description><![CDATA[Datastore in which to store the virtual machine files]]></description>
+    </param>
+    <param name="diskThinProvisioned" type="boolean">
+      <description><![CDATA[Make disk thin-provisioned?]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="newVM" type="VC:VirtualMachine">
+      <description><![CDATA[The newly created VM]]></description>
+    </param>
+  </output>
+  <attrib name="task" type="VC:Task" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Task to await]]></description>
+  </attrib>
+  <attrib name="progress" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[false]]></value>
+    <description><![CDATA[Log progress while waiting for the task to complete]]></description>
+  </attrib>
+  <attrib name="pollRate" type="number" read-only="false">
+    <value encoded="n"><![CDATA[1.0]]></value>
+    <description><![CDATA[Polling rate for the task state, in seconds]]></description>
+  </attrib>
+  <workflow-item name="item0" out-name="item1" type="task">
+    <display-name><![CDATA[Create ConfigSpec]]></display-name>
+    <script encoded="false"><![CDATA[var configSpec = new VcVirtualMachineConfigSpec();
+configSpec.name = vmName;
+configSpec.guestId = vmGuestOs.name;
+configSpec.memoryMB = vmMemorySize;
+configSpec.numCPUs = vmNbOfCpus;
+
+// Compute vmxFilePath
+var datastorePath = "[" + vmDatastore.info.name + "]";
+System.log( "VMX file path : '" + datastorePath + "'" );
+var files = new VcVirtualMachineFileInfo();
+files.vmPathName = datastorePath;
+configSpec.files = files;
+
+var deviceConfigSpecs = new Array();
+var deviceConfigSpec;
+var ii = 0;
+
+// Add Floppy
+deviceConfigSpec = System.getModule("com.vmware.library.vc.vm.spec.config.device").createVirtualFloppyRemoteConfigSpec();
+deviceConfigSpecs[ii++] = deviceConfigSpec;
+
+// Add SCSI controller
+deviceConfigSpec = System.getModule("com.vmware.library.vc.vm.spec.config.device").createVirtualScsiControllerConfigSpec("LSI");
+deviceConfigSpecs[ii++] = deviceConfigSpec;
+
+// Add Disk
+deviceConfigSpec = System.getModule("com.vmware.library.vc.vm.spec.config.device").createVirtualDiskFlatVer2ConfigSpec(
+	vmDiskSize, vmDatastore, 0, 0, VcVirtualDiskMode.persistent, diskThinProvisioned );
+deviceConfigSpecs[ii++] = deviceConfigSpec;
+
+// Add Network
+deviceConfigSpec = System.getModule("com.vmware.library.vc.vm.spec.config.device").createVirtualEthernetCardNetworkConfigSpec( vmNetwork );
+deviceConfigSpecs[ii++] = deviceConfigSpec;
+
+// List of devices
+configSpec.deviceChange = deviceConfigSpecs;
+
+// Launch the create VM task
+task = vmFolder.createVM_Task( configSpec, vmResourcePool, vmHost );
+]]></script>
+    <in-binding>
+      <bind name="vmResourcePool" type="VC:ResourcePool" export-name="vmResourcePool"/>
+      <bind name="vmNetwork" type="VC:Network" export-name="vmNetwork"/>
+      <bind name="vmNbOfCpus" type="number" export-name="vmNbOfCpus"/>
+      <bind name="vmName" type="string" export-name="vmName"/>
+      <bind name="vmMemorySize" type="number" export-name="vmMemorySize"/>
+      <bind name="vmHost" type="VC:HostSystem" export-name="vmHost"/>
+      <bind name="vmGuestOs" type="VC:VirtualMachineGuestOsIdentifier" export-name="vmGuestOs"/>
+      <bind name="vmFolder" type="VC:VmFolder" export-name="vmFolder"/>
+      <bind name="vmDiskSize" type="number" export-name="vmDiskSize"/>
+      <bind name="vmDatastore" type="VC:Datastore" export-name="vmDatastore"/>
+      <bind name="diskThinProvisioned" type="boolean" export-name="diskThinProvisioned"/>
+    </in-binding>
+    <out-binding>
+      <bind name="task" type="VC:Task" export-name="task"/>
+    </out-binding>
+    <position y="80.0" x="140.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.library.vc.basic/vim3WaitTaskEnd">
+    <display-name><![CDATA[vim3WaitTaskEnd]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.vc.basic").vim3WaitTaskEnd(task,progress,pollRate) ;]]></script>
+    <in-binding>
+      <bind name="task" type="VC:Task" export-name="task">
+        <description><![CDATA[Task to Wait for]]></description>
+      </bind>
+      <bind name="progress" type="boolean" export-name="progress">
+        <description><![CDATA[Log progess while waiting for the task]]></description>
+      </bind>
+      <bind name="pollRate" type="number" export-name="pollRate">
+        <description><![CDATA[Polling rate for the task state [seconds]]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="Any" export-name="newVM"/>
+    </out-binding>
+    <description><![CDATA[Wait a VIM 3 Task to end.
+When task ended, return the ]]></description>
+    <position y="140.0" x="140.0"/>
+  </workflow-item>
+  <workflow-item name="item2" type="end" end-mode="0">
+    <position y="190.0" x="180.0"/>
+  </workflow-item>
+  <presentation>
+    <p-step>
+      <title><![CDATA[VM]]></title>
+      <p-group>
+        <title><![CDATA[General Parameters]]></title>
+        <p-param name="vmName">
+          <desc><![CDATA[Virtual machine name]]></desc>
+          <p-qual name="mandatory"><![CDATA[true]]></p-qual>
+        </p-param>
+        <p-param name="vmFolder">
+          <desc><![CDATA[Virtual machine folder]]></desc>
+          <p-qual name="mandatory"><![CDATA[true]]></p-qual>
+          <p-qual kind="static" name="show-select-as" type="string"><![CDATA[tree]]></p-qual>
+          <p-qual name="contextualParameter" type="Void"><![CDATA[]]></p-qual>
+        </p-param>
+        <p-param name="vmDiskSize">
+          <desc><![CDATA[Size of virtual disk in GB]]></desc>
+          <p-qual kind="static" name="minNumberValue" type="Number"><![CDATA[0.0040]]></p-qual>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+          <p-qual kind="static" name="numberFormat" type="String"><![CDATA[##]]></p-qual>
+        </p-param>
+        <p-param name="vmMemorySize">
+          <desc><![CDATA[Memory size in MB]]></desc>
+          <p-qual name="mandatory"><![CDATA[true]]></p-qual>
+          <p-qual kind="static" name="minNumberValue" type="Number"><![CDATA[4.0]]></p-qual>
+          <p-qual kind="static" name="maxNumberValue" type="Number"><![CDATA[261120.0]]></p-qual>
+          <p-qual kind="static" name="numberFormat" type="String"><![CDATA[##]]></p-qual>
+        </p-param>
+        <p-param name="vmNbOfCpus">
+          <desc><![CDATA[Number of virtual CPUs]]></desc>
+          <p-qual kind="static" name="genericEnumeration" type="Array/number"><![CDATA[#{#number#1.0#;#number#2.0#;#number#3.0#;#number#4.0#;#number#5.0#;#number#6.0#;#number#7.0#;#number#8.0#}#]]></p-qual>
+        </p-param>
+        <p-param name="vmGuestOs">
+          <desc><![CDATA[Virtual machine guest OS]]></desc>
+          <p-qual name="mandatory"><![CDATA[true]]></p-qual>
+        </p-param>
+        <p-param name="diskThinProvisioned">
+          <desc><![CDATA[Make disk thin-provisioned?]]></desc>
+        </p-param>
+      </p-group>
+      <p-group>
+        <title><![CDATA[Infrastructure]]></title>
+        <p-param name="vmHost">
+          <desc><![CDATA[Host on which to create the virtual machine]]></desc>
+          <p-qual kind="static" name="show-select-as" type="string"><![CDATA[tree]]></p-qual>
+        </p-param>
+        <p-param name="vmResourcePool">
+          <desc><![CDATA[Resource pool]]></desc>
+          <p-qual name="mandatory"><![CDATA[true]]></p-qual>
+          <p-qual name="show-select-as"><![CDATA[tree]]></p-qual>
+        </p-param>
+        <p-param name="vmNetwork">
+          <desc><![CDATA[The network to connect to]]></desc>
+          <p-qual kind="ognl" name="linkedEnumeration" type="Array/VC:Network"><![CDATA[GetAction("com.vmware.library.vc.network","getNetworksForHostSystem").call( #vmHost )]]></p-qual>
+          <p-qual kind="static" name="show-select-as" type="string"><![CDATA[list]]></p-qual>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+        </p-param>
+        <p-param name="vmDatastore">
+          <desc><![CDATA[Datastore in which to store the virtual machine files]]></desc>
+          <p-qual name="mandatory"><![CDATA[true]]></p-qual>
+          <p-qual kind="static" name="show-select-as" type="string"><![CDATA[list]]></p-qual>
+          <p-qual kind="ognl" name="linkedEnumeration" type="Array/VC:Datastore"><![CDATA[GetAction("com.vmware.library.vc.datastore","getDatastoreForHostAndResourcePool").call( #vmHost , null , null )]]></p-qual>
+        </p-param>
+      </p-group>
+    </p-step>
+  </presentation>
+</workflow>

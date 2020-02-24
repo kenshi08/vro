@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="161f7106-481b-453b-9e10-cc29acd42fef" version="0.0.7" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[EventRecorder]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="event" type="string"/>
+    <param name="eventDetails" type="string"/>
+    <param name="CorrelationId" type="string"/>
+    <param name="targetVMName" type="string"/>
+    <param name="severity" type="string"/>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="384.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Record Event]]></display-name>
+    <script encoded="false"><![CDATA[if (severity == null || severity == "info") {
+	if (targetVMName != null && targetVMName != "") {
+	    System.log("["+CorrelationId+"] Resource Name: "+ targetVMName + " Event: "+ event +" Details: "+ eventDetails);
+	    Server.log("["+CorrelationId+"] Resource Name: "+ targetVMName + " Event: "+ event +" Details: "+ eventDetails);
+	} else {
+	    System.log("["+CorrelationId+"] Event: "+ event +" Details: "+ eventDetails);
+	    Server.log("["+CorrelationId+"] Event: "+ event +" Details: "+ eventDetails);
+	}
+} else if (severity == "warn") {
+	if (targetVMName != null && targetVMName != "") {
+	    System.warn("["+CorrelationId+"] Resource Name: "+ targetVMName + " Event: "+ event +" Details: "+ eventDetails);
+	    Server.warn("["+CorrelationId+"] Resource Name: "+ targetVMName + " Event: "+ event +" Details: "+ eventDetails);
+	} else {
+	    System.warn("["+CorrelationId+"] Event: "+ event +" Details: "+ eventDetails);
+	    Server.warn("["+CorrelationId+"] Event: "+ event +" Details: "+ eventDetails);
+	}
+} else if (severity == "error") {
+	if (targetVMName != null && targetVMName != "") {
+	    System.error("["+CorrelationId+"] Resource Name: "+ targetVMName + " Event: "+ event +" Details: "+ eventDetails);
+	    Server.error("["+CorrelationId+"] Resource Name: "+ targetVMName + " Event: "+ event +" Details: "+ eventDetails);
+	} else {
+	    System.error("["+CorrelationId+"] Event: "+ event +" Details: "+ eventDetails);
+	    Server.error("["+CorrelationId+"] Event: "+ event +" Details: "+ eventDetails);
+	}
+}]]></script>
+    <in-binding>
+      <bind name="event" type="string" export-name="event"/>
+      <bind name="eventDetails" type="string" export-name="eventDetails"/>
+      <bind name="CorrelationId" type="string" export-name="CorrelationId"/>
+      <bind name="targetVMName" type="string" export-name="targetVMName"/>
+      <bind name="severity" type="string" export-name="severity"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="event">
+      <desc><![CDATA[event]]></desc>
+    </p-param>
+    <p-param name="eventDetails">
+      <desc><![CDATA[eventDetails]]></desc>
+    </p-param>
+    <p-param name="CorrelationId">
+      <desc><![CDATA[CorrelationId]]></desc>
+    </p-param>
+    <p-param name="targetVMName">
+      <desc><![CDATA[targetVMName]]></desc>
+    </p-param>
+    <p-param name="severity">
+      <desc><![CDATA[severity]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

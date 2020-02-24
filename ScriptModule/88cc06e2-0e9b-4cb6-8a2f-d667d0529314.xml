@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getPropertiesFromVirtualMachine" result-type="Properties" api-version="6.0.0" id="88cc06e2-0e9b-4cb6-8a2f-d667d0529314" version="0.0.1" allowed-operations="vf" category-name="com.vmware.library.vcac">
+  <description><![CDATA[Gets properties from a virtual machine entity.]]></description>
+  <param n="host" t="vCAC:VCACHost"><![CDATA[vCloud Automation Center host]]></param>
+  <param n="virtualMachine" t="vCAC:VirtualMachine"><![CDATA[Virtual machine to get properties from]]></param>
+  <script encoded="false"><![CDATA[var properties = new Properties();
+properties.put("VirtualMachineID", virtualMachine.virtualMachineID);
+
+
+var virtualMachineEntity = vCACEntityManager.readModelEntity(host.id, "ManagementModelEntities.svc", "VirtualMachines", properties, null);
+var vmProperties = new Properties();
+
+var virtualMachinePropertiesEntities = virtualMachineEntity.getLink(host, "VirtualMachineProperties");
+for each (var virtualMachinePropertiesEntity in virtualMachinePropertiesEntities) {
+	var propertyName = virtualMachinePropertiesEntity.getProperty("PropertyName");
+	var propertyValue = virtualMachinePropertiesEntity.getProperty("PropertyValue");
+	System.log("Found property " + propertyName + " = " + propertyValue);
+	vmProperties.put(propertyName, propertyValue);
+}
+return vmProperties;]]></script>
+</dunes-script-module>

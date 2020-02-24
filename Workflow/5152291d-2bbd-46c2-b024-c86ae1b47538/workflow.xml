@@ -1,0 +1,523 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="5152291d-2bbd-46c2-b024-c86ae1b47538" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[CustomMachineProvisionedStub-Win]]></display-name>
+  <description><![CDATA[Workflow template to use for vCAC extensibility
+
+Input parameters can be used using vCAC VM properties using the format ExternalWFStubs.[workflow stub name].[vCO input parameter name]. If using plug-in types you need to pass their unique vCO IDs.
+
+Input parameters was tested successfully with : 
+- string
+- plug-in input types
+- number
+- boolean
+]]></description>
+  <position y="63.59090909090908" x="65.0"/>
+  <input>
+    <param name="vCACVm" type="vCAC:VirtualMachine">
+      <description><![CDATA[vCAC virtual machine]]></description>
+    </param>
+    <param name="vCenterVm" type="VC:VirtualMachine">
+      <description><![CDATA[VC virtual machine]]></description>
+    </param>
+    <param name="virtualMachineEntity" type="vCAC:Entity">
+      <description><![CDATA[vCAC virtual machine entity]]></description>
+    </param>
+    <param name="vCACHost" type="vCAC:VCACHost">
+      <description><![CDATA[vCAC host]]></description>
+    </param>
+    <param name="externalWFStub" type="string">
+      <description><![CDATA[External workflow stub]]></description>
+    </param>
+    <param name="vCACVmProperties" type="Properties">
+      <description><![CDATA[vCAC virtual machine properties]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="var" type="Array/number"/>
+    <param name="result" type="boolean">
+      <description><![CDATA[Set to true if directory was created successfully]]></description>
+    </param>
+  </output>
+  <attrib name="mycustomfield" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="VMowner" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="pollingRate" type="number" read-only="false">
+    <value encoded="n"><![CDATA[10.0]]></value>
+    <description><![CDATA[Time between all request information on the tools [seconds]]]></description>
+  </attrib>
+  <attrib name="timeout" type="number" read-only="false">
+    <value encoded="n"><![CDATA[10.0]]></value>
+    <description><![CDATA[Timeout before throwing a timeout exception [minutes]]]></description>
+  </attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="customFieldArray" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="count" type="number" read-only="false">
+    <value encoded="n"><![CDATA[0.0]]></value>
+  </attrib>
+  <attrib name="copyFileStatusArray" type="Array/boolean" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="vcoPathList" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Path on vCO server]]></description>
+  </attrib>
+  <attrib name="vm" type="Array/VC:VirtualMachine" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Virtual machine]]></description>
+  </attrib>
+  <attrib name="guestFileList" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[Guest file path]]></description>
+  </attrib>
+  <attrib name="argumentList" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. ]]></description>
+  </attrib>
+  <attrib name="programPath" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+    <description><![CDATA[The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. ]]></description>
+  </attrib>
+  <attrib name="dirPath" type="string" read-only="false">
+    <value encoded="n"><![CDATA[C:\software\]]></value>
+    <description><![CDATA[Guest path]]></description>
+  </attrib>
+  <attrib name="createParents" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+    <description><![CDATA[Create parent directories if missing]]></description>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="63.59090909090908" x="904.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task">
+    <display-name><![CDATA[Display inputs]]></display-name>
+    <script encoded="false"><![CDATA[System.log("Workflow started from workflow stub " + externalWFStub + " on vCAC host " + vCACHost.displayName);
+System.log("Got vCAC virtual machine " + vCACVm.virtualMachineName);
+System.log("Matching virtual machine entity " + virtualMachineEntity.keyString);
+
+
+if (vCenterVm != null) {
+	System.log("Got vCloud VM " + vCenterVm.name);
+}
+				
+//Displaying vCAC VM properties
+if (vCACVmProperties != null) {
+	var log = "";
+	log += "vCAC VM properties :\n";
+	var array = new Array();
+	for each (var key in vCACVmProperties.keys) {
+		array.push(key + " : " + vCACVmProperties.get(key));	
+	}
+	array.sort();
+	
+	for each (var line in array) {
+		log += "\t" + line + "\n";
+	}	
+	System.log(log);	
+}]]></script>
+    <in-binding>
+      <bind name="vCACVm" type="vCAC:VirtualMachine" export-name="vCACVm"/>
+      <bind name="vCenterVm" type="VC:VirtualMachine" export-name="vCenterVm"/>
+      <bind name="virtualMachineEntity" type="vCAC:Entity" export-name="virtualMachineEntity"/>
+      <bind name="vCACHost" type="vCAC:VCACHost" export-name="vCACHost"/>
+      <bind name="externalWFStub" type="string" export-name="externalWFStub"/>
+      <bind name="vCACVmProperties" type="Properties" export-name="vCACVmProperties"/>
+    </in-binding>
+    <out-binding/>
+    <position y="73.59090909090908" x="164.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item8" type="task">
+    <display-name><![CDATA[Get My Properties]]></display-name>
+    <script encoded="false"><![CDATA[var tempArray = [];
+customFieldArray = [];
+vm = [];
+
+tempArray["software.packages.win64"] = vCACVmProperties.get('software.packages.win64');
+
+for (var key in tempArray)
+{
+	System.log("Request choice " + key + " has value: " + tempArray[key]);
+	if (tempArray[key] != null){
+		customFieldArray.push(tempArray[key]);
+		count += 1;
+	}
+}
+
+tempArray["need.Monitoring.Agent"] = vCACVmProperties.get('need.Monitoring.Agent');
+tempArray["need.Backup.Agent"] = vCACVmProperties.get('need.Backup.Agent');
+tempArray["need.Antivirus.Agent"] = vCACVmProperties.get('need.Antivirus.Agent');
+
+for (var key in tempArray)
+{
+	System.log("Request choice " + key + " has value: " + tempArray[key]);
+	if (tempArray[key] == "True"){
+		customFieldArray.push(key);
+		count += 1;
+	}
+}
+
+System.log("Number of selected choices: " + count);
+
+]]></script>
+    <in-binding>
+      <bind name="vCACVmProperties" type="Properties" export-name="vCACVmProperties">
+        <description><![CDATA[vCAC virtual machine properties]]></description>
+      </bind>
+      <bind name="vCenterVm" type="VC:VirtualMachine" export-name="vCenterVm">
+        <description><![CDATA[VC virtual machine]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="mycustomfield" type="string" export-name="mycustomfield"/>
+      <bind name="count" type="number" export-name="count"/>
+      <bind name="vm" type="Array/VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[Virtual machine]]></description>
+      </bind>
+      <bind name="customFieldArray" type="Array/string" export-name="customFieldArray"/>
+    </out-binding>
+    <position y="128.13636363636363" x="164.5"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" type="task" script-module="com.nullphase.local/getVirtualMachineOwnerUsername">
+    <display-name><![CDATA[getVirtualMachineOwnerUsername]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.nullphase.local").getVirtualMachineOwnerUsername(virtualMachineEntity,vcacHost) ;]]></script>
+    <in-binding>
+      <bind name="virtualMachineEntity" type="vCAC:Entity" export-name="virtualMachineEntity"/>
+      <bind name="vcacHost" type="vCAC:VCACHost" export-name="vCACHost"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" export-name="VMowner"/>
+    </out-binding>
+    <position y="73.59090909090908" x="304.5"/>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item7" type="task">
+    <display-name><![CDATA[Make args]]></display-name>
+    <script encoded="false"><![CDATA[count = 0;
+vcoPathList = [];
+guestFileList = [];
+vm = [];
+
+for (var key in customFieldArray)
+{
+	//System.log("Key is " + key + " with value " + customFieldArray[key]);
+	if (customFieldArray[key] == "Apache_2.22"){
+		System.log("if success");
+		vcoPathList.push("\/software\/httpd-2.2.22-win32-x86-openssl-0.9.8t.msi");
+		guestFileList.push("C:\\software\\httpd-2.2.22-win32-x86-openssl-0.9.8t.msi");
+		count += 1;
+		System.log("Copying from " + vcoPathList[count] + " to " + guestFileList[count]);
+		vcoPathList.push("\/software\/apache_install.bat");
+		guestFileList.push("C:\\software\\apache_install.bat");
+		count += 1;
+		System.log("Copying from " + vcoPathList[count] + " to " + guestFileList[count]);
+		vcoPathList.push("\/software\/apache_install.ps1");
+		guestFileList.push("C:\\software\\apache_install.ps1");
+		count += 1;
+		System.log("Copying from " + vcoPathList[count] + " to " + guestFileList[count]);
+		vm.push(vCenterVm, vCenterVm, vCenterVm);
+		System.log("Count is " + count + ". VM length is " + vm.length + ".");
+	}
+	else if (customFieldArray[key] == "JBoss_5.1"){
+		vcoPathList.push("\/software\/jboss_install.bat");
+		guestFileList.push("C:\\software\\jboss_install.bat");
+		count += 1;
+		vcoPathList.push("\/software\/jboss_install.ps1");
+		guestFileList.push("C:\\software\\jboss_install.ps1");
+		count += 1;
+		vcoPathList.push("\/software\/unzip-1.0.exe");
+		guestFileList.push("C:\\software\\unzip-1.0.exe");
+		count += 1;
+		vcoPathList.push("\/software\/jboss-5.1.0.GA.zip");
+		guestFileList.push("C:\\software\\jboss-5.1.0.GA.zip");
+		count += 1;
+		vcoPathList.push("\/software\/jboss-native-2.0.10-windows-x64-ssl.zip");
+		guestFileList.push("C:\\software\\jboss-native-2.0.10-windows-x64-ssl.zip");
+		count += 1;
+		vcoPathList.push("\/software\/jre-1.7.0_72-win64.zip");
+		guestFileList.push("C:\\software\\jre-1.7.0_72-win64.zip");
+		count += 1;
+		vm.push(vCenterVm, vCenterVm, vCenterVm, vCenterVm, vCenterVm, vCenterVm);
+	}
+	else if (customFieldArray[key] == "MSSQL_2012"){
+		/* To be completed */
+	}
+	else if (customFieldArray[key] == "need.Monitoring.Agent"){
+		vcoPathList.push("\/software\/VMware-Log-Insight-Agent-3.0.0-2985111.msi");
+		guestFileList.push("C:\\software\\VMware-Log-Insight-Agent-3.0.0-2985111.msi");
+		count += 1;
+		vcoPathList.push("\/software\/monitorinstall.bat");
+		guestFileList.push("C:\\software\\monitorinstall.bat");
+		count += 1;
+		vcoPathList.push("\/software\/epops-agent-x86-64-win-6.1.0-3030162.exe");
+		guestFileList.push("C:\\software\\epops-agent-x86-64-win-6.1.0-3030162.exe");
+		count += 1;
+		vcoPathList.push("\/software\/epo_install.ps1");
+		guestFileList.push("C:\\software\\epo_install.ps1");
+		count += 1;
+		vm.push(vCenterVm, vCenterVm, vCenterVm, vCenterVm);
+	}
+	else if (customFieldArray[key] == "need.Backup.Agent"){
+		vcoPathList.push("\/software\/antivirus_setup.exe");
+		guestFileList.push("C:\\antivirus_setup.exe");
+		count += 1;
+		vm.push(vCenterVm);
+	}
+	else if (customFieldArray[key] == "need.Antivirus.Agent"){
+		vcoPathList.push("\/software\/clamwin_setup.exe");
+		guestFileList.push("C:\\software\\clamwin_setup.exe");
+		count += 1;
+		vcoPathList.push("\/software\/avinstall.bat");
+		guestFileList.push("C:\\software\\avinstall.bat");
+		count += 1;
+		vm.push(vCenterVm, vCenterVm);
+	}
+	else{
+		System.log("Value does not compute");
+	}
+}]]></script>
+    <in-binding>
+      <bind name="mycustomfield" type="string" export-name="mycustomfield"/>
+      <bind name="VMowner" type="string" export-name="VMowner"/>
+      <bind name="customFieldArray" type="Array/string" export-name="customFieldArray"/>
+      <bind name="count" type="number" export-name="count"/>
+      <bind name="vCACVmProperties" type="Properties" export-name="vCACVmProperties">
+        <description><![CDATA[vCAC virtual machine properties]]></description>
+      </bind>
+      <bind name="vCenterVm" type="VC:VirtualMachine" export-name="vCenterVm">
+        <description><![CDATA[VC virtual machine]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="guestFileList" type="Array/string" export-name="guestFileList">
+        <description><![CDATA[Guest file path]]></description>
+      </bind>
+      <bind name="vcoPathList" type="Array/string" export-name="vcoPathList">
+        <description><![CDATA[Path on vCO server]]></description>
+      </bind>
+      <bind name="vm" type="Array/VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[Virtual machine]]></description>
+      </bind>
+    </out-binding>
+    <position y="73.59090909090908" x="444.5"/>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item15" type="task" script-module="com.vmware.library.vc.vm.tools/vim3WaitToolsStarted">
+    <display-name><![CDATA[vim3WaitToolsStarted]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.vc.vm.tools").vim3WaitToolsStarted(vm,pollingRate,timeout) ;]]></script>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vCenterVm">
+        <description><![CDATA[VM in which the action look to get the new DNS Name]]></description>
+      </bind>
+      <bind name="pollingRate" type="number" export-name="pollingRate">
+        <description><![CDATA[Time between all request information on the tools [seconds]]]></description>
+      </bind>
+      <bind name="timeout" type="number" export-name="timeout">
+        <description><![CDATA[Timeout before throwing a timeout exception [minutes]]]></description>
+      </bind>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Wait for the VMware tools to be up and the guest running
+
+Exception:
+- Timeout: When timeout is reached
+- ReferenceError: When vm is not set correctly]]></description>
+    <position y="128.13636363636363" x="444.5"/>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item3" type="condition" alt-out-name="item9" comparator="0">
+    <display-name><![CDATA[Decision]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (count >= 1.0) ;]]></script>
+    <in-binding>
+      <bind name="count" type="number" export-name="count"/>
+    </in-binding>
+    <condition name="count" type="number" comparator="5" label="null">1.0</condition>
+    <position y="118.13636363636363" x="304.5"/>
+  </workflow-item>
+  <workflow-item name="item9" type="end" end-mode="0">
+    <position y="172.68181818181816" x="344.5"/>
+  </workflow-item>
+  <workflow-item name="item10" out-name="item12" type="condition" alt-out-name="item13" comparator="0">
+    <display-name><![CDATA[Decision]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (copyFileStatusArray  != null ) ;]]></script>
+    <in-binding>
+      <bind name="copyFileStatusArray" type="Array/boolean" export-name="copyFileStatusArray"/>
+    </in-binding>
+    <condition name="copyFileStatusArray" type="Array/boolean" comparator="0" label="null">__NULL__</condition>
+    <position y="63.59090909090908" x="724.5"/>
+  </workflow-item>
+  <workflow-item name="item5" out-name="item10" catch-name="item6" throw-bind-name="errorCode" type="foreach">
+    <display-name><![CDATA[Foreach (Copy file from vCO to guest)]]></display-name>
+    <in-binding>
+      <bind name="vm" type="Array/VC:VirtualMachine" export-name="*vm">
+        <description><![CDATA[Virtual machine]]></description>
+      </bind>
+      <bind name="vcoPath" type="Array/string" export-name="*vcoPathList">
+        <description><![CDATA[Path on vCO server]]></description>
+      </bind>
+      <bind name="guestFilePath" type="Array/string" export-name="*guestFileList">
+        <description><![CDATA[Guest file path]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="Array/boolean" export-name="*copyFileStatusArray"/>
+    </out-binding>
+    <reference type="Workflow" id="9ecee679-60a9-4dcf-a44a-8bdaafd421fe"/>
+    <description><![CDATA[Copies the specified file from the vCO server to the guest file system.]]></description>
+    <position y="73.59090909090908" x="584.5"/>
+  </workflow-item>
+  <workflow-item name="item6" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="9.045454545454543" x="624.5"/>
+  </workflow-item>
+  <workflow-item name="item11" out-name="item0" catch-name="item14" throw-bind-name="errorCode" type="foreach">
+    <display-name><![CDATA[Foreach (Run program in guest)]]></display-name>
+    <in-binding>
+      <bind name="vm" type="Array/VC:VirtualMachine" export-name="*vm">
+        <description><![CDATA[Virtual machine]]></description>
+      </bind>
+      <bind name="programPath" type="Array/string" export-name="*programPath">
+        <description><![CDATA[The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. ]]></description>
+      </bind>
+      <bind name="arguments" type="Array/string" export-name="*argumentList">
+        <description><![CDATA[The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. ]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="Array/number" export-name="*var"/>
+    </out-binding>
+    <reference type="Workflow" id="36710ac1-8034-4bbd-aa4c-9a8b023d7e08"/>
+    <description><![CDATA[Starts a program in the guest operating system.
+A process started this way can have its status queried with this API. When the process completes, its exit code and end time will be available for 5 minutes after completion.]]></description>
+    <position y="128.13636363636363" x="864.5"/>
+  </workflow-item>
+  <workflow-item name="item12" out-name="item11" type="task">
+    <display-name><![CDATA[Make args]]></display-name>
+    <script encoded="false"><![CDATA[programPath = [];
+argumentList = [];
+vm = [];
+
+for (var key in customFieldArray)
+{
+	//System.log("Key is " + key + " with value " + customFieldArray[key]);
+	if (customFieldArray[key] == "Apache_2.22"){
+		programPath[key] = "C:\\Windows\\system32\\cmd.exe";
+		argumentList[key] = "\/c C:\\software\\apache_install.bat";
+		vm[key] = vCenterVm;
+		System.log("Running program " + programPath[key] + " with arg " + argumentList[key]);
+	}
+	else if (customFieldArray[key] == "JBoss_5.1"){
+		programPath[key] = 'C:\\Windows\\system32\\cmd.exe';
+		argumentList[key] = '\/c C:\\software\\jboss_install.bat';
+		vm[key] = vCenterVm;
+		System.log("Running program " + programPath[key] + " with arg " + argumentList[key]);
+	}
+	else if (customFieldArray[key] == "MSSQL_2012"){
+		programPath[key] = "C:\\Windows\\system32\\cmd.exe";
+		argumentList[key] = "\/c C:\\software\\mssql_install.bat";
+		vm[key] = vCenterVm;
+		System.log("Running program " + programPath[key] + " with arg " + argumentList[key]);
+	}
+	else if (customFieldArray[key] == "need.Monitoring.Agent"){
+		programPath[key] = "C:\\Windows\\system32\\cmd.exe";
+		argumentList[key] = "\/c C:\\software\\monitorinstall.bat";
+		vm[key] = vCenterVm;
+		System.log("Running program " + programPath[key] + " with arg " + argumentList[key]);
+	}
+	else if (customFieldArray[key] == "need.Backup.Agent"){
+		programPath[key] = 'C:\\Windows\\system32\\cmd.exe';
+		argumentList[key] = '\/c C:\\antivirus_setup.exe';
+		vm[key] = vCenterVm;
+		System.log("Running program " + programPath[key] + " with arg " + argumentList[key]);
+	}
+	else if (customFieldArray[key] == "need.Antivirus.Agent"){
+		programPath[key] = "C:\\Windows\\system32\\cmd.exe";
+		argumentList[key] = "\/c C:\\software\\avinstall.bat";
+		vm[key] = vCenterVm;
+		System.log("Running program " + programPath[key] + " with arg " + argumentList[key]);
+	}
+	else{
+		System.log("Value does not compute");
+	}
+}]]></script>
+    <in-binding>
+      <bind name="customFieldArray" type="Array/string" export-name="customFieldArray"/>
+      <bind name="guestFileList" type="Array/string" export-name="guestFileList">
+        <description><![CDATA[Guest file path]]></description>
+      </bind>
+      <bind name="vCenterVm" type="VC:VirtualMachine" export-name="vCenterVm">
+        <description><![CDATA[VC virtual machine]]></description>
+      </bind>
+      <bind name="vCACVmProperties" type="Properties" export-name="vCACVmProperties">
+        <description><![CDATA[vCAC virtual machine properties]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="argumentList" type="Array/string" export-name="argumentList">
+        <description><![CDATA[The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. ]]></description>
+      </bind>
+      <bind name="programPath" type="Array/string" export-name="programPath">
+        <description><![CDATA[The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. ]]></description>
+      </bind>
+      <bind name="vm" type="Array/VC:VirtualMachine" export-name="vm">
+        <description><![CDATA[Virtual machine]]></description>
+      </bind>
+    </out-binding>
+    <position y="128.13636363636363" x="724.5"/>
+  </workflow-item>
+  <workflow-item name="item14" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="172.68181818181816" x="904.5"/>
+  </workflow-item>
+  <workflow-item name="item15" out-name="item5" catch-name="item16" throw-bind-name="errorCode" type="link" linked-workflow-id="acc9f964-3de8-4083-b6e4-4c1b6fed4aaa">
+    <display-name><![CDATA[Create directory in guest]]></display-name>
+    <in-binding>
+      <bind name="vm" type="VC:VirtualMachine" export-name="vCenterVm">
+        <description><![CDATA[Virtual machine]]></description>
+      </bind>
+      <bind name="dirPath" type="string" export-name="dirPath">
+        <description><![CDATA[Guest path]]></description>
+      </bind>
+      <bind name="createParents" type="boolean" export-name="createParents">
+        <description><![CDATA[Create parent directories if missing]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="result" type="boolean" export-name="result">
+        <description><![CDATA[Set to true if directory was created successfully]]></description>
+      </bind>
+    </out-binding>
+    <description><![CDATA[Create a directory in a guest virtual machine.]]></description>
+    <position y="128.13636363636363" x="584.5"/>
+  </workflow-item>
+  <workflow-item name="item16" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="172.68181818181816" x="625.0"/>
+  </workflow-item>
+  <workflow-item name="item13" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="9.045454545454543" x="765.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="vCACVm">
+      <desc><![CDATA[vCACVm]]></desc>
+    </p-param>
+    <p-param name="vCenterVm">
+      <desc><![CDATA[vCenterVm]]></desc>
+    </p-param>
+    <p-param name="virtualMachineEntity">
+      <desc><![CDATA[virtualMachineEntity]]></desc>
+    </p-param>
+    <p-param name="vCACHost">
+      <desc><![CDATA[vCACHost]]></desc>
+    </p-param>
+    <p-param name="externalWFStub">
+      <desc><![CDATA[externalWFStub]]></desc>
+    </p-param>
+    <p-param name="vCACVmProperties">
+      <desc><![CDATA[vCACVmProperties]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

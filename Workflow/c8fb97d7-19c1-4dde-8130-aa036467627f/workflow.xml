@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="c8fb97d7-19c1-4dde-8130-aa036467627f" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Import blueprint from sample exchange to vRA ]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="blueprintName" type="string"/>
+    <param name="host" type="vCACCAFE:VCACHost"/>
+    <param name="overwriteContent" type="boolean"/>
+  </input>
+  <attrib name="blueprintDownloadUrl" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="mimeAttachment" type="MimeAttachment" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <workflow-item name="item3" out-name="item0" type="task" script-module="com.vmware.coe.vra.content/getSampleExchangeBlueprintDownloadUrl">
+    <display-name><![CDATA[getSampleExchangeBlueprintDownloadUrl]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.coe.vra.content").getSampleExchangeBlueprintDownloadUrl(blueprintName) ;]]></script>
+    <in-binding>
+      <bind name="blueprintName" type="string" export-name="blueprintName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" export-name="blueprintDownloadUrl"/>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"/>
+  </workflow-item>
+  <workflow-item name="item0" out-name="item2" type="task">
+    <display-name><![CDATA[Download as mime]]></display-name>
+    <script encoded="false"><![CDATA[mimeAttachment = DownloaderPluginDownloader.downloadUrlAsMimeAttachement(blueprintDownloadUrl, ".zip");]]></script>
+    <in-binding>
+      <bind name="blueprintDownloadUrl" type="string" export-name="blueprintDownloadUrl"/>
+    </in-binding>
+    <out-binding>
+      <bind name="mimeAttachment" type="MimeAttachment" export-name="mimeAttachment"/>
+    </out-binding>
+    <position y="55.40909090909091" x="345.0"/>
+  </workflow-item>
+  <workflow-item name="item1" type="end" end-mode="0">
+    <position y="45.40909090909091" x="664.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="link" linked-workflow-id="a821e0d3-584b-4f5e-8399-f2f6c117e12f">
+    <display-name><![CDATA[Import blueprint from zip mimeattachment]]></display-name>
+    <in-binding>
+      <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
+      <bind name="mimeAttachment" type="MimeAttachment" export-name="mimeAttachment"/>
+      <bind name="overwriteContent" type="boolean" export-name="overwriteContent"/>
+    </in-binding>
+    <out-binding/>
+    <position y="55.40909090909091" x="484.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="blueprintName">
+      <desc><![CDATA[Blueprint name]]></desc>
+      <p-qual kind="ognl" name="genericEnumeration" type="Array/string"><![CDATA[GetAction("com.vmware.coe.vra.content","getSampleExchangeBlueprintNames").call()]]></p-qual>
+    </p-param>
+    <p-param name="host">
+      <desc><![CDATA[vRA host]]></desc>
+      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+    </p-param>
+    <p-param name="overwriteContent">
+      <desc><![CDATA[Overwrite ?]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

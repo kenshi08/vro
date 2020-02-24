@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="Workflow:name=generic" id="44786098-b29f-45df-ba4e-dc3cca6eeb7d" version="1.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[JSON Invoke a REST operation]]></display-name>
+  <description><![CDATA[Invokes a REST operation.]]></description>
+  <ref-types><![CDATA[>(REST:RESTOperation)]]></ref-types>
+  <position y="50.0" x="160.0"/>
+  <input>
+    <param name="restOperation" type="REST:RESTOperation">
+      <description><![CDATA[REST operation to be used for the call]]></description>
+    </param>
+    <param name="param_0" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_1" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_2" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_3" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_4" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_5" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_6" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_7" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_8" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_9" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_10" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_11" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_12" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_13" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="param_14" type="string">
+      <description><![CDATA[Input parameter]]></description>
+    </param>
+    <param name="content" type="string">
+      <description><![CDATA[Input content]]></description>
+    </param>
+    <param name="defaultContentType" type="string">
+      <description><![CDATA[Input content type]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="statusCode" type="number">
+      <description><![CDATA[Status code of the HTTP request]]></description>
+    </param>
+    <param name="contentLength" type="number">
+      <description><![CDATA[Length of the request response]]></description>
+    </param>
+    <param name="headers" type="Properties">
+      <description><![CDATA[Response headers]]></description>
+    </param>
+    <param name="contentAsString" type="string">
+      <description><![CDATA[Response content as string]]></description>
+    </param>
+  </output>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="statusCodeAttribute" type="number" read-only="false"/>
+  <workflow-item name="item0" out-name="item3" catch-name="item2" throw-bind-name="errorCode" type="task">
+    <display-name><![CDATA[REST call]]></display-name>
+    <script encoded="false"><![CDATA[var inParamtersValues = [param_0, param_1, param_2, param_3, param_4, param_5, param_6, param_7, param_8, param_9, param_10, param_11, param_12, param_13, param_14];
+var request = restOperation.createRequest(inParamtersValues, content);
+//set the request content type
+request.contentType = defaultContentType;
+request.setHeader("Accept","application/json");
+System.log("Request: " + request);
+System.log("Request URL: " + request.fullUrl);
+var response = request.execute();
+System.log("Response: " + response);
+statusCode = response.statusCode;
+statusCodeAttribute = statusCode;
+System.log("Status code: " + statusCode);
+contentLength = response.contentLength;
+headers = response.getAllHeaders();
+contentAsString = response.contentAsString;
+System.log("Content as string: " + contentAsString);
+System.log("****Headers****");
+for each (var header in headers){
+	System.log(header.toString());
+}
+]]></script>
+    <in-binding>
+      <bind name="content" type="string" export-name="content"/>
+      <bind name="param_0" type="string" export-name="param_0"/>
+      <bind name="param_1" type="string" export-name="param_1"/>
+      <bind name="param_10" type="string" export-name="param_10"/>
+      <bind name="param_11" type="string" export-name="param_11"/>
+      <bind name="param_12" type="string" export-name="param_12"/>
+      <bind name="param_13" type="string" export-name="param_13"/>
+      <bind name="param_14" type="string" export-name="param_14"/>
+      <bind name="param_2" type="string" export-name="param_2"/>
+      <bind name="param_3" type="string" export-name="param_3"/>
+      <bind name="param_4" type="string" export-name="param_4"/>
+      <bind name="param_5" type="string" export-name="param_5"/>
+      <bind name="param_6" type="string" export-name="param_6"/>
+      <bind name="param_7" type="string" export-name="param_7"/>
+      <bind name="param_8" type="string" export-name="param_8"/>
+      <bind name="param_9" type="string" export-name="param_9"/>
+      <bind name="restOperation" type="REST:RESTOperation" export-name="restOperation"/>
+      <bind name="statusCodeAttribute" type="number" export-name="statusCodeAttribute"/>
+      <bind name="defaultContentType" type="string" export-name="defaultContentType"/>
+    </in-binding>
+    <out-binding>
+      <bind name="statusCode" type="number" export-name="statusCode"/>
+      <bind name="contentLength" type="number" export-name="contentLength"/>
+      <bind name="headers" type="Properties" export-name="headers"/>
+      <bind name="contentAsString" type="string" export-name="contentAsString"/>
+      <bind name="statusCodeAttribute" type="number" export-name="statusCodeAttribute"/>
+    </out-binding>
+    <position y="100.0" x="120.0"/>
+  </workflow-item>
+  <workflow-item name="item1" type="end" end-mode="0">
+    <position y="230.0" x="160.0"/>
+  </workflow-item>
+  <workflow-item name="item2" throw-bind-name="errorCode" type="end" end-mode="1">
+    <position y="170.0" x="260.0"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item1" type="custom-condition" alt-out-name="item2">
+    <display-name><![CDATA[Check status code]]></display-name>
+    <script encoded="false"><![CDATA[if ( statusCodeAttribute >= 400 ) {
+	throw "HTTPError: status code: " + statusCodeAttribute;
+} else {
+	return true;
+}	]]></script>
+    <in-binding>
+      <bind name="statusCodeAttribute" type="number" export-name="statusCodeAttribute"/>
+    </in-binding>
+    <position y="170.0" x="120.0"/>
+  </workflow-item>
+  <presentation>
+    <p-step>
+      <title><![CDATA[Invoke a REST operation]]></title>
+      <p-group>
+        <title><![CDATA[Operation]]></title>
+        <desc><![CDATA[Specify the operation to be invoked.]]></desc>
+        <p-param name="restOperation">
+          <desc><![CDATA[REST operation to be used for the call]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+          <p-qual name="contextualParameter" type="void"><![CDATA[]]></p-qual>
+        </p-param>
+      </p-group>
+      <p-group>
+        <title><![CDATA[Input Parameters]]></title>
+        <desc><![CDATA[Specify the values of the operation input parameters. Those values will be used to generate the URL.]]></desc>
+        <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation != null && #restOperation.inParametersCount>0]]></p-qual>
+        <p-param name="param_0">
+          <desc><![CDATA[Parameter 1]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 0.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_1">
+          <desc><![CDATA[Parameter 2]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>1]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 1.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_2">
+          <desc><![CDATA[Parameter 3]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>2]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 2.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_3">
+          <desc><![CDATA[Parameter 4]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>3]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 3.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_4">
+          <desc><![CDATA[Parameter 5]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>4]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 4.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_5">
+          <desc><![CDATA[Parameter 6]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>5]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 5.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_6">
+          <desc><![CDATA[Parameter 7]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>6]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 6.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_7">
+          <desc><![CDATA[Parameter 8]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>7]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 7.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_8">
+          <desc><![CDATA[Parameter 9]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>8]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 8.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_9">
+          <desc><![CDATA[Parameter 10]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>9]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 9.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_10">
+          <desc><![CDATA[Parameter 11]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>10]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 10.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_11">
+          <desc><![CDATA[Parameter 12]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>11]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 11.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_12">
+          <desc><![CDATA[Parameter 13]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>12]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 12.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_13">
+          <desc><![CDATA[Parameter 14]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>13]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 13.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+        <p-param name="param_14">
+          <desc><![CDATA[Parameter 15]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation.inParametersCount>14]]></p-qual>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA["<" + GetAction("com.vmware.library.http-rest.configuration","getRESTOperationParameterName").call( 14.0 , #restOperation ) + ">"]]></p-qual>
+        </p-param>
+      </p-group>
+      <p-group>
+        <title><![CDATA[Input Content]]></title>
+        <desc><![CDATA[Specify the operation input content if required.]]></desc>
+        <p-qual kind="ognl" name="visible" type="boolean"><![CDATA[#restOperation != null && (#restOperation.method=="POST"||#restOperation.method=="PUT"||#restOperation.method=="DELETE"||#restOperation.method=="PATCH")]]></p-qual>
+        <p-param name="defaultContentType">
+          <desc><![CDATA[Content type]]></desc>
+          <p-qual kind="ognl" name="dataBinding" type="string"><![CDATA[#restOperation.defaultContentType]]></p-qual>
+        </p-param>
+        <p-param name="content">
+          <desc><![CDATA[Content]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+          <p-qual name="textInput" type="void"><![CDATA[]]></p-qual>
+        </p-param>
+      </p-group>
+    </p-step>
+  </presentation>
+</workflow>

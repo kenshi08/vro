@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="monitorMethodList_AddVS" result-type="Array/string" api-version="6.0.0" id="9d3c9d0d-8eeb-4cc6-84d9-6b78568de416" version="0.0.0" allowed-operations="evf" category-name="com.vmware.nsx.apiselection">
+  <param n="type" t="string"/>
+  <script encoded="false"><![CDATA[if (type == "HTTP")
+{
+ return ["GET","OPTIONS","POST"];
+}
+
+if (type == "HTTPS")
+{
+ return ["GET","OPTIONS","POST"];
+}]]></script>
+</dunes-script-module>

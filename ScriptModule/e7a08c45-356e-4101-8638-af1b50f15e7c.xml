@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="addAdvancedSettingtoVM" result-type="VC:Task" api-version="6.0.0" id="e7a08c45-356e-4101-8638-af1b50f15e7c" version="1.0.0" allowed-operations="vfe" category-name="com.neetcloud.vmconfig">
+  <param n="optionKey" t="string"/>
+  <param n="optionValue" t="string"/>
+  <param n="vm" t="VC:VirtualMachine"/>
+  <script encoded="false"><![CDATA[var changedValue = new Array()
+changedValue[0] = new VcOptionValue();
+changedValue[0].key = optionKey;
+changedValue[0].value = optionValue;
+var ConfigSpec = new VcVirtualMachineConfigSpec();
+ConfigSpec.extraConfig = changedValue;
+vmTask = vm.reconfigVM_Task(ConfigSpec);
+return vmTask;]]></script>
+</dunes-script-module>

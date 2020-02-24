@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="convertMultiClassFlatToClassesObject" result-type="Properties" api-version="6.0.0" id="fc2715f3-2536-4623-8a0d-027f094fa591" version="0.0.1" allowed-operations="evf" category-name="com.vmware.o11n.plugin.puppet">
+  <param n="classNames" t="Array/string"/>
+  <param n="classParameters" t="Array/CompositeType(name:string,value:string)"/>
+  <script encoded="false"><![CDATA[var classes = {};
+
+for each (var className in classNames) {
+	classes[className] = {};
+}
+
+var className;
+var classParameter;
+for each (var p in classParameters) {
+	if (System.getModule("com.vmware.o11n.plugin.puppet").isDefaultClassParameterValue(p.value)) {
+		continue;
+	}
+
+	var arr = p.name.trim().match(/^(.+)::([^:]+)$/);
+	if (arr != null) {
+		className = arr[1];
+		classParameter = arr[2];
+	}
+	else if (classNames.length == 1) {
+		className = classNames[0];
+		classParameter = p.name;
+	} else {
+		throw "Unknown class name in class parameters. value=" + p.name;
+	}
+
+	if (classNames.indexOf(className) === -1) {
+		throw "Class '" + className + "' doesn't exist on class list";
+	}
+
+	classes[className][classParameter] = p.value;
+}
+
+return classes;]]></script>
+</dunes-script-module>

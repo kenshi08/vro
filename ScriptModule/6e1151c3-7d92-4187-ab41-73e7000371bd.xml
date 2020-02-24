@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVirtualMachineOwnerUsername" result-type="string" api-version="6.0.0" id="6e1151c3-7d92-4187-ab41-73e7000371bd" version="0.0.0" allowed-operations="evf" category-name="com.nullphase.local">
+  <param n="virtualMachineEntity" t="vCAC:Entity"/>
+  <param n="vcacHost" t="vCAC:VCACHost"/>
+  <script encoded="false"><![CDATA[var ownerEntity = virtualMachineEntity.getLink(vcacHost, "Owner")[0];
+
+return ownerEntity.getProperty("UserName").toString();
+]]></script>
+</dunes-script-module>

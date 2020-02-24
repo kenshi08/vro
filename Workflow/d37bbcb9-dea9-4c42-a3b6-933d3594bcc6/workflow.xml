@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="d37bbcb9-dea9-4c42-a3b6-933d3594bcc6" version="0.0.6" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Add VM to SecurityTag and securityGroup]]></display-name>
+  <description><![CDATA[
+
+VMware PSO I&A Selva 08/2015]]></description>
+  <position y="45.40909090909091" x="25.0"/>
+  <input>
+    <param name="securityTags" type="string"/>
+    <param name="vmName" type="VC:VirtualMachine"/>
+    <param name="securityGroup" type="string"/>
+    <param name="securityTagAdd" type="boolean"/>
+  </input>
+  <attrib name="nsxRestHost" type="REST:RESTHost" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='5e70d871-cdfa-4f46-8469-c473ae2c1e0e'&dunesName='REST:RESTHost']]></value>
+  </attrib>
+  <attrib name="securityTagId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="vmId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="securityGroupId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="method" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="424.5"/>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item1" type="task">
+    <display-name><![CDATA[Adding VM to Security Tags]]></display-name>
+    <script encoded="false"><![CDATA[var securityTagMatchCounter = 0;
+// var edgeId
+// Create a REST call to query all edges configured
+
+var request = nsxRestHost.createRequest("GET", "/api/2.0/services/securitytags/tag");
+//System.log("Request URL: " + request.fullUrl);
+
+// Execute the request
+
+var response = request.execute();
+var foundRule = false;
+
+
+
+// Evaluate the Response
+
+if (response.statusCode == 200) {
+ var sec_array = securityTags.split(',');
+
+ for (var i = 0; i < sec_array.length; i++) {
+  // Trim the excess whitespace.
+  sec_array[i] = sec_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+  // Add additional code here, such as:
+  System.log(sec_array[i]);
+
+  // Get XML response from NSX
+  var responseXML = XMLManager.fromString(response.ContentAsString);
+  var securityTagList = responseXML.documentElement.getElementsByTagName("name");
+  var securityTagIdList = responseXML.documentElement.getElementsByTagName("objectId");
+
+  // loop through list of edge names in the response. 
+  for (x = 0; x < securityTagList.length; x++) {
+   if (securityTagList.item(x).firstChild.textContent == sec_array[i]) {
+    securityTagId = securityTagIdList.item(x).firstChild.textContent;
+    SecurityTagID = securityTagId;
+    System.log("Security Tag ID for " + sec_array[i] + "is " + securityTagId);
+    //NSXurl = nsxConnectionList[v].url;
+    securityTagMatchCounter++;
+    System.log("Security Tag ID for " + securityTagList.item(x).firstChild.textContent + " is >> " + securityTagIdList.item(x).firstChild.textContent)
+    System.log("Security Tag  ID is " + securityTagId);
+    // System.log("NSX URL for " +edgeNameList.item(x).firstChild.textContent + " is >> " + NSXurl)
+    // if ( securityTagMatchCounter > 1 ){
+    //throw "Multiple securty tags with the same edge name ("+ securityTagId + ") found";
+    //                          }
+    if (securityTagAdd == true) {
+     var request1 = nsxRestHost.createRequest("PUT", "/api/2.0/services/securitytags/tag/" + securityTagId + "/vm/" + vmId);
+     //System.log("Request URL: " + request.fullUrl);
+
+     // Execute the request
+
+     vmId = vmName.id
+     System.log("Adding VM to " + securityTagId);
+     var response1 = request1.execute();
+    } else {
+     var request1 = nsxRestHost.createRequest("DELETE", "/api/2.0/services/securitytags/tag/" + securityTagId + "/vm/" + vmId);
+     //System.log("Request URL: " + request.fullUrl);
+
+     // Execute the request
+
+     vmId = vmName.id
+     System.log("Adding VM to " + securityTagId);
+     var response1 = request1.execute();
+    }
+   }
+  }
+ }
+}]]></script>
+    <in-binding>
+      <bind name="securityTagId" type="string" export-name="securityTagId"/>
+      <bind name="vmName" type="VC:VirtualMachine" export-name="vmName"/>
+      <bind name="securityTags" type="string" export-name="securityTags"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="securityTagAdd" type="boolean" export-name="securityTagAdd"/>
+      <bind name="method" type="string" export-name="method"/>
+    </in-binding>
+    <out-binding>
+      <bind name="securityTagId" type="string" export-name="securityTagId"/>
+      <bind name="vmId" type="string" export-name="vmId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="104.5"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Add VM to securityGroup]]></display-name>
+    <script encoded="false"><![CDATA[// var edgeId
+// Create a REST call to query all edges configured
+
+var request = nsxRestHost.createRequest("GET", "/api/2.0/services/securitygroup/scope/globalroot-0");
+//System.log("Request URL: " + request.fullUrl);
+
+// Execute the request
+
+var response = request.execute();
+//prepare output parameters
+System.log("Response: " + response);
+var statusCode = response.statusCode;
+var statusCodeAttribute = statusCode;
+System.log("Status code: " + statusCode);
+var contentLength = response.contentLength;
+var headers = response.getAllHeaders();
+var contentAsString = response.contentAsString;
+// System.log("Content as string: " + contentAsString);
+
+// Make an XMLDocument object to find the policy we are wishing to apply
+var xml_doc = new XML(contentAsString);
+
+default xml namespace = xml_doc.namespace();
+
+var security_groups = xml_doc.securitygroup;
+
+// Check how many objects we have to iterate over
+System.log("Parsed XML, found this many security groups: " + security_groups.name.length());
+
+// Use a for each loop to iterate over the XML nodes and find the Security Policy that matches the name input
+
+
+for each(var group_node in security_groups) {
+
+ //System.log("This nodes name is: " + group_node.name.toString());
+ if (group_node.name.toString().toLowerCase() == securityGroup.toLowerCase()) {
+  // If we have found a match for the Security Group Name, then assign the security group objectID
+  securityGroupId = group_node.objectId.toString();
+  System.log("Security Group ID: " + securityGroupId);
+  System.log("Security Group Name: " + securityGroup);
+  vmId = vmName.id;
+  var request1 = nsxRestHost.createRequest("PUT", "/api/2.0/services/securitygroup/" + securityGroupId + "/members/" + vmId);
+  //System.log("Request URL: " + request.fullUrl);
+
+  // Execute the request
+
+  var response1 = request1.execute();
+  //prepare output parameters
+  System.log("Response: " + response1);
+  var statusCode = response1.statusCode;
+  var statusCodeAttribute = statusCode;
+  System.log("Status code: " + statusCode);
+ }
+} // end for loop]]></script>
+    <in-binding>
+      <bind name="securityGroup" type="string" export-name="securityGroup"/>
+      <bind name="securityGroupId" type="string" export-name="securityGroupId"/>
+      <bind name="nsxRestHost" type="REST:RESTHost" export-name="nsxRestHost"/>
+      <bind name="vmId" type="string" export-name="vmId"/>
+      <bind name="vmName" type="VC:VirtualMachine" export-name="vmName"/>
+    </in-binding>
+    <out-binding>
+      <bind name="securityGroupId" type="string" export-name="securityGroupId"/>
+    </out-binding>
+    <position y="55.40909090909091" x="244.5"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="securityTags">
+      <desc><![CDATA[securityTags]]></desc>
+    </p-param>
+    <p-param name="vmName">
+      <desc><![CDATA[vmName]]></desc>
+    </p-param>
+    <p-param name="securityGroup">
+      <desc><![CDATA[securityGroup]]></desc>
+    </p-param>
+    <p-param name="securityTagAdd">
+      <desc><![CDATA[securityTagAdd]]></desc>
+    </p-param>
+  </presentation>
+</workflow>
