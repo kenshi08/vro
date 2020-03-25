@@ -1,0 +1,1 @@
+{"layout":{"pages":[{"id":"page_1","title":"General","sections":[{"id":"section_0","fields":[{"id":"user","display":"valuePickerTree"}]}]}]},"schema":{"user":{"type":{"dataType":"reference","isMultiple":false,"referenceType":"AD:User"},"label":"User to disable","id":"user","constraints":{"required":true}}},"itemId":""}

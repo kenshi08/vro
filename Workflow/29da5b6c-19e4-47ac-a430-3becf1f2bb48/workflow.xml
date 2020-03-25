@@ -1,38 +1,38 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="29da5b6c-19e4-47ac-a430-3becf1f2bb48" version="1.0.0" api-version="6.0.0" allowed-operations="evf" editor-version="1.6" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Take a VM Snapshot]]></display-name>
-  <description><![CDATA[Cloud Automation Services Extensibility with vRO - Take a VM snapshot after it is provisioned.]]></description>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="inputProperties" type="Properties"/>
-  </input>
-  <output>
-    <param name="customProperties" type="string"/>
-    <param name="snapshot" type="VC:VirtualMachineSnapshot">
-      <description><![CDATA[The snapshot created]]></description>
-    </param>
-  </output>
-  <attrib name="name" type="string" read-only="false">
-    <value encoded="n"><![CDATA[CAS-SS]]></value>
-  </attrib>
-  <attrib name="description" type="string" read-only="false">
-    <value encoded="n"><![CDATA[Snapshot taken by CAS]]></value>
-  </attrib>
-  <attrib name="memory" type="boolean" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="quiesce" type="boolean" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="vcVM" type="VC:VirtualMachine" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="524.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task">
-    <display-name><![CDATA[getCASPayload]]></display-name>
-    <script encoded="false"><![CDATA[System.log("inputProperties: ");
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="29da5b6c-19e4-47ac-a430-3becf1f2bb48" editor-version="1.6" version="1.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Take a VM Snapshot</display-name>
+    <description>Cloud Automation Services Extensibility with vRO - Take a VM snapshot after it is provisioned.</description>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="inputProperties" type="Properties"/>
+    </input>
+    <output>
+        <param name="customProperties" type="string"/>
+        <param name="snapshot" type="VC:VirtualMachineSnapshot">
+            <description>The snapshot created</description>
+        </param>
+    </output>
+    <attrib name="name" type="string">
+        <value encoded="n">CAS-SS</value>
+    </attrib>
+    <attrib name="description" type="string">
+        <value encoded="n">Snapshot taken by CAS</value>
+    </attrib>
+    <attrib name="memory" type="boolean">
+        <value encoded="n">false</value>
+    </attrib>
+    <attrib name="quiesce" type="boolean">
+        <value encoded="n">false</value>
+    </attrib>
+    <attrib name="vcVM" type="VC:VirtualMachine">
+        <value encoded="n"/>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="524.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>getCASPayload</display-name>
+        <script encoded="false">System.log("inputProperties: ");
 System.log(JSON.stringify(inputProperties, null, 2));
 
 customProperties = inputProperties["customProperties"];
@@ -58,46 +58,46 @@ if (vcVM) {
 //vcVM = System.getModule("com.neetcloud.cas").getvCenterVMFromCAS(inputProperties);
 userName =  System.getContext().getParameter("__metadata_userName");
 
-]]></script>
-    <in-binding>
-      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
-    </in-binding>
-    <out-binding>
-      <bind name="vcVM" type="VC:VirtualMachine" export-name="vcVM"/>
-      <bind name="customProperties" type="string" export-name="customProperties"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="BD80808080808080808080808080808053C180800122528313869552e41805bb1">
-    <display-name><![CDATA[Create a snapshot]]></display-name>
-    <in-binding>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vcVM">
-        <description><![CDATA[Virtual machine of which to create a snapshot]]></description>
-      </bind>
-      <bind name="name" type="string" export-name="name">
-        <description><![CDATA[Snapshot name. The name need not be unique for this virtual machine.]]></description>
-      </bind>
-      <bind name="description" type="string" export-name="description">
-        <description><![CDATA[Snapshot description.]]></description>
-      </bind>
-      <bind name="memory" type="boolean" export-name="memory">
-        <description><![CDATA[If TRUE, the snapshot includes a dump of the internal state of the virtual machine (a memory dump). ]]></description>
-      </bind>
-      <bind name="quiesce" type="boolean" export-name="quiesce">
-        <description><![CDATA[If TRUE and the virtual machine is powered on when the snapshot is taken, VMware Tools are used to quiesce the file system in the virtual machine.]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="snapshot" type="VC:VirtualMachineSnapshot" export-name="snapshot">
-        <description><![CDATA[The snapshot created]]></description>
-      </bind>
-    </out-binding>
-    <description><![CDATA[Creates a snapshot.]]></description>
-    <position y="55.40909090909091" x="344.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="inputProperties">
-      <desc><![CDATA[inputProperties]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+</script>
+        <in-binding>
+            <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+        </in-binding>
+        <out-binding>
+            <bind name="vcVM" type="VC:VirtualMachine" export-name="vcVM"/>
+            <bind name="customProperties" type="string" export-name="customProperties"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="BD80808080808080808080808080808053C180800122528313869552e41805bb1" comparator="0">
+        <display-name>Create a snapshot</display-name>
+        <in-binding>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vcVM">
+                <description>Virtual machine of which to create a snapshot</description>
+            </bind>
+            <bind name="name" type="string" export-name="name">
+                <description>Snapshot name. The name need not be unique for this virtual machine.</description>
+            </bind>
+            <bind name="description" type="string" export-name="description">
+                <description>Snapshot description.</description>
+            </bind>
+            <bind name="memory" type="boolean" export-name="memory">
+                <description>If TRUE, the snapshot includes a dump of the internal state of the virtual machine (a memory dump). </description>
+            </bind>
+            <bind name="quiesce" type="boolean" export-name="quiesce">
+                <description>If TRUE and the virtual machine is powered on when the snapshot is taken, VMware Tools are used to quiesce the file system in the virtual machine.</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="snapshot" type="VC:VirtualMachineSnapshot" export-name="snapshot">
+                <description>The snapshot created</description>
+            </bind>
+        </out-binding>
+        <description>Creates a snapshot.</description>
+        <position y="55.40909090909091" x="344.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="inputProperties">
+            <desc>inputProperties</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

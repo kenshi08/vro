@@ -1,70 +1,72 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="6dc0fa1a-6151-45c1-be4d-b179d73e370e" version="0.0.6" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[vRA Get Properties]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="payload" type="Properties"/>
-  </input>
-  <output>
-    <param name="scriptOutputText" type="string">
-      <description><![CDATA[Output of the script]]></description>
-    </param>
-    <param name="scriptExitCode" type="number">
-      <description><![CDATA[Exit code of the script]]></description>
-    </param>
-  </output>
-  <attrib name="vmname" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="ipaddress" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="myscript" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="mynewscript" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
-    <description><![CDATA[Virtual Machine (VC)]]></description>
-  </attrib>
-  <attrib name="username" type="string" read-only="false">
-    <value encoded="n"><![CDATA[root]]></value>
-    <description><![CDATA[Guest OS username]]></description>
-  </attrib>
-  <attrib name="password" type="SecureString" read-only="false">
-    <value encoded="n"><![CDATA[8BH56X4DW77W61S72R65U31I21H24B6628P2B6B7BCZEFC117FMA1F563J3B2BB74T9972DC8M1B5A04DU14693FY9ABCDABT72CB16AL4346CDBXB148502OF5FFDA3PF3F19BDHA1B85D5V1C8AAA0Z431BDEAJDC7B4EETDD686DFGDB2EA03M4417990Q177C047K57123E3W489F193J]]></value>
-    <description><![CDATA[Guest OS password]]></description>
-  </attrib>
-  <attrib name="scriptType" type="string" read-only="false">
-    <value encoded="n"><![CDATA[bash]]></value>
-    <description><![CDATA[bash / bat / powershell]]></description>
-  </attrib>
-  <attrib name="scriptTimeout" type="number" read-only="false">
-    <value encoded="n"><![CDATA[10.0]]></value>
-    <description><![CDATA[Timeout for the running script (in second)]]></description>
-  </attrib>
-  <attrib name="scriptRefreshTime" type="number" read-only="false">
-    <value encoded="n"><![CDATA[5.0]]></value>
-    <description><![CDATA[(default) Time (in seconds) where a check of script status occurs]]></description>
-  </attrib>
-  <attrib name="scriptWorkingDirectory" type="string" read-only="false">
-    <value encoded="n"><![CDATA[/tmp]]></value>
-    <description><![CDATA[Script working directory in the guest]]></description>
-  </attrib>
-  <attrib name="interactiveSession" type="boolean" read-only="false">
-    <description><![CDATA[Script context interactivity]]></description>
-  </attrib>
-  <attrib name="vms" type="Array/VC:VirtualMachine" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-    <description><![CDATA[Virtual machines found]]></description>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="944.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task">
-    <display-name><![CDATA[Get vRA Properties]]></display-name>
-    <script encoded="false"><![CDATA[var executionContext = System.getContext();
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="6dc0fa1a-6151-45c1-be4d-b179d73e370e" editor-version="1.6" version="0.0.6" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>vRA Get Properties</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="payload" type="Properties"/>
+    </input>
+    <output>
+        <param name="scriptOutputText" type="string">
+            <description>Output of the script</description>
+        </param>
+        <param name="scriptExitCode" type="number">
+            <description>Exit code of the script</description>
+        </param>
+    </output>
+    <attrib name="vmname" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="ipaddress" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="myscript" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="mynewscript" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="vm" type="VC:VirtualMachine">
+        <value encoded="n"/>
+        <description>Virtual Machine (VC)</description>
+    </attrib>
+    <attrib name="username" type="string">
+        <value encoded="n">root</value>
+        <description>Guest OS username</description>
+    </attrib>
+    <attrib name="password" type="SecureString">
+        <value encoded="n">8BH56X4DW77W61S72R65U31I21H24B6628P2B6B7BCZEFC117FMA1F563J3B2BB74T9972DC8M1B5A04DU14693FY9ABCDABT72CB16AL4346CDBXB148502OF5FFDA3PF3F19BDHA1B85D5V1C8AAA0Z431BDEAJDC7B4EETDD686DFGDB2EA03M4417990Q177C047K57123E3W489F193J</value>
+        <description>Guest OS password</description>
+    </attrib>
+    <attrib name="scriptType" type="string">
+        <value encoded="n">bash</value>
+        <description>bash / bat / powershell</description>
+    </attrib>
+    <attrib name="scriptTimeout" type="number">
+        <value encoded="n">10.0</value>
+        <description>Timeout for the running script (in second)</description>
+    </attrib>
+    <attrib name="scriptRefreshTime" type="number">
+        <value encoded="n">5.0</value>
+        <description>(default) Time (in seconds) where a check of script status occurs</description>
+    </attrib>
+    <attrib name="scriptWorkingDirectory" type="string">
+        <value encoded="n">/tmp</value>
+        <description>Script working directory in the guest</description>
+    </attrib>
+    <attrib name="interactiveSession" type="boolean">
+        <value encoded="n"/>
+        <description>Script context interactivity</description>
+    </attrib>
+    <attrib name="vms" type="Array/VC:VirtualMachine">
+        <value encoded="n"/>
+        <description>Virtual machines found</description>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="944.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Get vRA Properties</display-name>
+        <script encoded="false">var executionContext = System.getContext();
 
 System.log("BlueprintName: " + payload.get("blueprintName")) ;
 System.log("ComponentId: " + payload.get("componentId")) ;
@@ -107,20 +109,20 @@ if (vCACVmProperties != null) {
 System.log('Getting the custom properties needed') ;
 //var vmname = machine.get("name") ;
 //var ipaddress = vCACVmProperties.get("VirtualMachine.Network0.Address") ;
-//var myscript =  vCACVmProperties.get("myscript") ;]]></script>
-    <in-binding>
-      <bind name="payload" type="Properties" export-name="payload"/>
-    </in-binding>
-    <out-binding>
-      <bind name="ipaddress" type="string" export-name="ipaddress"/>
-      <bind name="myscript" type="string" export-name="myscript"/>
-      <bind name="vmname" type="string" export-name="vmname"/>
-    </out-binding>
-    <position y="55.40909090909091" x="344.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="payload">
-      <desc><![CDATA[payload]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+//var myscript =  vCACVmProperties.get("myscript") ;</script>
+        <in-binding>
+            <bind name="payload" type="Properties" export-name="payload"/>
+        </in-binding>
+        <out-binding>
+            <bind name="ipaddress" type="string" export-name="ipaddress"/>
+            <bind name="myscript" type="string" export-name="myscript"/>
+            <bind name="vmname" type="string" export-name="vmname"/>
+        </out-binding>
+        <position y="55.40909090909091" x="344.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="payload">
+            <desc>payload</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

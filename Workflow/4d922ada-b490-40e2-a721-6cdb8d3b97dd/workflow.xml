@@ -1,21 +1,22 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="4d922ada-b490-40e2-a721-6cdb8d3b97dd" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[SI ServiceNow - Retire CI]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="inputProperties" type="Properties"/>
-    <param name="vCenterVM" type="VC:VirtualMachine"/>
-    <param name="userName" type="string"/>
-  </input>
-  <attrib name="serviceNowSysId" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="564.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item1" type="task">
-    <display-name><![CDATA[get CI Data]]></display-name>
-    <script encoded="false"><![CDATA[//Get existing CI SysId to retire
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item2" object-name="workflow:name=generic" id="4d922ada-b490-40e2-a721-6cdb8d3b97dd" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>SI ServiceNow - Retire CI</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="inputProperties" type="Properties"/>
+        <param name="vCenterVM" type="VC:VirtualMachine"/>
+        <param name="userName" type="string"/>
+    </input>
+    <output/>
+    <attrib name="serviceNowSysId" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="564.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item1" type="task" comparator="0">
+        <display-name>get CI Data</display-name>
+        <script encoded="false">//Get existing CI SysId to retire
 if(inputProperties['customProperties']['serviceNowSysId']){
 
 	serviceNowSysId = inputProperties['customProperties']['serviceNowSysId'];
@@ -25,34 +26,34 @@ if(inputProperties['customProperties']['serviceNowSysId']){
 	System.warn("serviceNowSysId not defined, no CI to retire");
 	
 }
-]]></script>
-    <in-binding>
-      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
-      <bind name="vCenterVM" type="VC:VirtualMachine" export-name="vCenterVM"/>
-      <bind name="userName" type="string" export-name="userName"/>
-    </in-binding>
-    <out-binding>
-      <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="link" linked-workflow-id="85dc3763-5eb2-4057-8b66-f98956ef7bea">
-    <display-name><![CDATA[ServiceNow - Retire CMDB CI]]></display-name>
-    <in-binding>
-      <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
-    </in-binding>
-    <out-binding/>
-    <position y="55.90909090909091" x="345.0"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="inputProperties">
-      <desc><![CDATA[inputProperties]]></desc>
-    </p-param>
-    <p-param name="vCenterVM">
-      <desc><![CDATA[vCenterVM]]></desc>
-    </p-param>
-    <p-param name="userName">
-      <desc><![CDATA[userName]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+</script>
+        <in-binding>
+            <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+            <bind name="vCenterVM" type="VC:VirtualMachine" export-name="vCenterVM"/>
+            <bind name="userName" type="string" export-name="userName"/>
+        </in-binding>
+        <out-binding>
+            <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="link" linked-workflow-id="85dc3763-5eb2-4057-8b66-f98956ef7bea" comparator="0">
+        <display-name>ServiceNow - Retire CMDB CI</display-name>
+        <in-binding>
+            <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
+        </in-binding>
+        <out-binding/>
+        <position y="55.90909090909091" x="345.0"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="inputProperties">
+            <desc>inputProperties</desc>
+        </p-param>
+        <p-param name="vCenterVM">
+            <desc>vCenterVM</desc>
+        </p-param>
+        <p-param name="userName">
+            <desc>userName</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

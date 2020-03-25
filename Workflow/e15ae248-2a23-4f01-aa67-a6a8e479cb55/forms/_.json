@@ -1,0 +1,1 @@
+{"layout":{"pages":[{"id":"page_1","title":"General","sections":[{"id":"section_0","fields":[{"id":"virtualMachine","display":"valuePicker"}]}]}]},"schema":{"virtualMachine":{"type":{"dataType":"reference","isMultiple":false,"referenceType":"Azure:VirtualMachine"},"label":"Azure virtual machine","id":"virtualMachine","constraints":{"required":true}}},"itemId":""}

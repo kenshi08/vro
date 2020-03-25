@@ -1,69 +1,70 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="ff1a37c1-7809-4e29-bdef-d5d43d99937f" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[IncreaseDBSize]]></display-name>
-  <description><![CDATA[This Workflow  increase the size of a database in Microsoft SQL Server .]]></description>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="DBName" type="SQL:Database">
-      <description><![CDATA[Enter the Database Name]]></description>
-    </param>
-    <param name="SIZE" type="number">
-      <description><![CDATA[increase size of DB in MB]]></description>
-    </param>
-  </input>
-  <attrib name="interactiveSession" type="boolean" read-only="false">
-    <value encoded="n"><![CDATA[false]]></value>
-    <description><![CDATA[This is set to true if the client wants an interactive session in the guest.]]></description>
-  </attrib>
-  <attrib name="programPath" type="string" read-only="false">
-    <value encoded="n"><![CDATA[C:\Windows\System32\cmd.exe]]></value>
-    <description><![CDATA[The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. ]]></description>
-  </attrib>
-  <attrib name="arguments" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-    <description><![CDATA[The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. ]]></description>
-  </attrib>
-  <attrib name="workingDirectory" type="string" read-only="false">
-    <value encoded="n"><![CDATA[C:\Windows\System32]]></value>
-    <description><![CDATA[The absolute path of the working directory for the program to be run. VMware recommends explicitly setting the working directory for the program to be run. If this value is unset or is an empty string, the behavior depends on the guest operating system. For Linux guest operating systems, if this value is unset or is an empty string, the working directory will be the home directory of the user associated with the guest authentication. For other guest operating systems, if this value is unset, the behavior is unspecified. ]]></description>
-  </attrib>
-  <attrib name="environment" type="Array/string" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-    <description><![CDATA[An array of environment variables, specified in the guest OS notation (eg PATH=c:\bin;c:\windows\system32 or LD_LIBRARY_PATH=/usr/lib:/lib), to be set for the program being run. Note that these are not additions to the default environment variables; they define the complete set available to the program. If none are specified the values are guest dependent. ]]></description>
-  </attrib>
-  <attrib name="vmUsername" type="string" read-only="false">
-    <value encoded="n"><![CDATA[neetcloud\administrator]]></value>
-    <description><![CDATA[Username for the virtual machine]]></description>
-  </attrib>
-  <attrib name="vmPassword" type="SecureString" read-only="false">
-    <value encoded="n"><![CDATA[8BI56X4DQ77O40L72G33J31K21VF971175GEC5948CL3C43EBUF605BEAG93594AALD601B53Q6D2B976Y587BC91L6F1DE5DM56B1E4BV5E5E2B8XCF8113CGD021EE0T7BB6F34L5CF09CFT3A99535N1814A02P2D4DDDBJ79230C4Z3814D66LC015334XB3E7484ZC6E83AXC33A343U]]></value>
-    <description><![CDATA[Password for the virtual machine]]></description>
-  </attrib>
-  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-57'&dunesName='VC:VirtualMachine']]></value>
-    <description><![CDATA[Virtual machine]]></description>
-  </attrib>
-  <attrib name="sqluser" type="string" read-only="false">
-    <value encoded="n"><![CDATA[sa]]></value>
-    <description><![CDATA[Default username for the SQL Server]]></description>
-  </attrib>
-  <attrib name="sqlpwd" type="SecureString" read-only="false">
-    <value encoded="n"><![CDATA[8BQ56I4DQ77R40P72H33T31I21Q5952BCAH97F4810P4C85851TA13EE8BI40695B8VFD078FX29ED3CBY4672D70Y495D0E4YCAFDA40QEC2DFD5O74591BBQD7C7DF2GA25D1FCRF3F177DK447F33AIF57FCBAU72662BBO7146DE5TADA295DJD64C84DP6A371D7P2B242CFX948C6FER]]></value>
-    <description><![CDATA[Default Password for the SQL Server]]></description>
-  </attrib>
-  <attrib name="sqlinstance" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-    <description><![CDATA[SQL Instance Name]]></description>
-  </attrib>
-  <attrib name="Sqlfilepath" type="string" read-only="false">
-    <value encoded="n"><![CDATA[C:\sqlscripts\IncreaseDBSize.sql]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="464.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task">
-    <display-name><![CDATA[Increase DB size]]></display-name>
-    <script encoded="false"><![CDATA[var dbname=DBName.name.toString();
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="ff1a37c1-7809-4e29-bdef-d5d43d99937f" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>IncreaseDBSize</display-name>
+    <description>This Workflow  increase the size of a database in Microsoft SQL Server .</description>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="DBName" type="SQL:Database">
+            <description>Enter the Database Name</description>
+        </param>
+        <param name="SIZE" type="number">
+            <description>increase size of DB in MB</description>
+        </param>
+    </input>
+    <output/>
+    <attrib name="interactiveSession" type="boolean">
+        <value encoded="n">false</value>
+        <description>This is set to true if the client wants an interactive session in the guest.</description>
+    </attrib>
+    <attrib name="programPath" type="string">
+        <value encoded="n">C:\Windows\System32\cmd.exe</value>
+        <description>The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. </description>
+    </attrib>
+    <attrib name="arguments" type="string">
+        <value encoded="n"></value>
+        <description>The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. </description>
+    </attrib>
+    <attrib name="workingDirectory" type="string">
+        <value encoded="n">C:\Windows\System32</value>
+        <description>The absolute path of the working directory for the program to be run. VMware recommends explicitly setting the working directory for the program to be run. If this value is unset or is an empty string, the behavior depends on the guest operating system. For Linux guest operating systems, if this value is unset or is an empty string, the working directory will be the home directory of the user associated with the guest authentication. For other guest operating systems, if this value is unset, the behavior is unspecified. </description>
+    </attrib>
+    <attrib name="environment" type="Array/string">
+        <value encoded="n"/>
+        <description>An array of environment variables, specified in the guest OS notation (eg PATH=c:\bin;c:\windows\system32 or LD_LIBRARY_PATH=/usr/lib:/lib), to be set for the program being run. Note that these are not additions to the default environment variables; they define the complete set available to the program. If none are specified the values are guest dependent. </description>
+    </attrib>
+    <attrib name="vmUsername" type="string">
+        <value encoded="n">neetcloud\administrator</value>
+        <description>Username for the virtual machine</description>
+    </attrib>
+    <attrib name="vmPassword" type="SecureString">
+        <value encoded="n">8BI56X4DQ77O40L72G33J31K21VF971175GEC5948CL3C43EBUF605BEAG93594AALD601B53Q6D2B976Y587BC91L6F1DE5DM56B1E4BV5E5E2B8XCF8113CGD021EE0T7BB6F34L5CF09CFT3A99535N1814A02P2D4DDDBJ79230C4Z3814D66LC015334XB3E7484ZC6E83AXC33A343U</value>
+        <description>Password for the virtual machine</description>
+    </attrib>
+    <attrib name="vm" type="VC:VirtualMachine">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-57'&amp;dunesName='VC:VirtualMachine'</value>
+        <description>Virtual machine</description>
+    </attrib>
+    <attrib name="sqluser" type="string">
+        <value encoded="n">sa</value>
+        <description>Default username for the SQL Server</description>
+    </attrib>
+    <attrib name="sqlpwd" type="SecureString">
+        <value encoded="n">8BQ56I4DQ77R40P72H33T31I21Q5952BCAH97F4810P4C85851TA13EE8BI40695B8VFD078FX29ED3CBY4672D70Y495D0E4YCAFDA40QEC2DFD5O74591BBQD7C7DF2GA25D1FCRF3F177DK447F33AIF57FCBAU72662BBO7146DE5TADA295DJD64C84DP6A371D7P2B242CFX948C6FER</value>
+        <description>Default Password for the SQL Server</description>
+    </attrib>
+    <attrib name="sqlinstance" type="string">
+        <value encoded="n"></value>
+        <description>SQL Instance Name</description>
+    </attrib>
+    <attrib name="Sqlfilepath" type="string">
+        <value encoded="n">C:\sqlscripts\IncreaseDBSize.sql</value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="464.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Increase DB size</display-name>
+        <script encoded="false">var dbname=DBName.name.toString();
 
 //System.log(DBName.name.toString());
 
@@ -84,32 +85,32 @@ guestProgramSpec.workingDirectory = workingDirectory;
 guestProgramSpec.envVariables = environment;
 
 var processManager = guestOperationsManager.processManager;
-processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);]]></script>
-    <in-binding>
-      <bind name="vmUsername" type="string" export-name="vmUsername"/>
-      <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
-      <bind name="programPath" type="string" export-name="programPath"/>
-      <bind name="arguments" type="string" export-name="arguments"/>
-      <bind name="workingDirectory" type="string" export-name="workingDirectory"/>
-      <bind name="environment" type="Array/string" export-name="environment"/>
-      <bind name="interactiveSession" type="boolean" export-name="interactiveSession"/>
-      <bind name="DBName" type="SQL:Database" export-name="DBName"/>
-      <bind name="sqluser" type="string" export-name="sqluser"/>
-      <bind name="sqlpwd" type="SecureString" export-name="sqlpwd"/>
-      <bind name="sqlinstance" type="string" export-name="sqlinstance"/>
-      <bind name="Sqlfilepath" type="string" export-name="Sqlfilepath"/>
-      <bind name="SIZE" type="number" export-name="SIZE"/>
-    </in-binding>
-    <out-binding/>
-    <position y="55.40909090909091" x="224.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="DBName">
-      <desc><![CDATA[DBName]]></desc>
-    </p-param>
-    <p-param name="SIZE">
-      <desc><![CDATA[increase size of DB in MB]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);</script>
+        <in-binding>
+            <bind name="vmUsername" type="string" export-name="vmUsername"/>
+            <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+            <bind name="programPath" type="string" export-name="programPath"/>
+            <bind name="arguments" type="string" export-name="arguments"/>
+            <bind name="workingDirectory" type="string" export-name="workingDirectory"/>
+            <bind name="environment" type="Array/string" export-name="environment"/>
+            <bind name="interactiveSession" type="boolean" export-name="interactiveSession"/>
+            <bind name="DBName" type="SQL:Database" export-name="DBName"/>
+            <bind name="sqluser" type="string" export-name="sqluser"/>
+            <bind name="sqlpwd" type="SecureString" export-name="sqlpwd"/>
+            <bind name="sqlinstance" type="string" export-name="sqlinstance"/>
+            <bind name="Sqlfilepath" type="string" export-name="Sqlfilepath"/>
+            <bind name="SIZE" type="number" export-name="SIZE"/>
+        </in-binding>
+        <out-binding/>
+        <position y="55.40909090909091" x="224.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="DBName">
+            <desc>DBName</desc>
+        </p-param>
+        <p-param name="SIZE">
+            <desc>increase size of DB in MB</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

@@ -1,28 +1,29 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="7daf80e6-852a-4a10-a3df-5d54b182f5b0" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Scale Down vRA Deployment based on LB Load - SNMP]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="lbName" type="string"/>
-  </input>
-  <attrib name="host" type="vCACCAFE:VCACHost" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='86324f9f-7b62-4866-a074-1d7b268dd551'&dunesName='vCACCAFE:VCACHost']]></value>
-  </attrib>
-  <attrib name="nsxConnection" type="NSX:Connection" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='76101eba-05ef-404b-9b3c-15d0beaf836d'&dunesName='NSX:Connection']]></value>
-  </attrib>
-  <attrib name="memberVMName" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="vmMoref" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="664.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task">
-    <display-name><![CDATA[Get VM from LB name]]></display-name>
-    <script encoded="false"><![CDATA[System.log("LB name: "+lbName);
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="7daf80e6-852a-4a10-a3df-5d54b182f5b0" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Scale Down vRA Deployment based on LB Load - SNMP</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="lbName" type="string"/>
+    </input>
+    <output/>
+    <attrib name="host" type="vCACCAFE:VCACHost">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='86324f9f-7b62-4866-a074-1d7b268dd551'&amp;dunesName='vCACCAFE:VCACHost'</value>
+    </attrib>
+    <attrib name="nsxConnection" type="NSX:Connection">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='76101eba-05ef-404b-9b3c-15d0beaf836d'&amp;dunesName='NSX:Connection'</value>
+    </attrib>
+    <attrib name="memberVMName" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="vmMoref" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="664.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>Get VM from LB name</display-name>
+        <script encoded="false">System.log("LB name: "+lbName);
 
 var resources = vCACCAFEEntitiesFinder.findCatalogResources(host , lbName);
 
@@ -62,7 +63,7 @@ if(resources != null) {
 	
 	for each (var item in items)
 	{
-		if(item.resourceTypeRef.label == "Virtual Machine" && item.parentResourceRef.id == deploymentId) {
+		if(item.resourceTypeRef.label == "Virtual Machine" &amp;&amp; item.parentResourceRef.id == deploymentId) {
 			//System.log("item.requestId: "+item.requestId);
 			//System.log("item.parentResourceRef: "+item.parentResourceRef);
 			//System.log("item.resourceData: "+item.resourceData.get("NETWORK_LIST").getValue()[0].getValue().get("NETWORK_ADDRESS"));
@@ -102,20 +103,20 @@ function scaleOut(resource) {
 }
 
 
-]]></script>
-    <in-binding>
-      <bind name="lbName" type="string" export-name="lbName"/>
-      <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
-      <bind name="nsxConnection" type="NSX:Connection" export-name="nsxConnection"/>
-    </in-binding>
-    <out-binding>
-      <bind name="memberVMName" type="string" export-name="memberVMName"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item3" type="task">
-    <display-name><![CDATA[Get VM Moref from VM Name]]></display-name>
-    <script encoded="false"><![CDATA[var vm = findVms(vmName);
+</script>
+        <in-binding>
+            <bind name="lbName" type="string" export-name="lbName"/>
+            <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
+            <bind name="nsxConnection" type="NSX:Connection" export-name="nsxConnection"/>
+        </in-binding>
+        <out-binding>
+            <bind name="memberVMName" type="string" export-name="memberVMName"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item3" type="task" comparator="0">
+        <display-name>Get VM Moref from VM Name</display-name>
+        <script encoded="false">var vm = findVms(vmName);
 if(vm instanceof VcVirtualMachine) 
 {
 	System.log("Sucessfully located the vm object " + vm.name);
@@ -129,7 +130,7 @@ function findVms(vmName)
 {
     var vms = VcPlugin.getAllVirtualMachines()
     var vmResult = null;
-    for(var b=0; b<vms.length; b++)
+    for(var b=0; b&lt;vms.length; b++)
     { 
        if(vmName == vms[b].name)
        { 
@@ -138,26 +139,26 @@ function findVms(vmName)
        }
     } 
     return vmResult;
-}]]></script>
-    <in-binding>
-      <bind name="vmName" type="string" export-name="memberVMName"/>
-    </in-binding>
-    <out-binding>
-      <bind name="vmMoref" type="string" export-name="vmMoref"/>
-    </out-binding>
-    <position y="55.40909090909091" x="344.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item0" type="link" linked-workflow-id="2e8e822b-f919-4453-97e8-ce5dacd816f4">
-    <display-name><![CDATA[Scale Down Blueprint Layer based on VM MOID]]></display-name>
-    <in-binding>
-      <bind name="targetId" type="string" export-name="vmMoref"/>
-    </in-binding>
-    <out-binding/>
-    <position y="55.40909090909091" x="484.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="lbName">
-      <desc><![CDATA[lbName]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+}</script>
+        <in-binding>
+            <bind name="vmName" type="string" export-name="memberVMName"/>
+        </in-binding>
+        <out-binding>
+            <bind name="vmMoref" type="string" export-name="vmMoref"/>
+        </out-binding>
+        <position y="55.40909090909091" x="344.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" type="link" linked-workflow-id="2e8e822b-f919-4453-97e8-ce5dacd816f4" comparator="0">
+        <display-name>Scale Down Blueprint Layer based on VM MOID</display-name>
+        <in-binding>
+            <bind name="targetId" type="string" export-name="vmMoref"/>
+        </in-binding>
+        <out-binding/>
+        <position y="55.40909090909091" x="484.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="lbName">
+            <desc>lbName</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

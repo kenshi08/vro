@@ -1,16 +1,17 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="85dc3763-5eb2-4057-8b66-f98956ef7bea" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[ServiceNow - Retire CMDB CI]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="serviceNowSysId" type="string"/>
-  </input>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="384.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item0" type="task">
-    <display-name><![CDATA[CI Rest Operation]]></display-name>
-    <script encoded="false"><![CDATA[var configPath = "CS"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item3" object-name="workflow:name=generic" id="85dc3763-5eb2-4057-8b66-f98956ef7bea" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>ServiceNow - Retire CMDB CI</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="serviceNowSysId" type="string"/>
+    </input>
+    <output/>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="384.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" type="task" comparator="0">
+        <display-name>CI Rest Operation</display-name>
+        <script encoded="false">var configPath = "CS"
 var configName = "environmentConfig"
 var attributeName = "serviceNowRestHost"
 var tableName = "cmdb_ci_vmware_instance"
@@ -43,16 +44,16 @@ try{
 	throw ex + " failed to parse ServiceNow CMDB response";
 } 
 
-System.log(JSON.stringify(cmdbCI,null,2));]]></script>
-    <in-binding>
-      <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
-    </in-binding>
-    <out-binding/>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="serviceNowSysId">
-      <desc><![CDATA[serviceNowSysId]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+System.log(JSON.stringify(cmdbCI,null,2));</script>
+        <in-binding>
+            <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
+        </in-binding>
+        <out-binding/>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="serviceNowSysId">
+            <desc>serviceNowSysId</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

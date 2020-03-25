@@ -1,76 +1,77 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item4" object-name="workflow:name=generic" id="9eaa72ac-3f3e-49de-94dc-a294c765e2ae" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Scale Down vRA Deployment based on LB Load - vROps REST Notification]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="alertId" type="string"/>
-    <param name="param_1" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_2" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_3" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_4" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_5" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_6" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_7" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_8" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_9" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_10" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_11" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_12" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_13" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="param_14" type="string">
-      <description><![CDATA[Input parameter]]></description>
-    </param>
-    <param name="defaultContentType" type="string">
-      <description><![CDATA[Input content type]]></description>
-    </param>
-  </input>
-  <attrib name="host" type="vCACCAFE:VCACHost" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='986e279a-e284-4230-bb6c-43a225dbb9db'&dunesName='vCACCAFE:VCACHost']]></value>
-  </attrib>
-  <attrib name="nsxConnection" type="NSX:Connection" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='349a7d6a-d351-4f58-998b-cc40ae4f1f7a'&dunesName='NSX:Connection']]></value>
-  </attrib>
-  <attrib name="memberVMName" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="vmMoref" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="lbName" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="804.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task">
-    <display-name><![CDATA[Get VM from LB name]]></display-name>
-    <script encoded="false"><![CDATA[System.log("LB name: "+lbName);
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item4" object-name="workflow:name=generic" id="9eaa72ac-3f3e-49de-94dc-a294c765e2ae" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Scale Down vRA Deployment based on LB Load - vROps REST Notification</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="alertId" type="string"/>
+        <param name="param_1" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_2" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_3" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_4" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_5" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_6" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_7" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_8" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_9" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_10" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_11" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_12" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_13" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="param_14" type="string">
+            <description>Input parameter</description>
+        </param>
+        <param name="defaultContentType" type="string">
+            <description>Input content type</description>
+        </param>
+    </input>
+    <output/>
+    <attrib name="host" type="vCACCAFE:VCACHost">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='986e279a-e284-4230-bb6c-43a225dbb9db'&amp;dunesName='vCACCAFE:VCACHost'</value>
+    </attrib>
+    <attrib name="nsxConnection" type="NSX:Connection">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='349a7d6a-d351-4f58-998b-cc40ae4f1f7a'&amp;dunesName='NSX:Connection'</value>
+    </attrib>
+    <attrib name="memberVMName" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="vmMoref" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="lbName" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="804.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>Get VM from LB name</display-name>
+        <script encoded="false">System.log("LB name: "+lbName);
 
 // Stripping off the Load Balancer from the load balancer name
 var endIndex = lbName.indexOf(" Load Balancer");
@@ -115,7 +116,7 @@ if(resources != null) {
 	
 	for each (var item in items)
 	{
-		if(item.resourceTypeRef.label == "Virtual Machine" && item.parentResourceRef.id == deploymentId) {
+		if(item.resourceTypeRef.label == "Virtual Machine" &amp;&amp; item.parentResourceRef.id == deploymentId) {
 			//System.log("item.requestId: "+item.requestId);
 			//System.log("item.parentResourceRef: "+item.parentResourceRef);
 			//System.log("item.resourceData: "+item.resourceData.get("NETWORK_LIST").getValue()[0].getValue().get("NETWORK_ADDRESS"));
@@ -155,20 +156,20 @@ function scaleOut(resource) {
 }
 
 
-]]></script>
-    <in-binding>
-      <bind name="lbName" type="string" export-name="lbName"/>
-      <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
-      <bind name="nsxConnection" type="NSX:Connection" export-name="nsxConnection"/>
-    </in-binding>
-    <out-binding>
-      <bind name="memberVMName" type="string" export-name="memberVMName"/>
-    </out-binding>
-    <position y="55.40909090909091" x="344.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item3" type="task">
-    <display-name><![CDATA[Get VM Moref from VM Name]]></display-name>
-    <script encoded="false"><![CDATA[var vm = findVms(vmName);
+</script>
+        <in-binding>
+            <bind name="lbName" type="string" export-name="lbName"/>
+            <bind name="host" type="vCACCAFE:VCACHost" export-name="host"/>
+            <bind name="nsxConnection" type="NSX:Connection" export-name="nsxConnection"/>
+        </in-binding>
+        <out-binding>
+            <bind name="memberVMName" type="string" export-name="memberVMName"/>
+        </out-binding>
+        <position y="55.40909090909091" x="344.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item3" type="task" comparator="0">
+        <display-name>Get VM Moref from VM Name</display-name>
+        <script encoded="false">var vm = findVms(vmName);
 if(vm instanceof VcVirtualMachine) 
 {
 	System.log("Sucessfully located the vm object " + vm.name);
@@ -182,7 +183,7 @@ function findVms(vmName)
 {
     var vms = VcPlugin.getAllVirtualMachines()
     var vmResult = null;
-    for(var b=0; b<vms.length; b++)
+    for(var b=0; b&lt;vms.length; b++)
     { 
        if(vmName == vms[b].name)
        { 
@@ -191,133 +192,133 @@ function findVms(vmName)
        }
     } 
     return vmResult;
-}]]></script>
-    <in-binding>
-      <bind name="vmName" type="string" export-name="memberVMName"/>
-    </in-binding>
-    <out-binding>
-      <bind name="vmMoref" type="string" export-name="vmMoref"/>
-    </out-binding>
-    <position y="55.40909090909091" x="484.5"/>
-  </workflow-item>
-  <workflow-item name="item4" out-name="item1" type="link" linked-workflow-id="6eb0a752-0ab1-4408-9d52-914d354d044b">
-    <display-name><![CDATA[Get VM Name from vROps REST Notification]]></display-name>
-    <in-binding>
-      <bind name="alertId" type="string" export-name="alertId"/>
-      <bind name="param_1" type="string" export-name="param_1">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_2" type="string" export-name="param_2">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_3" type="string" export-name="param_3">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_4" type="string" export-name="param_4">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_5" type="string" export-name="param_5">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_6" type="string" export-name="param_6">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_7" type="string" export-name="param_7">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_8" type="string" export-name="param_8">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_9" type="string" export-name="param_9">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_10" type="string" export-name="param_10">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_11" type="string" export-name="param_11">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_12" type="string" export-name="param_12">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_13" type="string" export-name="param_13">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="param_14" type="string" export-name="param_14">
-        <description><![CDATA[Input parameter]]></description>
-      </bind>
-      <bind name="defaultContentType" type="string" export-name="defaultContentType">
-        <description><![CDATA[Input content type]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="vmName" type="string" export-name="lbName"/>
-    </out-binding>
-    <description><![CDATA[Gets the VM Name from the REST Notification sent by vROps server 
+}</script>
+        <in-binding>
+            <bind name="vmName" type="string" export-name="memberVMName"/>
+        </in-binding>
+        <out-binding>
+            <bind name="vmMoref" type="string" export-name="vmMoref"/>
+        </out-binding>
+        <position y="55.40909090909091" x="484.5"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item1" type="link" linked-workflow-id="6eb0a752-0ab1-4408-9d52-914d354d044b" comparator="0">
+        <display-name>Get VM Name from vROps REST Notification</display-name>
+        <in-binding>
+            <bind name="alertId" type="string" export-name="alertId"/>
+            <bind name="param_1" type="string" export-name="param_1">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_2" type="string" export-name="param_2">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_3" type="string" export-name="param_3">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_4" type="string" export-name="param_4">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_5" type="string" export-name="param_5">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_6" type="string" export-name="param_6">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_7" type="string" export-name="param_7">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_8" type="string" export-name="param_8">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_9" type="string" export-name="param_9">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_10" type="string" export-name="param_10">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_11" type="string" export-name="param_11">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_12" type="string" export-name="param_12">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_13" type="string" export-name="param_13">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="param_14" type="string" export-name="param_14">
+                <description>Input parameter</description>
+            </bind>
+            <bind name="defaultContentType" type="string" export-name="defaultContentType">
+                <description>Input content type</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="vmName" type="string" export-name="lbName"/>
+        </out-binding>
+        <description>Gets the VM Name from the REST Notification sent by vROps server 
 
 You will need to create 2 REST Operations for your vR Ops REST host.
 
 GET /api/alerts/{alertid}
 GET /api/resources/{resourceId}
-]]></description>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item0" type="link" linked-workflow-id="2e8e822b-f919-4453-97e8-ce5dacd816f4">
-    <display-name><![CDATA[Scale Down Blueprint Layer based on VM MOID]]></display-name>
-    <in-binding>
-      <bind name="targetId" type="string" export-name="vmMoref"/>
-    </in-binding>
-    <out-binding/>
-    <position y="55.90909090909091" x="625.0"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="alertId">
-      <desc><![CDATA[alertId]]></desc>
-    </p-param>
-    <p-param name="param_1">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_2">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_3">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_4">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_5">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_6">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_7">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_8">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_9">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_10">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_11">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_12">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_13">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="param_14">
-      <desc><![CDATA[Input parameter]]></desc>
-    </p-param>
-    <p-param name="defaultContentType">
-      <desc><![CDATA[Input content type]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+</description>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" type="link" linked-workflow-id="2e8e822b-f919-4453-97e8-ce5dacd816f4" comparator="0">
+        <display-name>Scale Down Blueprint Layer based on VM MOID</display-name>
+        <in-binding>
+            <bind name="targetId" type="string" export-name="vmMoref"/>
+        </in-binding>
+        <out-binding/>
+        <position y="55.90909090909091" x="625.0"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="alertId">
+            <desc>alertId</desc>
+        </p-param>
+        <p-param name="param_1">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_2">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_3">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_4">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_5">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_6">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_7">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_8">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_9">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_10">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_11">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_12">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_13">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="param_14">
+            <desc>Input parameter</desc>
+        </p-param>
+        <p-param name="defaultContentType">
+            <desc>Input content type</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

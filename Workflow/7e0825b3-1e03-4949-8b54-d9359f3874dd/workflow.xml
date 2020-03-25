@@ -1,24 +1,24 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="7e0825b3-1e03-4949-8b54-d9359f3874dd" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[virtual machine by name]]></display-name>
-  <description><![CDATA[Returns a list of virtual machines from all registered vCenter Server hosts that match the provided expression.]]></description>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="criteria" type="string">
-      <description><![CDATA[Search criteria. Regular expressions supported.]]></description>
-    </param>
-  </input>
-  <output>
-    <param name="vms" type="Array/VC:VirtualMachine">
-      <description><![CDATA[Virtual machines found]]></description>
-    </param>
-  </output>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="384.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task">
-    <display-name><![CDATA[Scriptable task]]></display-name>
-    <script encoded="false"><![CDATA[var sdkConnections = VcPlugin.allSdkConnections;
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="7e0825b3-1e03-4949-8b54-d9359f3874dd" editor-version="1.6" version="0.0.2" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>virtual machine by name</display-name>
+    <description>Returns a list of virtual machines from all registered vCenter Server hosts that match the provided expression.</description>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="criteria" type="string">
+            <description>Search criteria. Regular expressions supported.</description>
+        </param>
+    </input>
+    <output>
+        <param name="vms" type="Array/VC:VirtualMachine">
+            <description>Virtual machines found</description>
+        </param>
+    </output>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="384.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">var sdkConnections = VcPlugin.allSdkConnections;
 vms = new Array();
 for (var i in sdkConnections) {
 	var host = sdkConnections[i];
@@ -26,18 +26,18 @@ for (var i in sdkConnections) {
 	for (var j in found) {
 		vms.push(found[j]);
 	}
-}]]></script>
-    <in-binding>
-      <bind name="criteria" type="string" export-name="criteria"/>
-    </in-binding>
-    <out-binding>
-      <bind name="vms" type="Array/VC:VirtualMachine" export-name="vms"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="criteria">
-      <desc><![CDATA[Search criteria. Regular expressions supported.]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+}</script>
+        <in-binding>
+            <bind name="criteria" type="string" export-name="criteria"/>
+        </in-binding>
+        <out-binding>
+            <bind name="vms" type="Array/VC:VirtualMachine" export-name="vms"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="criteria">
+            <desc>Search criteria. Regular expressions supported.</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

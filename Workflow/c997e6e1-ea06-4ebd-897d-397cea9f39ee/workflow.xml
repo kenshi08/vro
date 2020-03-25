@@ -1,25 +1,25 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="c997e6e1-ea06-4ebd-897d-397cea9f39ee" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Count VMs in Layer]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="layerName" type="string"/>
-    <param name="deployment" type="vCACCAFE:CatalogResource"/>
-    <param name="cafeHost" type="vCACCAFE:VCACHost"/>
-    <param name="vcacHost" type="vCAC:VCACHost"/>
-  </input>
-  <output>
-    <param name="layerCount" type="number"/>
-  </output>
-  <attrib name="items" type="Array/vCACCAFE:CatalogResource" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="524.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task">
-    <display-name><![CDATA[Find all Childs]]></display-name>
-    <script encoded="false"><![CDATA[tmpItems = Server.findAllForType("vCACCAFE:CatalogResource", "");
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="c997e6e1-ea06-4ebd-897d-397cea9f39ee" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Count VMs in Layer</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="layerName" type="string"/>
+        <param name="deployment" type="vCACCAFE:CatalogResource"/>
+        <param name="cafeHost" type="vCACCAFE:VCACHost"/>
+        <param name="vcacHost" type="vCAC:VCACHost"/>
+    </input>
+    <output>
+        <param name="layerCount" type="number"/>
+    </output>
+    <attrib name="items" type="Array/vCACCAFE:CatalogResource">
+        <value encoded="n"/>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="524.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>Find all Childs</display-name>
+        <script encoded="false">tmpItems = Server.findAllForType("vCACCAFE:CatalogResource", "");
 
 items = new Array();
 
@@ -43,19 +43,19 @@ for each (item in tmpItems)
 
 
 
-]]></script>
-    <in-binding>
-      <bind name="deployment" type="vCACCAFE:CatalogResource" export-name="deployment"/>
-      <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost"/>
-    </in-binding>
-    <out-binding>
-      <bind name="items" type="Array/vCACCAFE:CatalogResource" export-name="items"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item0" type="task">
-    <display-name><![CDATA[Count Layer]]></display-name>
-    <script encoded="false"><![CDATA[layerCount = 0;
+</script>
+        <in-binding>
+            <bind name="deployment" type="vCACCAFE:CatalogResource" export-name="deployment"/>
+            <bind name="cafeHost" type="vCACCAFE:VCACHost" export-name="cafeHost"/>
+        </in-binding>
+        <out-binding>
+            <bind name="items" type="Array/vCACCAFE:CatalogResource" export-name="items"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item0" type="task" comparator="0">
+        <display-name>Count Layer</display-name>
+        <script encoded="false">layerCount = 0;
 
 System.log("==============================");
 System.log("Total Items:: "+items);
@@ -77,29 +77,29 @@ for each (item in items)
 		}
 	} catch (ex) {}	
 	System.log("Layer Count:: "+layerCount);
-}]]></script>
-    <in-binding>
-      <bind name="items" type="Array/vCACCAFE:CatalogResource" export-name="items"/>
-      <bind name="vcacHost" type="vCAC:VCACHost" export-name="vcacHost"/>
-      <bind name="layerName" type="string" export-name="layerName"/>
-    </in-binding>
-    <out-binding>
-      <bind name="layerCount" type="number" export-name="layerCount"/>
-    </out-binding>
-    <position y="55.40909090909091" x="344.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="layerName">
-      <desc><![CDATA[layerName]]></desc>
-    </p-param>
-    <p-param name="deployment">
-      <desc><![CDATA[deployment]]></desc>
-    </p-param>
-    <p-param name="cafeHost">
-      <desc><![CDATA[cafeHost]]></desc>
-    </p-param>
-    <p-param name="vcacHost">
-      <desc><![CDATA[vcacHost]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+}</script>
+        <in-binding>
+            <bind name="items" type="Array/vCACCAFE:CatalogResource" export-name="items"/>
+            <bind name="vcacHost" type="vCAC:VCACHost" export-name="vcacHost"/>
+            <bind name="layerName" type="string" export-name="layerName"/>
+        </in-binding>
+        <out-binding>
+            <bind name="layerCount" type="number" export-name="layerCount"/>
+        </out-binding>
+        <position y="55.40909090909091" x="344.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="layerName">
+            <desc>layerName</desc>
+        </p-param>
+        <p-param name="deployment">
+            <desc>deployment</desc>
+        </p-param>
+        <p-param name="cafeHost">
+            <desc>cafeHost</desc>
+        </p-param>
+        <p-param name="vcacHost">
+            <desc>vcacHost</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

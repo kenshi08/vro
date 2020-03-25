@@ -1,0 +1,1 @@
+{"layout":{"pages":[{"id":"page_1","title":"General","sections":[{"id":"section_0","fields":[{"id":"input","display":"valuePicker"}]}]}]},"schema":{"input":{"type":{"dataType":"reference","isMultiple":false,"referenceType":"AWS:EC2Instance"},"label":"input","id":"input"}},"itemId":""}

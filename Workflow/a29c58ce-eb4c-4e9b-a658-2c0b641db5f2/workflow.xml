@@ -1,75 +1,76 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="a29c58ce-eb4c-4e9b-a658-2c0b641db5f2" version="0.0.9" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[AnsibleServerRunvRA7]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="payload" type="Properties"/>
-  </input>
-  <output>
-    <param name="result" type="number">
-      <description><![CDATA[The pid of the program started.]]></description>
-    </param>
-    <param name="errorText" type="string">
-      <description><![CDATA[Error text, if any]]></description>
-    </param>
-    <param name="outputText" type="string">
-      <description><![CDATA[Result of running the SSH command]]></description>
-    </param>
-  </output>
-  <attrib name="SSHPort" type="number" read-only="false">
-    <value encoded="n"><![CDATA[22.0]]></value>
-  </attrib>
-  <attrib name="AnsibleServerPass" type="SecureString" read-only="false">
-    <value encoded="n"><![CDATA[8BH56P4DK77U40G72I33N31T21ID465946TE1599E3RA9B292FOC987428L9D6F603R5FADE59I5EE6F7S7B6D3B7G46824B8L81B1DCAODB0CE0DGD8E0172TC336C5FQ80D4873Q1228261G8C66BCAMA913322JB21A708P5D7A3B9K39700EBREE19DE2J6A0D97ELC501DB2MCE05203U]]></value>
-    <description><![CDATA[The password to SSH to the ansible server]]></description>
-  </attrib>
-  <attrib name="criteria" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-    <description><![CDATA[Search criteria. Regular expressions supported.]]></description>
-  </attrib>
-  <attrib name="vms" type="Array/VC:VirtualMachine" read-only="false">
-    <description><![CDATA[Virtual machines found]]></description>
-  </attrib>
-  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-  </attrib>
-  <attrib name="AnsibleServerUser" type="string" read-only="false">
-    <value encoded="n"><![CDATA[root]]></value>
-    <description><![CDATA[Username to login to SSH server]]></description>
-  </attrib>
-  <attrib name="arguments" type="string" read-only="false">
-    <value encoded="n"><![CDATA[sh /home/runplaybook.sh]]></value>
-    <description><![CDATA[this is the script on the Ansible server to run]]></description>
-  </attrib>
-  <attrib name="pollingRate" type="number" read-only="false">
-    <value encoded="n"><![CDATA[10.0]]></value>
-    <description><![CDATA[Time between all request information on the tools [seconds]]]></description>
-  </attrib>
-  <attrib name="timeout" type="number" read-only="false">
-    <value encoded="n"><![CDATA[5.0]]></value>
-    <description><![CDATA[Timeout before throwing a timeout exception [minutes]]]></description>
-  </attrib>
-  <attrib name="address" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="playbook" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-    <description><![CDATA[This is a vRA custom property]]></description>
-  </attrib>
-  <attrib name="cmd" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-    <description><![CDATA[This will be poulated from vRA properties]]></description>
-  </attrib>
-  <attrib name="ansibleserver" type="string" read-only="false">
-    <value encoded="n"><![CDATA[ansible-01a.neetcloud.local]]></value>
-    <description><![CDATA[The ansible server host or IP address]]></description>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="1084.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task">
-    <display-name><![CDATA[Collect vRA Payload]]></display-name>
-    <script encoded="false"><![CDATA[var executionContext = System.getContext();
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="a29c58ce-eb4c-4e9b-a658-2c0b641db5f2" editor-version="1.6" version="0.0.9" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>AnsibleServerRunvRA7</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="payload" type="Properties"/>
+    </input>
+    <output>
+        <param name="result" type="number">
+            <description>The pid of the program started.</description>
+        </param>
+        <param name="errorText" type="string">
+            <description>Error text, if any</description>
+        </param>
+        <param name="outputText" type="string">
+            <description>Result of running the SSH command</description>
+        </param>
+    </output>
+    <attrib name="SSHPort" type="number">
+        <value encoded="n">22.0</value>
+    </attrib>
+    <attrib name="AnsibleServerPass" type="SecureString">
+        <value encoded="n">8BH56P4DK77U40G72I33N31T21ID465946TE1599E3RA9B292FOC987428L9D6F603R5FADE59I5EE6F7S7B6D3B7G46824B8L81B1DCAODB0CE0DGD8E0172TC336C5FQ80D4873Q1228261G8C66BCAMA913322JB21A708P5D7A3B9K39700EBREE19DE2J6A0D97ELC501DB2MCE05203U</value>
+        <description>The password to SSH to the ansible server</description>
+    </attrib>
+    <attrib name="criteria" type="string">
+        <value encoded="n"></value>
+        <description>Search criteria. Regular expressions supported.</description>
+    </attrib>
+    <attrib name="vms" type="Array/VC:VirtualMachine">
+        <value encoded="n"/>
+        <description>Virtual machines found</description>
+    </attrib>
+    <attrib name="vm" type="VC:VirtualMachine">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="AnsibleServerUser" type="string">
+        <value encoded="n">root</value>
+        <description>Username to login to SSH server</description>
+    </attrib>
+    <attrib name="arguments" type="string">
+        <value encoded="n">sh /home/runplaybook.sh</value>
+        <description>this is the script on the Ansible server to run</description>
+    </attrib>
+    <attrib name="pollingRate" type="number">
+        <value encoded="n">10.0</value>
+        <description>Time between all request information on the tools [seconds]</description>
+    </attrib>
+    <attrib name="timeout" type="number">
+        <value encoded="n">5.0</value>
+        <description>Timeout before throwing a timeout exception [minutes]</description>
+    </attrib>
+    <attrib name="address" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="playbook" type="string">
+        <value encoded="n"></value>
+        <description>This is a vRA custom property</description>
+    </attrib>
+    <attrib name="cmd" type="string">
+        <value encoded="n"></value>
+        <description>This will be poulated from vRA properties</description>
+    </attrib>
+    <attrib name="ansibleserver" type="string">
+        <value encoded="n">ansible-01a.neetcloud.local</value>
+        <description>The ansible server host or IP address</description>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="1084.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>Collect vRA Payload</display-name>
+        <script encoded="false">var executionContext = System.getContext();
 
 System.log("BlueprintName: " + payload.get("blueprintName")) ;
 System.log("ComponentId: " + payload.get("componentId")) ;
@@ -114,123 +115,123 @@ var criteria = machine.get("name") ;
 var address = vCACVmProperties.get("VirtualMachine.Network0.Address") ;
 var playbook = vCACVmProperties.get("neetcloud.ansible.playbook") ;
 
-]]></script>
-    <in-binding>
-      <bind name="payload" type="Properties" export-name="payload"/>
-    </in-binding>
-    <out-binding>
-      <bind name="address" type="string" export-name="address"/>
-      <bind name="playbook" type="string" export-name="playbook"/>
-      <bind name="criteria" type="string" export-name="criteria"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <workflow-item name="item4" out-name="item5" type="link" linked-workflow-id="7e0825b3-1e03-4949-8b54-d9359f3874dd">
-    <display-name><![CDATA[virtual machine by name]]></display-name>
-    <in-binding>
-      <bind name="criteria" type="string" export-name="criteria">
-        <description><![CDATA[Search criteria. Regular expressions supported.]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="vms" type="Array/VC:VirtualMachine" export-name="vms">
-        <description><![CDATA[Virtual machines found]]></description>
-      </bind>
-    </out-binding>
-    <description><![CDATA[Returns a list of virtual machines from all registered vCenter Server hosts that match the provided expression.]]></description>
-    <position y="55.40909090909091" x="484.5"/>
-  </workflow-item>
-  <workflow-item name="item5" out-name="item3" type="task">
-    <display-name><![CDATA[Convert to VC:VM]]></display-name>
-    <script encoded="false"><![CDATA[//convert array to vc:virtualmachine
+</script>
+        <in-binding>
+            <bind name="payload" type="Properties" export-name="payload"/>
+        </in-binding>
+        <out-binding>
+            <bind name="address" type="string" export-name="address"/>
+            <bind name="playbook" type="string" export-name="playbook"/>
+            <bind name="criteria" type="string" export-name="criteria"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item5" type="link" linked-workflow-id="7e0825b3-1e03-4949-8b54-d9359f3874dd" comparator="0">
+        <display-name>virtual machine by name</display-name>
+        <in-binding>
+            <bind name="criteria" type="string" export-name="criteria">
+                <description>Search criteria. Regular expressions supported.</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="vms" type="Array/VC:VirtualMachine" export-name="vms">
+                <description>Virtual machines found</description>
+            </bind>
+        </out-binding>
+        <description>Returns a list of virtual machines from all registered vCenter Server hosts that match the provided expression.</description>
+        <position y="55.40909090909091" x="484.5"/>
+    </workflow-item>
+    <workflow-item name="item5" out-name="item3" type="task" comparator="0">
+        <display-name>Convert to VC:VM</display-name>
+        <script encoded="false">//convert array to vc:virtualmachine
 System.log('Converting VMs array to VM object') ;
 vm=vms[0] ;
 System.log('Found VM = ' + vm) ;
 
 
 
-]]></script>
-    <in-binding>
-      <bind name="vms" type="Array/VC:VirtualMachine" export-name="vms"/>
-    </in-binding>
-    <out-binding>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
-    </out-binding>
-    <position y="55.40909090909091" x="624.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item6" type="task" script-module="com.vmware.library.vc.vm.tools/vim3WaitToolsStarted">
-    <display-name><![CDATA[vim3WaitToolsStarted]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-System.getModule("com.vmware.library.vc.vm.tools").vim3WaitToolsStarted(vm,pollingRate,timeout) ;]]></script>
-    <in-binding>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
-        <description><![CDATA[VM in which the action look to get the new DNS Name]]></description>
-      </bind>
-      <bind name="pollingRate" type="number" export-name="pollingRate">
-        <description><![CDATA[Time between all request information on the tools [seconds]]]></description>
-      </bind>
-      <bind name="timeout" type="number" export-name="timeout">
-        <description><![CDATA[Timeout before throwing a timeout exception [minutes]]]></description>
-      </bind>
-    </in-binding>
-    <out-binding/>
-    <description><![CDATA[Wait for the VMware tools to be up and the guest running
+</script>
+        <in-binding>
+            <bind name="vms" type="Array/VC:VirtualMachine" export-name="vms"/>
+        </in-binding>
+        <out-binding>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+        </out-binding>
+        <position y="55.40909090909091" x="624.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item6" type="task" script-module="com.vmware.library.vc.vm.tools/vim3WaitToolsStarted" comparator="0">
+        <display-name>vim3WaitToolsStarted</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.vc.vm.tools").vim3WaitToolsStarted(vm,pollingRate,timeout) ;</script>
+        <in-binding>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+                <description>VM in which the action look to get the new DNS Name</description>
+            </bind>
+            <bind name="pollingRate" type="number" export-name="pollingRate">
+                <description>Time between all request information on the tools [seconds]</description>
+            </bind>
+            <bind name="timeout" type="number" export-name="timeout">
+                <description>Timeout before throwing a timeout exception [minutes]</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <description>Wait for the VMware tools to be up and the guest running
 
 Exception:
 - Timeout: When timeout is reached
-- ReferenceError: When vm is not set correctly]]></description>
-    <position y="55.40909090909091" x="764.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item4" type="task">
-    <display-name><![CDATA[MakeSSHCMD]]></display-name>
-    <script encoded="false"><![CDATA[cmd = arguments + " " + address + " " + playbook;
-]]></script>
-    <in-binding>
-      <bind name="arguments" type="string" export-name="arguments"/>
-      <bind name="address" type="string" export-name="address"/>
-      <bind name="playbook" type="string" export-name="playbook"/>
-    </in-binding>
-    <out-binding>
-      <bind name="cmd" type="string" export-name="cmd"/>
-    </out-binding>
-    <position y="55.40909090909091" x="344.5"/>
-  </workflow-item>
-  <workflow-item name="item6" out-name="item0" type="link" linked-workflow-id="5f4c3fcc-6daf-43a1-b708-c38dc1decd21">
-    <display-name><![CDATA[AnsiblePlaybookRun]]></display-name>
-    <in-binding>
-      <bind name="AnsibleServer" type="string" export-name="ansibleserver">
-        <description><![CDATA[Hostname or IP address of the ansible server]]></description>
-      </bind>
-      <bind name="port" type="number" export-name="SSHPort">
-        <description><![CDATA[Target port]]></description>
-      </bind>
-      <bind name="username" type="string" export-name="AnsibleServerUser">
-        <description><![CDATA[Username]]></description>
-      </bind>
-      <bind name="password" type="SecureString" export-name="AnsibleServerPass">
-        <description><![CDATA[Password]]></description>
-      </bind>
-      <bind name="cmd" type="string" export-name="cmd">
-        <description><![CDATA[The SSH command to run]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="result" type="number" export-name="result">
-        <description><![CDATA[0 = OK, Negative = Error, Positive = Number of values returned, after error text]]></description>
-      </bind>
-      <bind name="errorText" type="string" export-name="errorText">
-        <description><![CDATA[Error text, if any]]></description>
-      </bind>
-      <bind name="outputText" type="string" export-name="outputText">
-        <description><![CDATA[Result of running the SSH command]]></description>
-      </bind>
-    </out-binding>
-    <description><![CDATA[Runs an SSH command.]]></description>
-    <position y="55.40909090909091" x="904.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="payload">
-      <desc><![CDATA[payload]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+- ReferenceError: When vm is not set correctly</description>
+        <position y="55.40909090909091" x="764.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item4" type="task" comparator="0">
+        <display-name>MakeSSHCMD</display-name>
+        <script encoded="false">cmd = arguments + " " + address + " " + playbook;
+</script>
+        <in-binding>
+            <bind name="arguments" type="string" export-name="arguments"/>
+            <bind name="address" type="string" export-name="address"/>
+            <bind name="playbook" type="string" export-name="playbook"/>
+        </in-binding>
+        <out-binding>
+            <bind name="cmd" type="string" export-name="cmd"/>
+        </out-binding>
+        <position y="55.40909090909091" x="344.5"/>
+    </workflow-item>
+    <workflow-item name="item6" out-name="item0" type="link" linked-workflow-id="5f4c3fcc-6daf-43a1-b708-c38dc1decd21" comparator="0">
+        <display-name>AnsiblePlaybookRun</display-name>
+        <in-binding>
+            <bind name="AnsibleServer" type="string" export-name="ansibleserver">
+                <description>Hostname or IP address of the ansible server</description>
+            </bind>
+            <bind name="port" type="number" export-name="SSHPort">
+                <description>Target port</description>
+            </bind>
+            <bind name="username" type="string" export-name="AnsibleServerUser">
+                <description>Username</description>
+            </bind>
+            <bind name="password" type="SecureString" export-name="AnsibleServerPass">
+                <description>Password</description>
+            </bind>
+            <bind name="cmd" type="string" export-name="cmd">
+                <description>The SSH command to run</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="result" type="number" export-name="result">
+                <description>0 = OK, Negative = Error, Positive = Number of values returned, after error text</description>
+            </bind>
+            <bind name="errorText" type="string" export-name="errorText">
+                <description>Error text, if any</description>
+            </bind>
+            <bind name="outputText" type="string" export-name="outputText">
+                <description>Result of running the SSH command</description>
+            </bind>
+        </out-binding>
+        <description>Runs an SSH command.</description>
+        <position y="55.40909090909091" x="904.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="payload">
+            <desc>payload</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

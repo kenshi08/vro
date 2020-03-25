@@ -1,29 +1,30 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="9edc99b7-c12e-4db1-8ebd-e922bff6b62b" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Attach Volume]]></display-name>
-  <description><![CDATA[Attaches an Amazon EBS volume to a running or stopped instance and exposes it to the instance with the specified device name.]]></description>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="instance" type="AWS:EC2Instance">
-      <description><![CDATA[Instance]]></description>
-    </param>
-    <param name="volume" type="AWS:EC2Volume">
-      <description><![CDATA[Volume]]></description>
-    </param>
-    <param name="device" type="string">
-      <description><![CDATA[Device name to expose to the instance (/dev/sdh)]]></description>
-    </param>
-  </input>
-  <attrib name="client" type="AWS:AWSClient" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='1457d4fa-9fe2-4be4-a7c7-db09c5be0ca0/us-west-1'&dunesName='AWS:AWSClient']]></value>
-    <description><![CDATA[AWS client]]></description>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="384.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task">
-    <display-name><![CDATA[Scriptable task]]></display-name>
-    <script encoded="false"><![CDATA[//Get the AmazonEC2Client
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="9edc99b7-c12e-4db1-8ebd-e922bff6b62b" editor-version="1.6" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Attach Volume</display-name>
+    <description>Attaches an Amazon EBS volume to a running or stopped instance and exposes it to the instance with the specified device name.</description>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="instance" type="AWS:EC2Instance">
+            <description>Instance</description>
+        </param>
+        <param name="volume" type="AWS:EC2Volume">
+            <description>Volume</description>
+        </param>
+        <param name="device" type="string">
+            <description>Device name to expose to the instance (/dev/sdh)</description>
+        </param>
+    </input>
+    <output/>
+    <attrib name="client" type="AWS:AWSClient">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='1457d4fa-9fe2-4be4-a7c7-db09c5be0ca0/us-west-1'&amp;dunesName='AWS:AWSClient'</value>
+        <description>AWS client</description>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="384.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">//Get the AmazonEC2Client
 var ec2Client = client.getAmazonEC2Client();
 
 //Initiate the request
@@ -37,31 +38,31 @@ attachRequest.setDevice(device);
 //Send the request
 ec2Client.attachVolume(attachRequest);
 
-ec2instance = instance;]]></script>
-    <in-binding>
-      <bind name="client" type="AWS:AWSClient" export-name="client"/>
-      <bind name="volume" type="AWS:EC2Volume" export-name="volume">
-        <description><![CDATA[Volume]]></description>
-      </bind>
-      <bind name="device" type="string" export-name="device">
-        <description><![CDATA[Device name to expose to the instance (/dev/sdh)]]></description>
-      </bind>
-      <bind name="instance" type="AWS:EC2Instance" export-name="instance">
-        <description><![CDATA[Instance]]></description>
-      </bind>
-    </in-binding>
-    <out-binding/>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="instance">
-      <desc><![CDATA[Instance]]></desc>
-    </p-param>
-    <p-param name="volume">
-      <desc><![CDATA[Volume]]></desc>
-    </p-param>
-    <p-param name="device">
-      <desc><![CDATA[Device name to expose to the instance (/dev/sdh)]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+ec2instance = instance;</script>
+        <in-binding>
+            <bind name="client" type="AWS:AWSClient" export-name="client"/>
+            <bind name="volume" type="AWS:EC2Volume" export-name="volume">
+                <description>Volume</description>
+            </bind>
+            <bind name="device" type="string" export-name="device">
+                <description>Device name to expose to the instance (/dev/sdh)</description>
+            </bind>
+            <bind name="instance" type="AWS:EC2Instance" export-name="instance">
+                <description>Instance</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="instance">
+            <desc>Instance</desc>
+        </p-param>
+        <p-param name="volume">
+            <desc>Volume</desc>
+        </p-param>
+        <p-param name="device">
+            <desc>Device name to expose to the instance (/dev/sdh)</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

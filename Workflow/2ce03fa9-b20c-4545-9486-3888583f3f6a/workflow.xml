@@ -1,365 +1,353 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="workflow:name=generic" id="2ce03fa9-b20c-4545-9486-3888583f3f6a" version="1.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Create virtual machine]]></display-name>
-  <position y="9.545454545454543" x="85.0"/>
-  <input>
-    <param name="publicIpAddressName" type="string">
-      <description><![CDATA[Public IP address name]]></description>
-    </param>
-    <param name="networkInterface" type="Azure:NetworkInterface">
-      <description><![CDATA[Network interface]]></description>
-    </param>
-    <param name="virtualNetworkName" type="string">
-      <description><![CDATA[Virtual network name]]></description>
-    </param>
-    <param name="subnetName" type="string">
-      <description><![CDATA[Subnet name]]></description>
-    </param>
-    <param name="addressPrefix" type="string">
-      <description><![CDATA[Address prefix]]></description>
-    </param>
-    <param name="dnsServer" type="string">
-      <description><![CDATA[DNS server]]></description>
-    </param>
-    <param name="subnetPrefix" type="string">
-      <description><![CDATA[Subnet prefix]]></description>
-    </param>
-    <param name="nicName" type="string">
-      <description><![CDATA[NIC name]]></description>
-    </param>
-    <param name="ipConfigName" type="string">
-      <description><![CDATA[IP config name]]></description>
-    </param>
-    <param name="vmName" type="string">
-      <description><![CDATA[Virtual machine name]]></description>
-    </param>
-    <param name="vmSize" type="Azure:VirtualMachineSize">
-      <description><![CDATA[Virtual machine size]]></description>
-    </param>
-    <param name="vmImage" type="Azure:VirtualMachineImage">
-      <description><![CDATA[Virtual machine image]]></description>
-    </param>
-    <param name="adminUsername" type="string">
-      <description><![CDATA[Admin username]]></description>
-    </param>
-    <param name="adminPassword" type="SecureString">
-      <description><![CDATA[Admin password]]></description>
-    </param>
-  </input>
-  <output>
-    <param name="virtualMachine" type="Azure:VirtualMachine">
-      <description><![CDATA[Virtual machine]]></description>
-    </param>
-  </output>
-  <attrib name="resourceGroupAttr" type="Azure:ResourceGroupExtended" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng'&dunesName='Azure:ResourceGroupExtended']]></value>
-  </attrib>
-  <attrib name="storageAccountAttr" type="Azure:StorageAccount" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2CstorageAccount:vraengstor'&dunesName='Azure:StorageAccount']]></value>
-  </attrib>
-  <attrib name="publicIpAddressAttr" type="Azure:PublicIpAddress" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-  </attrib>
-  <attrib name="virtualNetworkAttr" type="Azure:VirtualNetwork" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2Cvnetwork:default-eng-subnet'&dunesName='Azure:VirtualNetwork']]></value>
-  </attrib>
-  <attrib name="networkInterfaceAttr" type="Azure:NetworkInterface" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Cnic:default-eng-interface%2Crg:vRA7-RG-Eng'&dunesName='Azure:NetworkInterface']]></value>
-  </attrib>
-  <attrib name="availabilitySetAttr" type="Azure:AvailabilitySet" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2Cset:default-eng-avail'&dunesName='Azure:AvailabilitySet']]></value>
-  </attrib>
-  <attrib name="connection" type="Azure:Connection" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg'&dunesName='Azure:Connection']]></value>
-    <description><![CDATA[Azure connection]]></description>
-  </attrib>
-  <attrib name="resourceGroup" type="Azure:ResourceGroupExtended" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng'&dunesName='Azure:ResourceGroupExtended']]></value>
-    <description><![CDATA[Resource group]]></description>
-  </attrib>
-  <attrib name="resourceGroupName" type="string" read-only="false">
-    <value encoded="n"><![CDATA[vRA7-RG-Eng]]></value>
-    <description><![CDATA[Resource group name]]></description>
-  </attrib>
-  <attrib name="location" type="Azure:Location" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia'&dunesName='Azure:Location']]></value>
-    <description><![CDATA[Location]]></description>
-  </attrib>
-  <attrib name="storageAccount" type="Azure:StorageAccount" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2CstorageAccount:vraengstor'&dunesName='Azure:StorageAccount']]></value>
-    <description><![CDATA[Storage account]]></description>
-  </attrib>
-  <attrib name="storageAccountName" type="string" read-only="false">
-    <value encoded="n"><![CDATA[vraengstor]]></value>
-    <description><![CDATA[Storage account name]]></description>
-  </attrib>
-  <attrib name="availabilitySet" type="Azure:AvailabilitySet" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2Cset:default-eng-avail'&dunesName='Azure:AvailabilitySet']]></value>
-    <description><![CDATA[Availability set]]></description>
-  </attrib>
-  <attrib name="availabilitySetName" type="string" read-only="false">
-    <value encoded="n"><![CDATA[default-eng-avail]]></value>
-    <description><![CDATA[Availability set name]]></description>
-  </attrib>
-  <workflow-note x="160.0" y="9.090909090909086" w="280.0" h="118.18181818181817">
-    <description><![CDATA[Resource group step]]></description>
-  </workflow-note>
-  <workflow-note x="460.0" y="9.090909090909086" w="260.0" h="118.18181818181817" color="bfdfffff">
-    <description><![CDATA[Storage step]]></description>
-  </workflow-note>
-  <workflow-note x="740.0" y="9.090909090909093" w="260.0" h="245.45454545454544" color="ceebb0ff">
-    <description><![CDATA[Network step]]></description>
-  </workflow-note>
-  <workflow-note x="1020.0" y="9.090909090909093" w="260.0" h="109.09090909090908" color="ffbfbfff">
-    <description><![CDATA[Availability set step]]></description>
-  </workflow-note>
-  <workflow-item name="item1" type="end" end-mode="0">
-    <position y="9.045454545454543" x="1484.5"/>
-  </workflow-item>
-  <workflow-item name="item0" out-name="item4" type="custom-condition" alt-out-name="item3">
-    <display-name><![CDATA[Group selected]]></display-name>
-    <script encoded="false"><![CDATA[return resourceGroup != null;]]></script>
-    <in-binding>
-      <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroup"/>
-    </in-binding>
-    <position y="9.045454545454543" x="184.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item2" type="task" script-module="com.vmware.library.azure/createOrUpdateResourceGroup">
-    <display-name><![CDATA[createOrUpdateResourceGroup]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.azure").createOrUpdateResourceGroup(connection,location,groupName) ;]]></script>
-    <in-binding>
-      <bind name="connection" type="Azure:Connection" export-name="connection">
-        <description><![CDATA[Azure connection]]></description>
-      </bind>
-      <bind name="location" type="Azure:Location" export-name="location">
-        <description><![CDATA[Resource group location]]></description>
-      </bind>
-      <bind name="groupName" type="string" export-name="resourceGroupName">
-        <description><![CDATA[Resource group name]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr"/>
-    </out-binding>
-    <description><![CDATA[Creates or updates a resource group]]></description>
-    <position y="82.68181818181817" x="185.0"/>
-  </workflow-item>
-  <workflow-item name="item4" out-name="item2" type="task">
-    <display-name><![CDATA[Set resource group]]></display-name>
-    <script encoded="false"><![CDATA[resourceGroupAttr = resourceGroup;]]></script>
-    <in-binding>
-      <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroup">
-        <description><![CDATA[Resource group]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="resourceGroupAttr" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr"/>
-    </out-binding>
-    <position y="19.045454545454543" x="324.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item5" type="custom-condition" alt-out-name="item6">
-    <display-name><![CDATA[Storage selected]]></display-name>
-    <script encoded="false"><![CDATA[return storageAccount != null;]]></script>
-    <in-binding>
-      <bind name="storageAccount" type="Azure:StorageAccount" export-name="storageAccount"/>
-    </in-binding>
-    <position y="9.545454545454543" x="465.0"/>
-  </workflow-item>
-  <workflow-item name="item6" out-name="item7" type="task" script-module="com.vmware.library.azure/createStorageAccount">
-    <display-name><![CDATA[createStorageAccount]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.azure").createStorageAccount(connection,resourceGroup,location,storageAccountName) ;]]></script>
-    <in-binding>
-      <bind name="connection" type="Azure:Connection" export-name="connection">
-        <description><![CDATA[Azure connection]]></description>
-      </bind>
-      <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
-        <description><![CDATA[Resource group]]></description>
-      </bind>
-      <bind name="location" type="Azure:Location" export-name="location">
-        <description><![CDATA[Azure location]]></description>
-      </bind>
-      <bind name="storageAccountName" type="string" export-name="storageAccountName">
-        <description><![CDATA[Storage account name]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Azure:StorageAccount" export-name="storageAccountAttr"/>
-    </out-binding>
-    <position y="82.68181818181817" x="465.0"/>
-  </workflow-item>
-  <workflow-item name="item5" out-name="item7" type="task">
-    <display-name><![CDATA[Set storage]]></display-name>
-    <script encoded="false"><![CDATA[storageAccountAttr = storageAccount;]]></script>
-    <in-binding>
-      <bind name="storageAccount" type="Azure:StorageAccount" export-name="storageAccount">
-        <description><![CDATA[Storage account]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="storageAccountAttr" type="Azure:StorageAccount" export-name="storageAccountAttr"/>
-    </out-binding>
-    <position y="19.045454545454543" x="604.5"/>
-  </workflow-item>
-  <workflow-item name="item7" out-name="item12" type="custom-condition" alt-out-name="item9">
-    <display-name><![CDATA[Network selected]]></display-name>
-    <script encoded="false"><![CDATA[return networkInterface != null;]]></script>
-    <in-binding>
-      <bind name="networkInterface" type="Azure:NetworkInterface" export-name="networkInterface"/>
-    </in-binding>
-    <position y="9.045454545454543" x="744.5"/>
-  </workflow-item>
-  <workflow-item name="item9" out-name="item10" type="task" script-module="com.vmware.library.azure/createPublicIpAddress">
-    <display-name><![CDATA[createPublicIpAddress]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.azure").createPublicIpAddress(connection,location,resourceGroup,publicIpName) ;]]></script>
-    <in-binding>
-      <bind name="connection" type="Azure:Connection" export-name="connection">
-        <description><![CDATA[Azure connection]]></description>
-      </bind>
-      <bind name="location" type="Azure:Location" export-name="location">
-        <description><![CDATA[Azure location]]></description>
-      </bind>
-      <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
-        <description><![CDATA[Resource group]]></description>
-      </bind>
-      <bind name="publicIpName" type="string" export-name="publicIpAddressName">
-        <description><![CDATA[Ip address name]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Azure:PublicIpAddress" export-name="publicIpAddressAttr"/>
-    </out-binding>
-    <position y="82.68181818181817" x="745.0"/>
-  </workflow-item>
-  <workflow-item name="item10" out-name="item11" type="task" script-module="com.vmware.library.azure/createOrUpdateVirtualNetwork">
-    <display-name><![CDATA[createOrUpdateVirtualNetwork]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.azure").createOrUpdateVirtualNetwork(connection,resourceGroup,location,virtualNetworkName,subnetName,addressPrefix,dnsServer,subnetPrefix) ;]]></script>
-    <in-binding>
-      <bind name="connection" type="Azure:Connection" export-name="connection">
-        <description><![CDATA[Azure connection]]></description>
-      </bind>
-      <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
-        <description><![CDATA[Resource group]]></description>
-      </bind>
-      <bind name="location" type="Azure:Location" export-name="location">
-        <description><![CDATA[Azure location]]></description>
-      </bind>
-      <bind name="virtualNetworkName" type="string" export-name="virtualNetworkName">
-        <description><![CDATA[Virtual network name]]></description>
-      </bind>
-      <bind name="subnetName" type="string" export-name="subnetName">
-        <description><![CDATA[Subnet name]]></description>
-      </bind>
-      <bind name="addressPrefix" type="string" export-name="addressPrefix">
-        <description><![CDATA[Virtual network address space]]></description>
-      </bind>
-      <bind name="dnsServer" type="string" export-name="dnsServer">
-        <description><![CDATA[DNS server]]></description>
-      </bind>
-      <bind name="subnetPrefix" type="string" export-name="subnetPrefix">
-        <description><![CDATA[Subnet address space]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Azure:VirtualNetwork" export-name="virtualNetworkAttr"/>
-    </out-binding>
-    <position y="146.3181818181818" x="745.0"/>
-  </workflow-item>
-  <workflow-item name="item11" out-name="item13" type="task" script-module="com.vmware.library.azure/createOrUpdateNetworkInterface">
-    <display-name><![CDATA[createOrUpdateNetworkInterface]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.azure").createOrUpdateNetworkInterface(connection,location,virtualNetwork,publicIp,resourceGroup,nicName,ipConfigName) ;]]></script>
-    <in-binding>
-      <bind name="connection" type="Azure:Connection" export-name="connection">
-        <description><![CDATA[Azure connection]]></description>
-      </bind>
-      <bind name="location" type="Azure:Location" export-name="location">
-        <description><![CDATA[Azure location]]></description>
-      </bind>
-      <bind name="virtualNetwork" type="Azure:VirtualNetwork" export-name="virtualNetworkAttr">
-        <description><![CDATA[Virtual network]]></description>
-      </bind>
-      <bind name="publicIp" type="Azure:PublicIpAddress" export-name="publicIpAddressAttr">
-        <description><![CDATA[Public IP address]]></description>
-      </bind>
-      <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
-        <description><![CDATA[Resource group]]></description>
-      </bind>
-      <bind name="nicName" type="string" export-name="nicName">
-        <description><![CDATA[Network interface name]]></description>
-      </bind>
-      <bind name="ipConfigName" type="string" export-name="ipConfigName">
-        <description><![CDATA[IP config name]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Azure:NetworkInterface" export-name="networkInterfaceAttr"/>
-    </out-binding>
-    <position y="209.95454545454544" x="745.0"/>
-  </workflow-item>
-  <workflow-item name="item12" out-name="item13" type="task">
-    <display-name><![CDATA[Set network]]></display-name>
-    <script encoded="false"><![CDATA[networkInterfaceAttr = networkInterface;]]></script>
-    <in-binding>
-      <bind name="networkInterface" type="Azure:NetworkInterface" export-name="networkInterface">
-        <description><![CDATA[Network interface]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="networkInterfaceAttr" type="Azure:NetworkInterface" export-name="networkInterfaceAttr"/>
-    </out-binding>
-    <position y="19.045454545454543" x="884.5"/>
-  </workflow-item>
-  <workflow-item name="item13" out-name="item16" type="custom-condition" alt-out-name="item15">
-    <display-name><![CDATA[Availability set selected]]></display-name>
-    <script encoded="false"><![CDATA[return availabilitySet != null;]]></script>
-    <in-binding>
-      <bind name="availabilitySet" type="Azure:AvailabilitySet" export-name="availabilitySet"/>
-    </in-binding>
-    <position y="9.045454545454543" x="1024.5"/>
-  </workflow-item>
-  <workflow-item name="item15" out-name="item17" type="task" script-module="com.vmware.library.azure/createOrUpdateAvailabilitySet">
-    <display-name><![CDATA[createOrUpdateAvailabilitySet]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.azure").createOrUpdateAvailabilitySet(connection,location,resourceGroup,asName) ;]]></script>
-    <in-binding>
-      <bind name="connection" type="Azure:Connection" export-name="connection">
-        <description><![CDATA[Azure connection]]></description>
-      </bind>
-      <bind name="location" type="Azure:Location" export-name="location">
-        <description><![CDATA[Azure location]]></description>
-      </bind>
-      <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
-        <description><![CDATA[Resource group]]></description>
-      </bind>
-      <bind name="asName" type="string" export-name="availabilitySetName">
-        <description><![CDATA[Availability set name]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Azure:AvailabilitySet" export-name="availabilitySetAttr"/>
-    </out-binding>
-    <position y="82.68181818181817" x="1025.0"/>
-  </workflow-item>
-  <workflow-item name="item16" out-name="item17" type="task">
-    <display-name><![CDATA[Set availability set]]></display-name>
-    <script encoded="false"><![CDATA[availabilitySetAttr = availabilitySet;]]></script>
-    <in-binding>
-      <bind name="availabilitySet" type="Azure:AvailabilitySet" export-name="availabilitySet">
-        <description><![CDATA[Availability set]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="availabilitySetAttr" type="Azure:AvailabilitySet" export-name="availabilitySetAttr"/>
-    </out-binding>
-    <position y="19.045454545454543" x="1164.5"/>
-  </workflow-item>
-  <workflow-item name="item17" out-name="item1" type="task">
-    <display-name><![CDATA[Create VM]]></display-name>
-    <script encoded="false"><![CDATA[var vhdContainer = "https://" + storageAccountAttr.name + ".blob.core.windows.net/" + resourceGroupAttr.name.toLowerCase() + "container";
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item0" object-name="workflow:name=generic" id="2ce03fa9-b20c-4545-9486-3888583f3f6a" editor-version="1.6" version="1.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Create virtual machine</display-name>
+    <position y="9.545454545454543" x="85.0"/>
+    <input>
+        <param name="publicIpAddressName" type="string">
+            <description>Public IP address name</description>
+        </param>
+        <param name="networkInterface" type="Azure:NetworkInterface">
+            <description>Network interface</description>
+        </param>
+        <param name="virtualNetworkName" type="string">
+            <description>Virtual network name</description>
+        </param>
+        <param name="subnetName" type="string">
+            <description>Subnet name</description>
+        </param>
+        <param name="addressPrefix" type="string">
+            <description>Address prefix</description>
+        </param>
+        <param name="dnsServer" type="string">
+            <description>DNS server</description>
+        </param>
+        <param name="subnetPrefix" type="string">
+            <description>Subnet prefix</description>
+        </param>
+        <param name="nicName" type="string">
+            <description>NIC name</description>
+        </param>
+        <param name="ipConfigName" type="string">
+            <description>IP config name</description>
+        </param>
+        <param name="vmName" type="string">
+            <description>Virtual machine name</description>
+        </param>
+        <param name="vmSize" type="Azure:VirtualMachineSize">
+            <description>Virtual machine size</description>
+        </param>
+        <param name="vmImage" type="Azure:VirtualMachineImage">
+            <description>Virtual machine image</description>
+        </param>
+        <param name="adminUsername" type="string">
+            <description>Admin username</description>
+        </param>
+        <param name="adminPassword" type="SecureString">
+            <description>Admin password</description>
+        </param>
+    </input>
+    <output>
+        <param name="virtualMachine" type="Azure:VirtualMachine">
+            <description>Virtual machine</description>
+        </param>
+    </output>
+    <attrib name="resourceGroupAttr" type="Azure:ResourceGroupExtended">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng'&amp;dunesName='Azure:ResourceGroupExtended'</value>
+    </attrib>
+    <attrib name="storageAccountAttr" type="Azure:StorageAccount">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2CstorageAccount:vraengstor'&amp;dunesName='Azure:StorageAccount'</value>
+    </attrib>
+    <attrib name="publicIpAddressAttr" type="Azure:PublicIpAddress">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="virtualNetworkAttr" type="Azure:VirtualNetwork">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2Cvnetwork:default-eng-subnet'&amp;dunesName='Azure:VirtualNetwork'</value>
+    </attrib>
+    <attrib name="networkInterfaceAttr" type="Azure:NetworkInterface">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Cnic:default-eng-interface%2Crg:vRA7-RG-Eng'&amp;dunesName='Azure:NetworkInterface'</value>
+    </attrib>
+    <attrib name="availabilitySetAttr" type="Azure:AvailabilitySet">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2Cset:default-eng-avail'&amp;dunesName='Azure:AvailabilitySet'</value>
+    </attrib>
+    <attrib name="connection" type="Azure:Connection">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg'&amp;dunesName='Azure:Connection'</value>
+        <description>Azure connection</description>
+    </attrib>
+    <attrib name="resourceGroup" type="Azure:ResourceGroupExtended">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng'&amp;dunesName='Azure:ResourceGroupExtended'</value>
+        <description>Resource group</description>
+    </attrib>
+    <attrib name="resourceGroupName" type="string">
+        <value encoded="n">vRA7-RG-Eng</value>
+        <description>Resource group name</description>
+    </attrib>
+    <attrib name="location" type="Azure:Location">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia'&amp;dunesName='Azure:Location'</value>
+        <description>Location</description>
+    </attrib>
+    <attrib name="storageAccount" type="Azure:StorageAccount">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2CstorageAccount:vraengstor'&amp;dunesName='Azure:StorageAccount'</value>
+        <description>Storage account</description>
+    </attrib>
+    <attrib name="storageAccountName" type="string">
+        <value encoded="n">vraengstor</value>
+        <description>Storage account name</description>
+    </attrib>
+    <attrib name="availabilitySet" type="Azure:AvailabilitySet">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2Cset:default-eng-avail'&amp;dunesName='Azure:AvailabilitySet'</value>
+        <description>Availability set</description>
+    </attrib>
+    <attrib name="availabilitySetName" type="string">
+        <value encoded="n">default-eng-avail</value>
+        <description>Availability set name</description>
+    </attrib>
+    <workflow-item name="item1" type="end" end-mode="0" comparator="0">
+        <position y="9.045454545454543" x="1484.5"/>
+    </workflow-item>
+    <workflow-item name="item0" out-name="item4" alt-out-name="item3" type="custom-condition" comparator="0">
+        <display-name>Group selected</display-name>
+        <script encoded="false">return resourceGroup != null;</script>
+        <in-binding>
+            <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroup"/>
+        </in-binding>
+        <position y="9.045454545454543" x="184.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item2" type="task" script-module="com.vmware.library.azure/createOrUpdateResourceGroup" comparator="0">
+        <display-name>createOrUpdateResourceGroup</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.azure").createOrUpdateResourceGroup(connection,location,groupName) ;</script>
+        <in-binding>
+            <bind name="connection" type="Azure:Connection" export-name="connection">
+                <description>Azure connection</description>
+            </bind>
+            <bind name="location" type="Azure:Location" export-name="location">
+                <description>Resource group location</description>
+            </bind>
+            <bind name="groupName" type="string" export-name="resourceGroupName">
+                <description>Resource group name</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr"/>
+        </out-binding>
+        <description>Creates or updates a resource group</description>
+        <position y="82.68181818181817" x="185.0"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item2" type="task" comparator="0">
+        <display-name>Set resource group</display-name>
+        <script encoded="false">resourceGroupAttr = resourceGroup;</script>
+        <in-binding>
+            <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroup">
+                <description>Resource group</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="resourceGroupAttr" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr"/>
+        </out-binding>
+        <position y="19.045454545454543" x="324.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item5" alt-out-name="item6" type="custom-condition" comparator="0">
+        <display-name>Storage selected</display-name>
+        <script encoded="false">return storageAccount != null;</script>
+        <in-binding>
+            <bind name="storageAccount" type="Azure:StorageAccount" export-name="storageAccount"/>
+        </in-binding>
+        <position y="9.545454545454543" x="465.0"/>
+    </workflow-item>
+    <workflow-item name="item6" out-name="item7" type="task" script-module="com.vmware.library.azure/createStorageAccount" comparator="0">
+        <display-name>createStorageAccount</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.azure").createStorageAccount(connection,resourceGroup,location,storageAccountName) ;</script>
+        <in-binding>
+            <bind name="connection" type="Azure:Connection" export-name="connection">
+                <description>Azure connection</description>
+            </bind>
+            <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
+                <description>Resource group</description>
+            </bind>
+            <bind name="location" type="Azure:Location" export-name="location">
+                <description>Azure location</description>
+            </bind>
+            <bind name="storageAccountName" type="string" export-name="storageAccountName">
+                <description>Storage account name</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Azure:StorageAccount" export-name="storageAccountAttr"/>
+        </out-binding>
+        <position y="82.68181818181817" x="465.0"/>
+    </workflow-item>
+    <workflow-item name="item5" out-name="item7" type="task" comparator="0">
+        <display-name>Set storage</display-name>
+        <script encoded="false">storageAccountAttr = storageAccount;</script>
+        <in-binding>
+            <bind name="storageAccount" type="Azure:StorageAccount" export-name="storageAccount">
+                <description>Storage account</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="storageAccountAttr" type="Azure:StorageAccount" export-name="storageAccountAttr"/>
+        </out-binding>
+        <position y="19.045454545454543" x="604.5"/>
+    </workflow-item>
+    <workflow-item name="item7" out-name="item12" alt-out-name="item9" type="custom-condition" comparator="0">
+        <display-name>Network selected</display-name>
+        <script encoded="false">return networkInterface != null;</script>
+        <in-binding>
+            <bind name="networkInterface" type="Azure:NetworkInterface" export-name="networkInterface"/>
+        </in-binding>
+        <position y="9.045454545454543" x="744.5"/>
+    </workflow-item>
+    <workflow-item name="item9" out-name="item10" type="task" script-module="com.vmware.library.azure/createPublicIpAddress" comparator="0">
+        <display-name>createPublicIpAddress</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.azure").createPublicIpAddress(connection,location,resourceGroup,publicIpName) ;</script>
+        <in-binding>
+            <bind name="connection" type="Azure:Connection" export-name="connection">
+                <description>Azure connection</description>
+            </bind>
+            <bind name="location" type="Azure:Location" export-name="location">
+                <description>Azure location</description>
+            </bind>
+            <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
+                <description>Resource group</description>
+            </bind>
+            <bind name="publicIpName" type="string" export-name="publicIpAddressName">
+                <description>Ip address name</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Azure:PublicIpAddress" export-name="publicIpAddressAttr"/>
+        </out-binding>
+        <position y="82.68181818181817" x="745.0"/>
+    </workflow-item>
+    <workflow-item name="item10" out-name="item11" type="task" script-module="com.vmware.library.azure/createOrUpdateVirtualNetwork" comparator="0">
+        <display-name>createOrUpdateVirtualNetwork</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.azure").createOrUpdateVirtualNetwork(connection,resourceGroup,location,virtualNetworkName,subnetName,addressPrefix,dnsServer,subnetPrefix) ;</script>
+        <in-binding>
+            <bind name="connection" type="Azure:Connection" export-name="connection">
+                <description>Azure connection</description>
+            </bind>
+            <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
+                <description>Resource group</description>
+            </bind>
+            <bind name="location" type="Azure:Location" export-name="location">
+                <description>Azure location</description>
+            </bind>
+            <bind name="virtualNetworkName" type="string" export-name="virtualNetworkName">
+                <description>Virtual network name</description>
+            </bind>
+            <bind name="subnetName" type="string" export-name="subnetName">
+                <description>Subnet name</description>
+            </bind>
+            <bind name="addressPrefix" type="string" export-name="addressPrefix">
+                <description>Virtual network address space</description>
+            </bind>
+            <bind name="dnsServer" type="string" export-name="dnsServer">
+                <description>DNS server</description>
+            </bind>
+            <bind name="subnetPrefix" type="string" export-name="subnetPrefix">
+                <description>Subnet address space</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Azure:VirtualNetwork" export-name="virtualNetworkAttr"/>
+        </out-binding>
+        <position y="146.3181818181818" x="745.0"/>
+    </workflow-item>
+    <workflow-item name="item11" out-name="item13" type="task" script-module="com.vmware.library.azure/createOrUpdateNetworkInterface" comparator="0">
+        <display-name>createOrUpdateNetworkInterface</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.azure").createOrUpdateNetworkInterface(connection,location,virtualNetwork,publicIp,resourceGroup,nicName,ipConfigName) ;</script>
+        <in-binding>
+            <bind name="connection" type="Azure:Connection" export-name="connection">
+                <description>Azure connection</description>
+            </bind>
+            <bind name="location" type="Azure:Location" export-name="location">
+                <description>Azure location</description>
+            </bind>
+            <bind name="virtualNetwork" type="Azure:VirtualNetwork" export-name="virtualNetworkAttr">
+                <description>Virtual network</description>
+            </bind>
+            <bind name="publicIp" type="Azure:PublicIpAddress" export-name="publicIpAddressAttr">
+                <description>Public IP address</description>
+            </bind>
+            <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
+                <description>Resource group</description>
+            </bind>
+            <bind name="nicName" type="string" export-name="nicName">
+                <description>Network interface name</description>
+            </bind>
+            <bind name="ipConfigName" type="string" export-name="ipConfigName">
+                <description>IP config name</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Azure:NetworkInterface" export-name="networkInterfaceAttr"/>
+        </out-binding>
+        <position y="209.95454545454544" x="745.0"/>
+    </workflow-item>
+    <workflow-item name="item12" out-name="item13" type="task" comparator="0">
+        <display-name>Set network</display-name>
+        <script encoded="false">networkInterfaceAttr = networkInterface;</script>
+        <in-binding>
+            <bind name="networkInterface" type="Azure:NetworkInterface" export-name="networkInterface">
+                <description>Network interface</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="networkInterfaceAttr" type="Azure:NetworkInterface" export-name="networkInterfaceAttr"/>
+        </out-binding>
+        <position y="19.045454545454543" x="884.5"/>
+    </workflow-item>
+    <workflow-item name="item13" out-name="item16" alt-out-name="item15" type="custom-condition" comparator="0">
+        <display-name>Availability set selected</display-name>
+        <script encoded="false">return availabilitySet != null;</script>
+        <in-binding>
+            <bind name="availabilitySet" type="Azure:AvailabilitySet" export-name="availabilitySet"/>
+        </in-binding>
+        <position y="9.045454545454543" x="1024.5"/>
+    </workflow-item>
+    <workflow-item name="item15" out-name="item17" type="task" script-module="com.vmware.library.azure/createOrUpdateAvailabilitySet" comparator="0">
+        <display-name>createOrUpdateAvailabilitySet</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.azure").createOrUpdateAvailabilitySet(connection,location,resourceGroup,asName) ;</script>
+        <in-binding>
+            <bind name="connection" type="Azure:Connection" export-name="connection">
+                <description>Azure connection</description>
+            </bind>
+            <bind name="location" type="Azure:Location" export-name="location">
+                <description>Azure location</description>
+            </bind>
+            <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr">
+                <description>Resource group</description>
+            </bind>
+            <bind name="asName" type="string" export-name="availabilitySetName">
+                <description>Availability set name</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Azure:AvailabilitySet" export-name="availabilitySetAttr"/>
+        </out-binding>
+        <position y="82.68181818181817" x="1025.0"/>
+    </workflow-item>
+    <workflow-item name="item16" out-name="item17" type="task" comparator="0">
+        <display-name>Set availability set</display-name>
+        <script encoded="false">availabilitySetAttr = availabilitySet;</script>
+        <in-binding>
+            <bind name="availabilitySet" type="Azure:AvailabilitySet" export-name="availabilitySet">
+                <description>Availability set</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="availabilitySetAttr" type="Azure:AvailabilitySet" export-name="availabilitySetAttr"/>
+        </out-binding>
+        <position y="19.045454545454543" x="1164.5"/>
+    </workflow-item>
+    <workflow-item name="item17" out-name="item1" type="task" comparator="0">
+        <display-name>Create VM</display-name>
+        <script encoded="false">var vhdContainer = "https://" + storageAccountAttr.name + ".blob.core.windows.net/" + resourceGroupAttr.name.toLowerCase() + "container";
 System.log("VHD container is: " + vhdContainer);
 
 var osVhduri = vhdContainer + "/ososvhd.vhd";
@@ -415,113 +403,125 @@ vm.oSProfile = osProfile;
 //create virtual machine
 connection.computeClient.virtualMachinesOperations.beginCreatingOrUpdating(resourceGroupAttr.name, vm);
 
-virtualMachine = resourceGroupAttr.getVirtualMachineByName(vmName);]]></script>
-    <in-binding>
-      <bind name="storageAccountAttr" type="Azure:StorageAccount" export-name="storageAccountAttr"/>
-      <bind name="resourceGroupAttr" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr"/>
-      <bind name="location" type="Azure:Location" export-name="location">
-        <description><![CDATA[Location]]></description>
-      </bind>
-      <bind name="vmName" type="string" export-name="vmName">
-        <description><![CDATA[Virtual machine name]]></description>
-      </bind>
-      <bind name="availabilitySetAttr" type="Azure:AvailabilitySet" export-name="availabilitySetAttr"/>
-      <bind name="connection" type="Azure:Connection" export-name="connection">
-        <description><![CDATA[Azure connection]]></description>
-      </bind>
-      <bind name="vmSize" type="Azure:VirtualMachineSize" export-name="vmSize">
-        <description><![CDATA[Virtual machine size]]></description>
-      </bind>
-      <bind name="vmImage" type="Azure:VirtualMachineImage" export-name="vmImage">
-        <description><![CDATA[Virtual machine image]]></description>
-      </bind>
-      <bind name="networkInterfaceAttr" type="Azure:NetworkInterface" export-name="networkInterfaceAttr"/>
-      <bind name="adminUsername" type="string" export-name="adminUsername">
-        <description><![CDATA[Admin username]]></description>
-      </bind>
-      <bind name="adminPassword" type="SecureString" export-name="adminPassword">
-        <description><![CDATA[Admin password]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="virtualMachine" type="Azure:VirtualMachine" export-name="virtualMachine">
-        <description><![CDATA[Virtual machine]]></description>
-      </bind>
-    </out-binding>
-    <position y="19.545454545454543" x="1305.0"/>
-  </workflow-item>
-  <presentation>
-    <p-step>
-      <title><![CDATA[Common parameters]]></title>
-      <p-param name="vmName">
-        <desc><![CDATA[Virtual machine name]]></desc>
-        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-      </p-param>
-      <p-param name="vmSize">
-        <desc><![CDATA[Virtual machine size]]></desc>
-        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-      </p-param>
-      <p-param name="vmImage">
-        <desc><![CDATA[Virtual machine image]]></desc>
-        <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-      </p-param>
-      <p-param name="adminUsername">
-        <desc><![CDATA[Admin username]]></desc>
-      </p-param>
-      <p-param name="adminPassword">
-        <desc><![CDATA[Admin password]]></desc>
-      </p-param>
-    </p-step>
-    <p-step>
-      <title><![CDATA[Resource group]]></title>
-    </p-step>
-    <p-step>
-      <title><![CDATA[Storage]]></title>
-    </p-step>
-    <p-step>
-      <title><![CDATA[Network]]></title>
-      <p-group>
-        <title><![CDATA[Network interface]]></title>
-        <p-param name="networkInterface">
-          <desc><![CDATA[Network interface]]></desc>
-        </p-param>
-      </p-group>
-      <p-group>
-        <title><![CDATA[Public IP address]]></title>
-        <p-param name="publicIpAddressName">
-          <desc><![CDATA[Public IP address name]]></desc>
-        </p-param>
-      </p-group>
-      <p-group>
-        <title><![CDATA[Virtual network]]></title>
-        <p-param name="virtualNetworkName">
-          <desc><![CDATA[Virtual network name]]></desc>
-        </p-param>
-        <p-param name="subnetName">
-          <desc><![CDATA[Subnet name]]></desc>
-        </p-param>
-        <p-param name="addressPrefix">
-          <desc><![CDATA[Address prefix]]></desc>
-        </p-param>
-        <p-param name="dnsServer">
-          <desc><![CDATA[DNS server]]></desc>
-        </p-param>
-        <p-param name="subnetPrefix">
-          <desc><![CDATA[Subnet prefix]]></desc>
-        </p-param>
-      </p-group>
-      <p-group>
-        <title><![CDATA[NIC]]></title>
-        <p-param name="nicName">
-          <desc><![CDATA[NIC name]]></desc>
-        </p-param>
-        <p-param name="ipConfigName">
-          <desc><![CDATA[IP config name]]></desc>
-        </p-param>
-      </p-group>
-    </p-step>
-    <p-step>
-      <title><![CDATA[Availability set]]></title>
-    </p-step>
-  </presentation>
-</workflow>
+virtualMachine = resourceGroupAttr.getVirtualMachineByName(vmName);</script>
+        <in-binding>
+            <bind name="storageAccountAttr" type="Azure:StorageAccount" export-name="storageAccountAttr"/>
+            <bind name="resourceGroupAttr" type="Azure:ResourceGroupExtended" export-name="resourceGroupAttr"/>
+            <bind name="location" type="Azure:Location" export-name="location">
+                <description>Location</description>
+            </bind>
+            <bind name="vmName" type="string" export-name="vmName">
+                <description>Virtual machine name</description>
+            </bind>
+            <bind name="availabilitySetAttr" type="Azure:AvailabilitySet" export-name="availabilitySetAttr"/>
+            <bind name="connection" type="Azure:Connection" export-name="connection">
+                <description>Azure connection</description>
+            </bind>
+            <bind name="vmSize" type="Azure:VirtualMachineSize" export-name="vmSize">
+                <description>Virtual machine size</description>
+            </bind>
+            <bind name="vmImage" type="Azure:VirtualMachineImage" export-name="vmImage">
+                <description>Virtual machine image</description>
+            </bind>
+            <bind name="networkInterfaceAttr" type="Azure:NetworkInterface" export-name="networkInterfaceAttr"/>
+            <bind name="adminUsername" type="string" export-name="adminUsername">
+                <description>Admin username</description>
+            </bind>
+            <bind name="adminPassword" type="SecureString" export-name="adminPassword">
+                <description>Admin password</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="virtualMachine" type="Azure:VirtualMachine" export-name="virtualMachine">
+                <description>Virtual machine</description>
+            </bind>
+        </out-binding>
+        <position y="19.545454545454543" x="1305.0"/>
+    </workflow-item>
+    <presentation>
+        <p-step>
+            <title>Common parameters</title>
+            <p-param name="vmName">
+                <desc>Virtual machine name</desc>
+                <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+            </p-param>
+            <p-param name="vmSize">
+                <desc>Virtual machine size</desc>
+                <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+            </p-param>
+            <p-param name="vmImage">
+                <desc>Virtual machine image</desc>
+                <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+            </p-param>
+            <p-param name="adminUsername">
+                <desc>Admin username</desc>
+            </p-param>
+            <p-param name="adminPassword">
+                <desc>Admin password</desc>
+            </p-param>
+        </p-step>
+        <p-step>
+            <title>Resource group</title>
+        </p-step>
+        <p-step>
+            <title>Storage</title>
+        </p-step>
+        <p-step>
+            <title>Network</title>
+            <p-group>
+                <title>Network interface</title>
+                <p-param name="networkInterface">
+                    <desc>Network interface</desc>
+                </p-param>
+            </p-group>
+            <p-group>
+                <title>Public IP address</title>
+                <p-param name="publicIpAddressName">
+                    <desc>Public IP address name</desc>
+                </p-param>
+            </p-group>
+            <p-group>
+                <title>Virtual network</title>
+                <p-param name="virtualNetworkName">
+                    <desc>Virtual network name</desc>
+                </p-param>
+                <p-param name="subnetName">
+                    <desc>Subnet name</desc>
+                </p-param>
+                <p-param name="addressPrefix">
+                    <desc>Address prefix</desc>
+                </p-param>
+                <p-param name="dnsServer">
+                    <desc>DNS server</desc>
+                </p-param>
+                <p-param name="subnetPrefix">
+                    <desc>Subnet prefix</desc>
+                </p-param>
+            </p-group>
+            <p-group>
+                <title>NIC</title>
+                <p-param name="nicName">
+                    <desc>NIC name</desc>
+                </p-param>
+                <p-param name="ipConfigName">
+                    <desc>IP config name</desc>
+                </p-param>
+            </p-group>
+        </p-step>
+        <p-step>
+            <title>Availability set</title>
+        </p-step>
+    </presentation>
+    <workflow-note x="160.0" y="9.090909090909086" w="280.0" h="118.18181818181817">
+        <description>Resource group step</description>
+    </workflow-note>
+    <workflow-note x="460.0" y="9.090909090909086" w="260.0" h="118.18181818181817" color="bfdfffff">
+        <description>Storage step</description>
+    </workflow-note>
+    <workflow-note x="740.0" y="9.090909090909093" w="260.0" h="245.45454545454544" color="ceebb0ff">
+        <description>Network step</description>
+    </workflow-note>
+    <workflow-note x="1020.0" y="9.090909090909093" w="260.0" h="109.09090909090908" color="ffbfbfff">
+        <description>Availability set step</description>
+    </workflow-note>
+</ns2:workflow>

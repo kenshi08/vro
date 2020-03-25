@@ -1,67 +1,67 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="d9df3f02-9cf4-4f0b-9772-775476d9cb34" version="0.0.15" api-version="6.0.0" allowed-operations="evf" editor-version="1.6" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Change admin password]]></display-name>
-  <position y="45.90909090909091" x="25.0"/>
-  <input>
-    <param name="requestId" type="string"/>
-    <param name="machine" type="Properties"/>
-    <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
-    <param name="virtualMachineEvent" type="string"/>
-    <param name="lifecycleState" type="Properties"/>
-    <param name="componentId" type="string"/>
-    <param name="blueprintName" type="string"/>
-    <param name="componentTypeId" type="string"/>
-    <param name="endpointId" type="string"/>
-    <param name="workflowNextState" type="string"/>
-    <param name="virtualMachineDeleteProperties" type="Properties"/>
-  </input>
-  <output>
-    <param name="result" type="number">
-      <description><![CDATA[The pid of the program started.]]></description>
-    </param>
-  </output>
-  <attrib name="vmProperties" type="Properties" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="host" type="vCAC:VCACHost" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='26f615c2-deaf-49db-a40e-fa0fe007e042'&dunesName='vCAC:VCACHost']]></value>
-  </attrib>
-  <attrib name="vmUsername" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="pass" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="arguments" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="programPath" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="interactiveSession" type="boolean" read-only="false">
-    <value encoded="n"><![CDATA[false]]></value>
-  </attrib>
-  <attrib name="timeout" type="number" read-only="false">
-    <value encoded="n"><![CDATA[10.0]]></value>
-  </attrib>
-  <attrib name="pollingRate" type="number" read-only="false">
-    <value encoded="n"><![CDATA[5.0]]></value>
-  </attrib>
-  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="os" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="vmPassword" type="SecureString" read-only="false">
-    <value encoded="n"><![CDATA[11BK4EK75T6CV6CN70L68H61Y73Q65S31Z21U967EBECS101EF2FXEE81AB8J50C332FLCBEF210J93A4DBDY37A6589H20D7BC0M3C2A68AHA03ED70U89C6168UA9F2578NF5235FPFED5F12G2B32299IC4AF64DO853F58EH59D41CEGB495AF3KA80147Y48C077FX]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="864.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task">
-    <display-name><![CDATA[Get vRA Payload]]></display-name>
-    <script encoded="false"><![CDATA[System.log("------List Properties------");
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="d9df3f02-9cf4-4f0b-9772-775476d9cb34" editor-version="1.6" version="0.0.15" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Change admin password</display-name>
+    <position y="45.90909090909091" x="25.0"/>
+    <input>
+        <param name="requestId" type="string"/>
+        <param name="machine" type="Properties"/>
+        <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
+        <param name="virtualMachineEvent" type="string"/>
+        <param name="lifecycleState" type="Properties"/>
+        <param name="componentId" type="string"/>
+        <param name="blueprintName" type="string"/>
+        <param name="componentTypeId" type="string"/>
+        <param name="endpointId" type="string"/>
+        <param name="workflowNextState" type="string"/>
+        <param name="virtualMachineDeleteProperties" type="Properties"/>
+    </input>
+    <output>
+        <param name="result" type="number">
+            <description>The pid of the program started.</description>
+        </param>
+    </output>
+    <attrib name="vmProperties" type="Properties">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="host" type="vCAC:VCACHost">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='26f615c2-deaf-49db-a40e-fa0fe007e042'&amp;dunesName='vCAC:VCACHost'</value>
+    </attrib>
+    <attrib name="vmUsername" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="pass" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="arguments" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="programPath" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="interactiveSession" type="boolean">
+        <value encoded="n">false</value>
+    </attrib>
+    <attrib name="timeout" type="number">
+        <value encoded="n">10.0</value>
+    </attrib>
+    <attrib name="pollingRate" type="number">
+        <value encoded="n">5.0</value>
+    </attrib>
+    <attrib name="vm" type="VC:VirtualMachine">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="os" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="vmPassword" type="SecureString">
+        <value encoded="n">11BK4EK75T6CV6CN70L68H61Y73Q65S31Z21U967EBECS101EF2FXEE81AB8J50C332FLCBEF210J93A4DBDY37A6589H20D7BC0M3C2A68AHA03ED70U89C6168UA9F2578NF5235FPFED5F12G2B32299IC4AF64DO853F58EH59D41CEGB495AF3KA80147Y48C077FX</value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="864.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>Get vRA Payload</display-name>
+        <script encoded="false">System.log("------List Properties------");
 System.log("requestId: " + requestId);
 System.log("machine.id: " + machine.get("id"))
 System.log("machine.name: " + machine.get("name"))
@@ -98,55 +98,55 @@ for each (var sdkConnection in sdkConnections) {
 		System.log("Found VM") ;
 		break ;
 	}
-}]]></script>
-    <in-binding>
-      <bind name="requestId" type="string" export-name="requestId"/>
-      <bind name="machine" type="Properties" export-name="machine"/>
-      <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
-      <bind name="virtualMachineEvent" type="string" export-name="virtualMachineEvent"/>
-      <bind name="lifecycleState" type="Properties" export-name="lifecycleState"/>
-      <bind name="componentId" type="string" export-name="componentId"/>
-      <bind name="blueprintName" type="string" export-name="blueprintName"/>
-      <bind name="componentTypeId" type="string" export-name="componentTypeId"/>
-      <bind name="endpointId" type="string" export-name="endpointId"/>
-      <bind name="workflowNextState" type="string" export-name="workflowNextState"/>
-      <bind name="virtualMachineDeleteProperties" type="Properties" export-name="virtualMachineDeleteProperties"/>
-      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
-      <bind name="vmProperties" type="Properties" export-name="vmProperties"/>
-    </in-binding>
-    <out-binding>
-      <bind name="pass" type="string" export-name="pass"/>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
-      <bind name="os" type="string" export-name="os"/>
-    </out-binding>
-    <position y="55.40909090909091" x="124.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item4" type="task" script-module="com.vmware.library.vc.vm.tools/vim3WaitToolsStarted">
-    <display-name><![CDATA[vim3WaitToolsStarted]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-System.getModule("com.vmware.library.vc.vm.tools").vim3WaitToolsStarted(vm,pollingRate,timeout) ;]]></script>
-    <in-binding>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
-        <description><![CDATA[VM in which the action look to get the new DNS Name]]></description>
-      </bind>
-      <bind name="pollingRate" type="number" export-name="pollingRate">
-        <description><![CDATA[Time between all request information on the tools [seconds]]]></description>
-      </bind>
-      <bind name="timeout" type="number" export-name="timeout">
-        <description><![CDATA[Timeout before throwing a timeout exception [minutes]]]></description>
-      </bind>
-    </in-binding>
-    <out-binding/>
-    <description><![CDATA[Wait for the VMware tools to be up and the guest running
+}</script>
+        <in-binding>
+            <bind name="requestId" type="string" export-name="requestId"/>
+            <bind name="machine" type="Properties" export-name="machine"/>
+            <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
+            <bind name="virtualMachineEvent" type="string" export-name="virtualMachineEvent"/>
+            <bind name="lifecycleState" type="Properties" export-name="lifecycleState"/>
+            <bind name="componentId" type="string" export-name="componentId"/>
+            <bind name="blueprintName" type="string" export-name="blueprintName"/>
+            <bind name="componentTypeId" type="string" export-name="componentTypeId"/>
+            <bind name="endpointId" type="string" export-name="endpointId"/>
+            <bind name="workflowNextState" type="string" export-name="workflowNextState"/>
+            <bind name="virtualMachineDeleteProperties" type="Properties" export-name="virtualMachineDeleteProperties"/>
+            <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+            <bind name="vmProperties" type="Properties" export-name="vmProperties"/>
+        </in-binding>
+        <out-binding>
+            <bind name="pass" type="string" export-name="pass"/>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+            <bind name="os" type="string" export-name="os"/>
+        </out-binding>
+        <position y="55.40909090909091" x="124.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item4" type="task" script-module="com.vmware.library.vc.vm.tools/vim3WaitToolsStarted" comparator="0">
+        <display-name>vim3WaitToolsStarted</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.vc.vm.tools").vim3WaitToolsStarted(vm,pollingRate,timeout) ;</script>
+        <in-binding>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+                <description>VM in which the action look to get the new DNS Name</description>
+            </bind>
+            <bind name="pollingRate" type="number" export-name="pollingRate">
+                <description>Time between all request information on the tools [seconds]</description>
+            </bind>
+            <bind name="timeout" type="number" export-name="timeout">
+                <description>Timeout before throwing a timeout exception [minutes]</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <description>Wait for the VMware tools to be up and the guest running
 
 Exception:
 - Timeout: When timeout is reached
-- ReferenceError: When vm is not set correctly]]></description>
-    <position y="55.40909090909091" x="264.5"/>
-  </workflow-item>
-  <workflow-item name="item4" out-name="item5" type="task">
-    <display-name><![CDATA[Setup Commands]]></display-name>
-    <script encoded="false"><![CDATA[//detect OS version
+- ReferenceError: When vm is not set correctly</description>
+        <position y="55.40909090909091" x="264.5"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item5" type="task" comparator="0">
+        <display-name>Setup Commands</display-name>
+        <script encoded="false">//detect OS version
 System.log('Detecting OS and setting commands') ;
 if (os=='Linux'){
 	vmUsername='root' ;
@@ -162,88 +162,88 @@ else
 	System.log('OS is set to ' + os) ;
 }
 
-]]></script>
-    <in-binding>
-      <bind name="pass" type="string" export-name="pass"/>
-      <bind name="os" type="string" export-name="os"/>
-    </in-binding>
-    <out-binding>
-      <bind name="vmUsername" type="string" export-name="vmUsername"/>
-      <bind name="arguments" type="string" export-name="arguments"/>
-      <bind name="programPath" type="string" export-name="programPath"/>
-    </out-binding>
-    <position y="55.40909090909091" x="404.5"/>
-  </workflow-item>
-  <workflow-item name="item5" out-name="item0" type="link" linked-workflow-id="C98080808080808080808080808080805E80808001322751030482b80adf61e7c">
-    <display-name><![CDATA[Run program in guest]]></display-name>
-    <in-binding>
-      <bind name="vmUsername" type="string" export-name="vmUsername">
-        <description><![CDATA[Username for the virtual machine]]></description>
-      </bind>
-      <bind name="vmPassword" type="SecureString" export-name="vmPassword">
-        <description><![CDATA[Password for the virtual machine]]></description>
-      </bind>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm">
-        <description><![CDATA[Virtual machine]]></description>
-      </bind>
-      <bind name="interactiveSession" type="boolean" export-name="interactiveSession">
-        <description><![CDATA[This is set to true if the client wants an interactive session in the guest.]]></description>
-      </bind>
-      <bind name="programPath" type="string" export-name="programPath">
-        <description><![CDATA[The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. ]]></description>
-      </bind>
-      <bind name="arguments" type="string" export-name="arguments">
-        <description><![CDATA[The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. ]]></description>
-      </bind>
-      <bind name="workingDirectory" type="string" export-name="NULL">
-        <description><![CDATA[The absolute path of the working directory for the program to be run. VMware recommends explicitly setting the working directory for the program to be run. If this value is unset or is an empty string, the behavior depends on the guest operating system. For Linux guest operating systems, if this value is unset or is an empty string, the working directory will be the home directory of the user associated with the guest authentication. For other guest operating systems, if this value is unset, the behavior is unspecified. ]]></description>
-      </bind>
-      <bind name="environment" type="Array/string" export-name="NULL">
-        <description><![CDATA[An array of environment variables, specified in the guest OS notation (eg PATH=c:\bin;c:\windows\system32 or LD_LIBRARY_PATH=/usr/lib:/lib), to be set for the program being run. Note that these are not additions to the default environment variables; they define the complete set available to the program. If none are specified the values are guest dependent. ]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="result" type="number" export-name="result">
-        <description><![CDATA[The pid of the program started.]]></description>
-      </bind>
-    </out-binding>
-    <description><![CDATA[Starts a program in the guest operating system.
-A process started this way can have its status queried with this API. When the process completes, its exit code and end time will be available for 5 minutes after completion.]]></description>
-    <position y="55.90909090909091" x="545.0"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="requestId">
-      <desc><![CDATA[requestId]]></desc>
-    </p-param>
-    <p-param name="machine">
-      <desc><![CDATA[machine]]></desc>
-    </p-param>
-    <p-param name="virtualMachineAddOrUpdateProperties">
-      <desc><![CDATA[virtualMachineAddOrUpdateProperties]]></desc>
-    </p-param>
-    <p-param name="virtualMachineEvent">
-      <desc><![CDATA[virtualMachineEvent]]></desc>
-    </p-param>
-    <p-param name="lifecycleState">
-      <desc><![CDATA[lifecycleState]]></desc>
-    </p-param>
-    <p-param name="componentId">
-      <desc><![CDATA[componentId]]></desc>
-    </p-param>
-    <p-param name="blueprintName">
-      <desc><![CDATA[blueprintName]]></desc>
-    </p-param>
-    <p-param name="componentTypeId">
-      <desc><![CDATA[componentTypeId]]></desc>
-    </p-param>
-    <p-param name="endpointId">
-      <desc><![CDATA[endpointId]]></desc>
-    </p-param>
-    <p-param name="workflowNextState">
-      <desc><![CDATA[workflowNextState]]></desc>
-    </p-param>
-    <p-param name="virtualMachineDeleteProperties">
-      <desc><![CDATA[virtualMachineDeleteProperties]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+</script>
+        <in-binding>
+            <bind name="pass" type="string" export-name="pass"/>
+            <bind name="os" type="string" export-name="os"/>
+        </in-binding>
+        <out-binding>
+            <bind name="vmUsername" type="string" export-name="vmUsername"/>
+            <bind name="arguments" type="string" export-name="arguments"/>
+            <bind name="programPath" type="string" export-name="programPath"/>
+        </out-binding>
+        <position y="55.40909090909091" x="404.5"/>
+    </workflow-item>
+    <workflow-item name="item5" out-name="item0" type="link" linked-workflow-id="C98080808080808080808080808080805E80808001322751030482b80adf61e7c" comparator="0">
+        <display-name>Run program in guest</display-name>
+        <in-binding>
+            <bind name="vmUsername" type="string" export-name="vmUsername">
+                <description>Username for the virtual machine</description>
+            </bind>
+            <bind name="vmPassword" type="SecureString" export-name="vmPassword">
+                <description>Password for the virtual machine</description>
+            </bind>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm">
+                <description>Virtual machine</description>
+            </bind>
+            <bind name="interactiveSession" type="boolean" export-name="interactiveSession">
+                <description>This is set to true if the client wants an interactive session in the guest.</description>
+            </bind>
+            <bind name="programPath" type="string" export-name="programPath">
+                <description>The absolute path to the program to start. For Linux guest operating systems, /bin/bash is used to start the program.  For Solaris guest operating systems, /bin/bash is used to start the program if it exists. Otherwise /bin/sh is used. If /bin/sh is used, then the process ID returned will be that of the shell used to start the program, rather than the program itself, due to the differences in how /bin/sh and /bin/bash work. This PID will still be usable for watching the process with this API to find its exit code and elapsed time. </description>
+            </bind>
+            <bind name="arguments" type="string" export-name="arguments">
+                <description>The arguments to the program. In Linux and Solaris guest operating systems, the program will be executed by a guest shell. This allows stdio redirection, but may also require that characters which must be escaped to the shell also be escaped on the command line provided. For Windows guest operating systems, prefixing the command with "cmd /c" can provide stdio redirection. </description>
+            </bind>
+            <bind name="workingDirectory" type="string" export-name="NULL">
+                <description>The absolute path of the working directory for the program to be run. VMware recommends explicitly setting the working directory for the program to be run. If this value is unset or is an empty string, the behavior depends on the guest operating system. For Linux guest operating systems, if this value is unset or is an empty string, the working directory will be the home directory of the user associated with the guest authentication. For other guest operating systems, if this value is unset, the behavior is unspecified. </description>
+            </bind>
+            <bind name="environment" type="Array/string" export-name="NULL">
+                <description>An array of environment variables, specified in the guest OS notation (eg PATH=c:\bin;c:\windows\system32 or LD_LIBRARY_PATH=/usr/lib:/lib), to be set for the program being run. Note that these are not additions to the default environment variables; they define the complete set available to the program. If none are specified the values are guest dependent. </description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="result" type="number" export-name="result">
+                <description>The pid of the program started.</description>
+            </bind>
+        </out-binding>
+        <description>Starts a program in the guest operating system.
+A process started this way can have its status queried with this API. When the process completes, its exit code and end time will be available for 5 minutes after completion.</description>
+        <position y="55.90909090909091" x="545.0"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="requestId">
+            <desc>requestId</desc>
+        </p-param>
+        <p-param name="machine">
+            <desc>machine</desc>
+        </p-param>
+        <p-param name="virtualMachineAddOrUpdateProperties">
+            <desc>virtualMachineAddOrUpdateProperties</desc>
+        </p-param>
+        <p-param name="virtualMachineEvent">
+            <desc>virtualMachineEvent</desc>
+        </p-param>
+        <p-param name="lifecycleState">
+            <desc>lifecycleState</desc>
+        </p-param>
+        <p-param name="componentId">
+            <desc>componentId</desc>
+        </p-param>
+        <p-param name="blueprintName">
+            <desc>blueprintName</desc>
+        </p-param>
+        <p-param name="componentTypeId">
+            <desc>componentTypeId</desc>
+        </p-param>
+        <p-param name="endpointId">
+            <desc>endpointId</desc>
+        </p-param>
+        <p-param name="workflowNextState">
+            <desc>workflowNextState</desc>
+        </p-param>
+        <p-param name="virtualMachineDeleteProperties">
+            <desc>virtualMachineDeleteProperties</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

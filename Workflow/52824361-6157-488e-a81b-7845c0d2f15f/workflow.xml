@@ -1,20 +1,20 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="52824361-6157-488e-a81b-7845c0d2f15f" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[CAS - Get VM Details]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="resourceId" type="string"/>
-  </input>
-  <output>
-    <param name="cpuCount" type="string"/>
-    <param name="memoryMB" type="string"/>
-  </output>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="384.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item0" type="task">
-    <display-name><![CDATA[CAS Rest Operation]]></display-name>
-    <script encoded="false"><![CDATA[var configPath = "CS"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item3" object-name="workflow:name=generic" id="52824361-6157-488e-a81b-7845c0d2f15f" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>CAS - Get VM Details</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="resourceId" type="string"/>
+    </input>
+    <output>
+        <param name="cpuCount" type="string"/>
+        <param name="memoryMB" type="string"/>
+    </output>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="384.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" type="task" comparator="0">
+        <display-name>CAS Rest Operation</display-name>
+        <script encoded="false">var configPath = "CS"
 var configName = "environmentConfig"
 var attributeName = "CASRestHost"
 
@@ -70,19 +70,19 @@ System.log("cpuCount: " + vm["customProperties"]["cpuCount"]);
 System.log("memoryInMB: " + vm["customProperties"]["memoryInMB"]);
 
 cpuCount =  vm["customProperties"]["cpuCount"];
-memoryMB = vm["customProperties"]["memoryInMB"];]]></script>
-    <in-binding>
-      <bind name="resourceId" type="string" export-name="resourceId"/>
-    </in-binding>
-    <out-binding>
-      <bind name="cpuCount" type="string" export-name="cpuCount"/>
-      <bind name="memoryMB" type="string" export-name="memoryMB"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="resourceId">
-      <desc><![CDATA[resourceId]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+memoryMB = vm["customProperties"]["memoryInMB"];</script>
+        <in-binding>
+            <bind name="resourceId" type="string" export-name="resourceId"/>
+        </in-binding>
+        <out-binding>
+            <bind name="cpuCount" type="string" export-name="cpuCount"/>
+            <bind name="memoryMB" type="string" export-name="memoryMB"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="resourceId">
+            <desc>resourceId</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

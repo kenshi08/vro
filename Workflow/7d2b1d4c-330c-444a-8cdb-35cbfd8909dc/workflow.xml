@@ -1,61 +1,61 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="7d2b1d4c-330c-444a-8cdb-35cbfd8909dc" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[SI ServiceNow - Create CI]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="inputProperties" type="Properties"/>
-    <param name="vCenterVM" type="VC:VirtualMachine"/>
-    <param name="userName" type="string"/>
-  </input>
-  <output>
-    <param name="customProperties" type="Properties"/>
-  </output>
-  <attrib name="hostname" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="owner" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="vcUuid" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="diskProvisionGB" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="deploymentId" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="MemoryInMB" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="cpuTotalCount" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="serviceNowSysId" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="664.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item3" type="link" linked-workflow-id="c0dde264-f73a-41f9-947e-67cfeb94a59e">
-    <display-name><![CDATA[ServiceNow - Create CMDB CI]]></display-name>
-    <in-binding>
-      <bind name="hostname" type="string" export-name="hostname"/>
-      <bind name="owner" type="string" export-name="owner"/>
-      <bind name="vcUuid" type="string" export-name="vcUuid"/>
-      <bind name="diskProvisionGB" type="string" export-name="diskProvisionGB"/>
-      <bind name="deploymentId" type="string" export-name="deploymentId"/>
-      <bind name="MemoryInMB" type="string" export-name="MemoryInMB"/>
-      <bind name="cpuTotalCount" type="string" export-name="cpuTotalCount"/>
-    </in-binding>
-    <out-binding>
-      <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
-    </out-binding>
-    <position y="55.40909090909091" x="344.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item1" type="task">
-    <display-name><![CDATA[get CI Data]]></display-name>
-    <script encoded="false"><![CDATA[
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item2" object-name="workflow:name=generic" id="7d2b1d4c-330c-444a-8cdb-35cbfd8909dc" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>SI ServiceNow - Create CI</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="inputProperties" type="Properties"/>
+        <param name="vCenterVM" type="VC:VirtualMachine"/>
+        <param name="userName" type="string"/>
+    </input>
+    <output>
+        <param name="customProperties" type="Properties"/>
+    </output>
+    <attrib name="hostname" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="owner" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="vcUuid" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="diskProvisionGB" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="deploymentId" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="MemoryInMB" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="cpuTotalCount" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="serviceNowSysId" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="664.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item3" type="link" linked-workflow-id="c0dde264-f73a-41f9-947e-67cfeb94a59e" comparator="0">
+        <display-name>ServiceNow - Create CMDB CI</display-name>
+        <in-binding>
+            <bind name="hostname" type="string" export-name="hostname"/>
+            <bind name="owner" type="string" export-name="owner"/>
+            <bind name="vcUuid" type="string" export-name="vcUuid"/>
+            <bind name="diskProvisionGB" type="string" export-name="diskProvisionGB"/>
+            <bind name="deploymentId" type="string" export-name="deploymentId"/>
+            <bind name="MemoryInMB" type="string" export-name="MemoryInMB"/>
+            <bind name="cpuTotalCount" type="string" export-name="cpuTotalCount"/>
+        </in-binding>
+        <out-binding>
+            <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
+        </out-binding>
+        <position y="55.40909090909091" x="344.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item1" type="task" comparator="0">
+        <display-name>get CI Data</display-name>
+        <script encoded="false">
 hostname = inputProperties["customProperties"]["serviceNowHostname"];
 owner = userName
 vcUuid = inputProperties["customProperties"]["vcUuid"];
@@ -63,46 +63,46 @@ diskProvisionGB = inputProperties["customProperties"]["provisionGB"];
 deploymentId = inputProperties["deploymentId"];
 MemoryInMB = inputProperties["customProperties"]["serviceNowMemoryInMB"];;
 cpuTotalCount = inputProperties["customProperties"]["serviceNowCPUCount"]; ;
-]]></script>
-    <in-binding>
-      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
-      <bind name="vCenterVM" type="VC:VirtualMachine" export-name="vCenterVM"/>
-      <bind name="userName" type="string" export-name="userName"/>
-    </in-binding>
-    <out-binding>
-      <bind name="vcUuid" type="string" export-name="vcUuid"/>
-      <bind name="owner" type="string" export-name="owner"/>
-      <bind name="MemoryInMB" type="string" export-name="MemoryInMB"/>
-      <bind name="hostname" type="string" export-name="hostname"/>
-      <bind name="diskProvisionGB" type="string" export-name="diskProvisionGB"/>
-      <bind name="deploymentId" type="string" export-name="deploymentId"/>
-      <bind name="cpuTotalCount" type="string" export-name="cpuTotalCount"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item0" type="task">
-    <display-name><![CDATA[update Properties]]></display-name>
-    <script encoded="false"><![CDATA[//create/update custom properties
+</script>
+        <in-binding>
+            <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+            <bind name="vCenterVM" type="VC:VirtualMachine" export-name="vCenterVM"/>
+            <bind name="userName" type="string" export-name="userName"/>
+        </in-binding>
+        <out-binding>
+            <bind name="vcUuid" type="string" export-name="vcUuid"/>
+            <bind name="owner" type="string" export-name="owner"/>
+            <bind name="MemoryInMB" type="string" export-name="MemoryInMB"/>
+            <bind name="hostname" type="string" export-name="hostname"/>
+            <bind name="diskProvisionGB" type="string" export-name="diskProvisionGB"/>
+            <bind name="deploymentId" type="string" export-name="deploymentId"/>
+            <bind name="cpuTotalCount" type="string" export-name="cpuTotalCount"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" type="task" comparator="0">
+        <display-name>update Properties</display-name>
+        <script encoded="false">//create/update custom properties
 customProperties = new Properties();
 customProperties = inputProperties['customProperties'];
-customProperties['serviceNowSysId'] = serviceNowSysId;]]></script>
-    <in-binding>
-      <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
-    </in-binding>
-    <out-binding>
-      <bind name="customProperties" type="Properties" export-name="customProperties"/>
-    </out-binding>
-    <position y="55.40909090909091" x="484.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="inputProperties">
-      <desc><![CDATA[inputProperties]]></desc>
-    </p-param>
-    <p-param name="vCenterVM">
-      <desc><![CDATA[vCenterVM]]></desc>
-    </p-param>
-    <p-param name="userName">
-      <desc><![CDATA[userName]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+customProperties['serviceNowSysId'] = serviceNowSysId;</script>
+        <in-binding>
+            <bind name="serviceNowSysId" type="string" export-name="serviceNowSysId"/>
+        </in-binding>
+        <out-binding>
+            <bind name="customProperties" type="Properties" export-name="customProperties"/>
+        </out-binding>
+        <position y="55.40909090909091" x="484.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="inputProperties">
+            <desc>inputProperties</desc>
+        </p-param>
+        <p-param name="vCenterVM">
+            <desc>vCenterVM</desc>
+        </p-param>
+        <p-param name="userName">
+            <desc>userName</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

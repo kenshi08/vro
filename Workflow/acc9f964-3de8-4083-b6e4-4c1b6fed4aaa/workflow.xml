@@ -1,38 +1,38 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="acc9f964-3de8-4083-b6e4-4c1b6fed4aaa" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Create directory in guest]]></display-name>
-  <description><![CDATA[Create a directory in a guest virtual machine.]]></description>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="vm" type="VC:VirtualMachine">
-      <description><![CDATA[Virtual machine]]></description>
-    </param>
-    <param name="dirPath" type="string">
-      <description><![CDATA[Guest path]]></description>
-    </param>
-    <param name="createParents" type="boolean">
-      <description><![CDATA[Create parent directories if missing]]></description>
-    </param>
-  </input>
-  <output>
-    <param name="result" type="boolean">
-      <description><![CDATA[Set to true if directory was created successfully]]></description>
-    </param>
-  </output>
-  <attrib name="vmUsername" type="string" read-only="false">
-    <value encoded="n"><![CDATA[administrator]]></value>
-    <description><![CDATA[Username for the virtual machine]]></description>
-  </attrib>
-  <attrib name="vmPassword" type="SecureString" read-only="false">
-    <value encoded="n"><![CDATA[11AC4E075A6C66C670968461073465C31C21190CC6EDF1BB62B98943ACAF4503721F74DA74E0A2B70B4BD22D2292CD0CCC7]]></value>
-    <description><![CDATA[Password for the virtual machine]]></description>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.90909090909091" x="385.0"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task">
-    <display-name><![CDATA[Scriptable task]]></display-name>
-    <script encoded="false"><![CDATA[var host = vm.sdkConnection;
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="acc9f964-3de8-4083-b6e4-4c1b6fed4aaa" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Create directory in guest</display-name>
+    <description>Create a directory in a guest virtual machine.</description>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="vm" type="VC:VirtualMachine">
+            <description>Virtual machine</description>
+        </param>
+        <param name="dirPath" type="string">
+            <description>Guest path</description>
+        </param>
+        <param name="createParents" type="boolean">
+            <description>Create parent directories if missing</description>
+        </param>
+    </input>
+    <output>
+        <param name="result" type="boolean">
+            <description>Set to true if directory was created successfully</description>
+        </param>
+    </output>
+    <attrib name="vmUsername" type="string">
+        <value encoded="n">administrator</value>
+        <description>Username for the virtual machine</description>
+    </attrib>
+    <attrib name="vmPassword" type="SecureString">
+        <value encoded="n">11AC4E075A6C66C670968461073465C31C21190CC6EDF1BB62B98943ACAF4503721F74DA74E0A2B70B4BD22D2292CD0CCC7</value>
+        <description>Password for the virtual machine</description>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.90909090909091" x="385.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">var host = vm.sdkConnection;
 
 var guestOperationsManager = host.guestOperationsManager;
 var guestAuth = new VcNamePasswordAuthentication();
@@ -44,30 +44,30 @@ result = false;
 System.log("Creating directoy path: " + dirPath);
 fileManager.makeDirectoryInGuest(vm , guestAuth , dirPath, createParents);
 result = true;
-]]></script>
-    <in-binding>
-      <bind name="vmUsername" type="string" export-name="vmUsername"/>
-      <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
-      <bind name="dirPath" type="string" export-name="dirPath"/>
-      <bind name="createParents" type="boolean" export-name="createParents"/>
-    </in-binding>
-    <out-binding>
-      <bind name="result" type="boolean" export-name="result"/>
-    </out-binding>
-    <position y="55.90909090909091" x="205.0"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="vm">
-      <desc><![CDATA[Virtual machine]]></desc>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-    <p-param name="dirPath">
-      <desc><![CDATA[Guest path]]></desc>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-    <p-param name="createParents">
-      <desc><![CDATA[Create parent directories if missing]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+</script>
+        <in-binding>
+            <bind name="vmUsername" type="string" export-name="vmUsername"/>
+            <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+            <bind name="dirPath" type="string" export-name="dirPath"/>
+            <bind name="createParents" type="boolean" export-name="createParents"/>
+        </in-binding>
+        <out-binding>
+            <bind name="result" type="boolean" export-name="result"/>
+        </out-binding>
+        <position y="55.90909090909091" x="205.0"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="vm">
+            <desc>Virtual machine</desc>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+        <p-param name="dirPath">
+            <desc>Guest path</desc>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+        <p-param name="createParents">
+            <desc>Create parent directories if missing</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

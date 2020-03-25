@@ -1,30 +1,30 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="a6d5b6ed-cc8f-4075-af10-015e43bdba4a" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[ImportCustomObject]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="input" type="AWS:EC2Instance"/>
-  </input>
-  <output>
-    <param name="output" type="AWS:EC2Instance"/>
-  </output>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="384.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task">
-    <display-name><![CDATA[Scriptable task]]></display-name>
-    <script encoded="false"><![CDATA[output=input;]]></script>
-    <in-binding>
-      <bind name="input" type="AWS:EC2Instance" export-name="input"/>
-    </in-binding>
-    <out-binding>
-      <bind name="output" type="AWS:EC2Instance" export-name="output"/>
-    </out-binding>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="input">
-      <desc><![CDATA[input]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="a6d5b6ed-cc8f-4075-af10-015e43bdba4a" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>ImportCustomAWSObject</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="input" type="AWS:EC2Instance"/>
+    </input>
+    <output>
+        <param name="output" type="AWS:EC2Instance"/>
+    </output>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="384.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">output=input;</script>
+        <in-binding>
+            <bind name="input" type="AWS:EC2Instance" export-name="input"/>
+        </in-binding>
+        <out-binding>
+            <bind name="output" type="AWS:EC2Instance" export-name="output"/>
+        </out-binding>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="input">
+            <desc>input</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

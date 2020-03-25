@@ -1,142 +1,143 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="776ce656-1a3d-45da-a617-ba756295d96f" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Create a Record]]></display-name>
-  <position y="0.0" x="45.0"/>
-  <input>
-    <param name="ServerName" type="string">
-      <description><![CDATA[Servername]]></description>
-    </param>
-    <param name="ServerIP" type="string">
-      <description><![CDATA[Serverip]]></description>
-    </param>
-    <param name="ServerDNS" type="string">
-      <description><![CDATA[Serverdns]]></description>
-    </param>
-    <param name="ServerID" type="string">
-      <description><![CDATA[Serverid]]></description>
-    </param>
-    <param name="ServerOwner" type="string">
-      <description><![CDATA[Serverowner]]></description>
-    </param>
-  </input>
-  <output>
-    <param name="assetOut" type="DynamicTypes:MyCMDB.Asset"/>
-  </output>
-  <attrib name="newRecord" type="SQL:ActiveRecord" read-only="false">
-    <description><![CDATA[Mapped record object to a database record.]]></description>
-  </attrib>
-  <attrib name="getDbObjectType" type="string" read-only="false">
-    <value encoded="n"><![CDATA[MyCMDB.Asset]]></value>
-    <description><![CDATA[Type of object to find]]></description>
-  </attrib>
-  <attrib name="newAsset" type="DynamicTypes:MyCMDB.Asset" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-  </attrib>
-  <attrib name="parentFolder" type="Any" read-only="false">
-    <value encoded="n"><![CDATA[Any#__NULL__]]></value>
-  </attrib>
-  <attrib name="isUnique" type="boolean" read-only="false">
-    <value encoded="n"><![CDATA[true]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="0.0" x="824.5"/>
-  </workflow-item>
-  <workflow-item name="item5" out-name="item4" type="task" script-module="com.vmware.coe.dynamicTypes.sql/getParentObject">
-    <display-name><![CDATA[getParentObject]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.coe.dynamicTypes.sql").getParentObject(object) ;]]></script>
-    <in-binding>
-      <bind name="object" type="DynamicTypes:MyCMDB.Asset" export-name="newAsset">
-        <description><![CDATA[Object to get parent of]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Any" export-name="parentFolder"/>
-    </out-binding>
-    <description><![CDATA[Get the parent object of a given object. Slow since it has to get all the parent objects and search for a matching children]]></description>
-    <position y="9.954545454545453" x="424.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item0" type="task">
-    <display-name><![CDATA[Map Output]]></display-name>
-    <script encoded="false"><![CDATA[var assetOut = newAsset;]]></script>
-    <in-binding>
-      <bind name="newAsset" type="DynamicTypes:MyCMDB.Asset" export-name="newAsset"/>
-    </in-binding>
-    <out-binding>
-      <bind name="assetOut" type="DynamicTypes:MyCMDB.Asset" export-name="assetOut"/>
-    </out-binding>
-    <position y="9.954545454545453" x="664.5"/>
-  </workflow-item>
-  <workflow-item name="item4" out-name="item3" type="task" script-module="com.vmware.coe.dynamicTypes/invalidateObject">
-    <display-name><![CDATA[invalidateObject]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-System.getModule("com.vmware.coe.dynamicTypes").invalidateObject(object) ;]]></script>
-    <in-binding>
-      <bind name="object" type="Any" export-name="parentFolder"/>
-    </in-binding>
-    <out-binding/>
-    <position y="9.954545454545453" x="544.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item5" type="task" script-module="com.vmware.coe.dynamicTypes.sql/getDbObject">
-    <display-name><![CDATA[getDbObject]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.coe.dynamicTypes.sql").getDbObject(type,objectId) ;]]></script>
-    <in-binding>
-      <bind name="type" type="string" export-name="getDbObjectType">
-        <description><![CDATA[Type of object to retrieve in format Namespace.class]]></description>
-      </bind>
-      <bind name="objectId" type="string" export-name="ServerID"/>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="DynamicTypes:MyCMDB.Asset" export-name="newAsset"/>
-    </out-binding>
-    <position y="9.954545454545453" x="284.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="link" linked-workflow-id="f31b1e05-fa46-4038-8748-b6f752763c60">
-    <display-name><![CDATA[Create active record for 'Assets']]></display-name>
-    <in-binding>
-      <bind name="ServerName" type="string" export-name="ServerName">
-        <description><![CDATA[Servername]]></description>
-      </bind>
-      <bind name="ServerIP" type="string" export-name="ServerIP">
-        <description><![CDATA[Serverip]]></description>
-      </bind>
-      <bind name="ServerDNS" type="string" export-name="ServerDNS">
-        <description><![CDATA[Serverdns]]></description>
-      </bind>
-      <bind name="ServerID" type="string" export-name="ServerID">
-        <description><![CDATA[Serverid]]></description>
-      </bind>
-      <bind name="ServerOwner" type="string" export-name="ServerOwner">
-        <description><![CDATA[Serverowner]]></description>
-      </bind>
-      <bind name="isUnique" type="boolean" export-name="isUnique"/>
-    </in-binding>
-    <out-binding>
-      <bind name="result" type="SQL:ActiveRecord" export-name="newRecord">
-        <description><![CDATA[Mapped record object to a database record.]]></description>
-      </bind>
-    </out-binding>
-    <description><![CDATA[Autogenerated workflow that creates records.]]></description>
-    <position y="9.954545454545453" x="144.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="ServerName">
-      <desc><![CDATA[Servername]]></desc>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-    <p-param name="ServerIP">
-      <desc><![CDATA[Serverip]]></desc>
-    </p-param>
-    <p-param name="ServerDNS">
-      <desc><![CDATA[Serverdns]]></desc>
-    </p-param>
-    <p-param name="ServerID">
-      <desc><![CDATA[Serverid]]></desc>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-    <p-param name="ServerOwner">
-      <desc><![CDATA[Serverowner]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="776ce656-1a3d-45da-a617-ba756295d96f" editor-version="1.6" version="0.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Create a Record</display-name>
+    <position y="0.0" x="45.0"/>
+    <input>
+        <param name="ServerName" type="string">
+            <description>Servername</description>
+        </param>
+        <param name="ServerIP" type="string">
+            <description>Serverip</description>
+        </param>
+        <param name="ServerDNS" type="string">
+            <description>Serverdns</description>
+        </param>
+        <param name="ServerID" type="string">
+            <description>Serverid</description>
+        </param>
+        <param name="ServerOwner" type="string">
+            <description>Serverowner</description>
+        </param>
+    </input>
+    <output>
+        <param name="assetOut" type="DynamicTypes:MyCMDB.Asset"/>
+    </output>
+    <attrib name="newRecord" type="SQL:ActiveRecord">
+        <value encoded="n"/>
+        <description>Mapped record object to a database record.</description>
+    </attrib>
+    <attrib name="getDbObjectType" type="string">
+        <value encoded="n">MyCMDB.Asset</value>
+        <description>Type of object to find</description>
+    </attrib>
+    <attrib name="newAsset" type="DynamicTypes:MyCMDB.Asset">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="parentFolder" type="Any">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="isUnique" type="boolean">
+        <value encoded="n">true</value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="0.0" x="824.5"/>
+    </workflow-item>
+    <workflow-item name="item5" out-name="item4" type="task" script-module="com.vmware.coe.dynamicTypes.sql/getParentObject" comparator="0">
+        <display-name>getParentObject</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.coe.dynamicTypes.sql").getParentObject(object) ;</script>
+        <in-binding>
+            <bind name="object" type="DynamicTypes:MyCMDB.Asset" export-name="newAsset">
+                <description>Object to get parent of</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Any" export-name="parentFolder"/>
+        </out-binding>
+        <description>Get the parent object of a given object. Slow since it has to get all the parent objects and search for a matching children</description>
+        <position y="9.954545454545453" x="424.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" type="task" comparator="0">
+        <display-name>Map Output</display-name>
+        <script encoded="false">var assetOut = newAsset;</script>
+        <in-binding>
+            <bind name="newAsset" type="DynamicTypes:MyCMDB.Asset" export-name="newAsset"/>
+        </in-binding>
+        <out-binding>
+            <bind name="assetOut" type="DynamicTypes:MyCMDB.Asset" export-name="assetOut"/>
+        </out-binding>
+        <position y="9.954545454545453" x="664.5"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item3" type="task" script-module="com.vmware.coe.dynamicTypes/invalidateObject" comparator="0">
+        <display-name>invalidateObject</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+System.getModule("com.vmware.coe.dynamicTypes").invalidateObject(object) ;</script>
+        <in-binding>
+            <bind name="object" type="Any" export-name="parentFolder"/>
+        </in-binding>
+        <out-binding/>
+        <position y="9.954545454545453" x="544.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item5" type="task" script-module="com.vmware.coe.dynamicTypes.sql/getDbObject" comparator="0">
+        <display-name>getDbObject</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.coe.dynamicTypes.sql").getDbObject(type,objectId) ;</script>
+        <in-binding>
+            <bind name="type" type="string" export-name="getDbObjectType">
+                <description>Type of object to retrieve in format Namespace.class</description>
+            </bind>
+            <bind name="objectId" type="string" export-name="ServerID"/>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="DynamicTypes:MyCMDB.Asset" export-name="newAsset"/>
+        </out-binding>
+        <position y="9.954545454545453" x="284.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="link" linked-workflow-id="f31b1e05-fa46-4038-8748-b6f752763c60" comparator="0">
+        <display-name>Create active record for 'Assets'</display-name>
+        <in-binding>
+            <bind name="ServerName" type="string" export-name="ServerName">
+                <description>Servername</description>
+            </bind>
+            <bind name="ServerIP" type="string" export-name="ServerIP">
+                <description>Serverip</description>
+            </bind>
+            <bind name="ServerDNS" type="string" export-name="ServerDNS">
+                <description>Serverdns</description>
+            </bind>
+            <bind name="ServerID" type="string" export-name="ServerID">
+                <description>Serverid</description>
+            </bind>
+            <bind name="ServerOwner" type="string" export-name="ServerOwner">
+                <description>Serverowner</description>
+            </bind>
+            <bind name="isUnique" type="boolean" export-name="isUnique"/>
+        </in-binding>
+        <out-binding>
+            <bind name="result" type="SQL:ActiveRecord" export-name="newRecord">
+                <description>Mapped record object to a database record.</description>
+            </bind>
+        </out-binding>
+        <description>Autogenerated workflow that creates records.</description>
+        <position y="9.954545454545453" x="144.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="ServerName">
+            <desc>Servername</desc>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+        <p-param name="ServerIP">
+            <desc>Serverip</desc>
+        </p-param>
+        <p-param name="ServerDNS">
+            <desc>Serverdns</desc>
+        </p-param>
+        <p-param name="ServerID">
+            <desc>Serverid</desc>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+        <p-param name="ServerOwner">
+            <desc>Serverowner</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

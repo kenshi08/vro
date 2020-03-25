@@ -1,81 +1,81 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="Workflow:name=generic" id="d8e885be-fa57-4725-a659-6c01da2b3a3e" version="1.1.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Add a computer to an OU]]></display-name>
-  <description><![CDATA[Creates an Active Directory computer in an organizational unit.]]></description>
-  <ref-types><![CDATA[>(AD:OrganizationalUnit)]]></ref-types>
-  <position y="20.0" x="180.0"/>
-  <input>
-    <param name="ou" type="AD:OrganizationalUnit">
-      <description><![CDATA[Parent organizational unit for the new computer]]></description>
-    </param>
-    <param name="computerName" type="string">
-      <description><![CDATA[Name for the new computer]]></description>
-    </param>
-  </input>
-  <output>
-    <param name="newComputer" type="AD:ComputerAD"/>
-  </output>
-  <attrib name="domainName" type="string" read-only="false">
-    <value encoded="n"><![CDATA[nullphase.local]]></value>
-    <description><![CDATA[Domain name in form: company.sample (optional)]]></description>
-  </attrib>
-  <workflow-item name="item2" type="end" end-mode="0">
-    <position y="190.0" x="180.0"/>
-  </workflow-item>
-  <workflow-item name="item0" out-name="item1" type="task" script-module="com.vmware.library.microsoft.activeDirectory/createComputer">
-    <display-name><![CDATA[createComputer]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-System.getModule("com.vmware.library.microsoft.activeDirectory").createComputer(parent,computerName,domainName) ;]]></script>
-    <in-binding>
-      <bind name="computerName" type="string" export-name="computerName">
-        <description><![CDATA[Name for the new computer]]></description>
-      </bind>
-      <bind name="domainName" type="string" export-name="domainName">
-        <description><![CDATA[Domain name if provided]]></description>
-      </bind>
-      <bind name="parent" type="AD:OrganizationalUnit" export-name="ou">
-        <description><![CDATA[Parent for the new computer]]></description>
-      </bind>
-    </in-binding>
-    <out-binding/>
-    <description><![CDATA[Create a computer in the Active Directory]]></description>
-    <position y="80.0" x="140.0"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.library.microsoft.activeDirectory/getComputerFromContainer">
-    <display-name><![CDATA[getComputerFromContainer]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").getComputerFromContainer(container,computerName) ;]]></script>
-    <in-binding>
-      <bind name="computerName" type="string" export-name="computerName">
-        <description><![CDATA[Name of the computer]]></description>
-      </bind>
-      <bind name="container" type="AD:OrganizationalUnit" export-name="ou">
-        <description><![CDATA[Organizationl Unit / Group]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="AD:ComputerAD" export-name="newComputer"/>
-    </out-binding>
-    <description><![CDATA[Gets a computer by its name in the given OU or group (container).]]></description>
-    <position y="140.0" x="140.0"/>
-  </workflow-item>
-  <presentation>
-    <p-step>
-      <title><![CDATA[Create a computer in an organizational unit]]></title>
-      <p-group>
-        <title><![CDATA[Details]]></title>
-        <desc><![CDATA[Provide a domain name if it is not the same as the default domain name.]]></desc>
-        <p-param name="ou">
-          <desc><![CDATA[Parent organizational unit for the new computer]]></desc>
-          <p-qual kind="static" name="show-select-as" type="string"><![CDATA[drop-down]]></p-qual>
-          <p-qual name="contextualParameter" type="void"><![CDATA[]]></p-qual>
-          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-        </p-param>
-        <p-param name="computerName">
-          <desc><![CDATA[Name for the new computer]]></desc>
-          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-        </p-param>
-      </p-group>
-    </p-step>
-  </presentation>
-</workflow>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item0" object-name="Workflow:name=generic" id="d8e885be-fa57-4725-a659-6c01da2b3a3e" editor-version="1.6" version="1.1.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Add a computer to an OU</display-name>
+    <description>Creates an Active Directory computer in an organizational unit.</description>
+    <ref-types>&gt;(AD:OrganizationalUnit)</ref-types>
+    <position y="40.0" x="180.0"/>
+    <input>
+        <param name="ou" type="AD:OrganizationalUnit">
+            <description>Parent organizational unit for the new computer</description>
+        </param>
+        <param name="computerName" type="string">
+            <description>Name for the new computer</description>
+        </param>
+    </input>
+    <output>
+        <param name="newComputer" type="AD:ComputerAD"/>
+    </output>
+    <attrib name="domainName" type="string">
+        <value encoded="n">nullphase.local</value>
+        <description>Domain name in form: company.sample (optional)</description>
+    </attrib>
+    <workflow-item name="item2" type="end" end-mode="0" comparator="0">
+        <position y="190.0" x="180.0"/>
+    </workflow-item>
+    <workflow-item name="item0" out-name="item1" type="task" script-module="com.vmware.library.microsoft.activeDirectory/createComputer" comparator="0">
+        <display-name>createComputer</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+System.getModule("com.vmware.library.microsoft.activeDirectory").createComputer(parent,computerName,domainName) ;</script>
+        <in-binding>
+            <bind name="computerName" type="string" export-name="computerName">
+                <description>Name for the new computer</description>
+            </bind>
+            <bind name="domainName" type="string" export-name="domainName">
+                <description>Domain name if provided</description>
+            </bind>
+            <bind name="parent" type="AD:OrganizationalUnit" export-name="ou">
+                <description>Parent for the new computer</description>
+            </bind>
+        </in-binding>
+        <out-binding/>
+        <description>Create a computer in the Active Directory</description>
+        <position y="80.0" x="140.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.library.microsoft.activeDirectory/getComputerFromContainer" comparator="0">
+        <display-name>getComputerFromContainer</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").getComputerFromContainer(container,computerName) ;</script>
+        <in-binding>
+            <bind name="computerName" type="string" export-name="computerName">
+                <description>Name of the computer</description>
+            </bind>
+            <bind name="container" type="AD:OrganizationalUnit" export-name="ou">
+                <description>Organizationl Unit / Group</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="AD:ComputerAD" export-name="newComputer"/>
+        </out-binding>
+        <description>Gets a computer by its name in the given OU or group (container).</description>
+        <position y="140.0" x="140.0"/>
+    </workflow-item>
+    <presentation>
+        <p-step>
+            <title>Create a computer in an organizational unit</title>
+            <p-group>
+                <title>Details</title>
+                <desc>Provide a domain name if it is not the same as the default domain name.</desc>
+                <p-param name="ou">
+                    <desc>Parent organizational unit for the new computer</desc>
+                    <p-qual kind="static" name="show-select-as" type="string">drop-down</p-qual>
+                    <p-qual name="contextualParameter" type="void"></p-qual>
+                    <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+                </p-param>
+                <p-param name="computerName">
+                    <desc>Name for the new computer</desc>
+                    <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+                </p-param>
+            </p-group>
+        </p-step>
+    </presentation>
+</ns2:workflow>

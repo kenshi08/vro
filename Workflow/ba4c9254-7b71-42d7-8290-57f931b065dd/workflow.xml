@@ -1,81 +1,81 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="ba4c9254-7b71-42d7-8290-57f931b065dd" version="1.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Create network interface]]></display-name>
-  <position y="9.545454545454543" x="45.0"/>
-  <input>
-    <param name="nicName" type="string">
-      <description><![CDATA[Network interface name]]></description>
-    </param>
-    <param name="ipConfigName" type="string">
-      <description><![CDATA[IP config name]]></description>
-    </param>
-  </input>
-  <output>
-    <param name="actionResult" type="Azure:NetworkInterface"/>
-  </output>
-  <attrib name="connection" type="Azure:Connection" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg'&dunesName='Azure:Connection']]></value>
-    <description><![CDATA[Azure connection]]></description>
-  </attrib>
-  <attrib name="location" type="Azure:Location" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia'&dunesName='Azure:Location']]></value>
-    <description><![CDATA[Azure location]]></description>
-  </attrib>
-  <attrib name="resourceGroup" type="Azure:ResourceGroupExtended" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng'&dunesName='Azure:ResourceGroupExtended']]></value>
-    <description><![CDATA[Resource group]]></description>
-  </attrib>
-  <attrib name="virtualNetwork" type="Azure:VirtualNetwork" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2Cvnetwork:default-eng-subnet'&dunesName='Azure:VirtualNetwork']]></value>
-    <description><![CDATA[Virtual network]]></description>
-  </attrib>
-  <attrib name="publicIp" type="Azure:PublicIpAddress" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-    <description><![CDATA[Public IP address]]></description>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="9.045454545454543" x="324.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task" script-module="com.vmware.library.azure/createOrUpdateNetworkInterface">
-    <display-name><![CDATA[createOrUpdateNetworkInterface]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.azure").createOrUpdateNetworkInterface(connection,location,virtualNetwork,publicIp,resourceGroup,nicName,ipConfigName) ;]]></script>
-    <in-binding>
-      <bind name="connection" type="Azure:Connection" export-name="connection">
-        <description><![CDATA[Azure connection]]></description>
-      </bind>
-      <bind name="location" type="Azure:Location" export-name="location">
-        <description><![CDATA[Azure location]]></description>
-      </bind>
-      <bind name="virtualNetwork" type="Azure:VirtualNetwork" export-name="virtualNetwork">
-        <description><![CDATA[Virtual network]]></description>
-      </bind>
-      <bind name="publicIp" type="Azure:PublicIpAddress" export-name="publicIp">
-        <description><![CDATA[Public IP address]]></description>
-      </bind>
-      <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroup">
-        <description><![CDATA[Resource group]]></description>
-      </bind>
-      <bind name="nicName" type="string" export-name="nicName">
-        <description><![CDATA[Network interface name]]></description>
-      </bind>
-      <bind name="ipConfigName" type="string" export-name="ipConfigName">
-        <description><![CDATA[IP config name]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Azure:NetworkInterface" export-name="actionResult"/>
-    </out-binding>
-    <position y="19.045454545454543" x="144.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="nicName">
-      <desc><![CDATA[Network interface name]]></desc>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-    <p-param name="ipConfigName">
-      <desc><![CDATA[IP config name]]></desc>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-  </presentation>
-</workflow>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="ba4c9254-7b71-42d7-8290-57f931b065dd" editor-version="1.6" version="1.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Create network interface</display-name>
+    <position y="9.545454545454543" x="45.0"/>
+    <input>
+        <param name="nicName" type="string">
+            <description>Network interface name</description>
+        </param>
+        <param name="ipConfigName" type="string">
+            <description>IP config name</description>
+        </param>
+    </input>
+    <output>
+        <param name="actionResult" type="Azure:NetworkInterface"/>
+    </output>
+    <attrib name="connection" type="Azure:Connection">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg'&amp;dunesName='Azure:Connection'</value>
+        <description>Azure connection</description>
+    </attrib>
+    <attrib name="location" type="Azure:Location">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia'&amp;dunesName='Azure:Location'</value>
+        <description>Azure location</description>
+    </attrib>
+    <attrib name="resourceGroup" type="Azure:ResourceGroupExtended">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng'&amp;dunesName='Azure:ResourceGroupExtended'</value>
+        <description>Resource group</description>
+    </attrib>
+    <attrib name="virtualNetwork" type="Azure:VirtualNetwork">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='NrLqS0J8SZquKUIfA9u1Hg%2Clocation:southeastasia%2Crg:vRA7-RG-Eng%2Cvnetwork:default-eng-subnet'&amp;dunesName='Azure:VirtualNetwork'</value>
+        <description>Virtual network</description>
+    </attrib>
+    <attrib name="publicIp" type="Azure:PublicIpAddress">
+        <value encoded="n"/>
+        <description>Public IP address</description>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="9.045454545454543" x="324.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" script-module="com.vmware.library.azure/createOrUpdateNetworkInterface" comparator="0">
+        <display-name>createOrUpdateNetworkInterface</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.azure").createOrUpdateNetworkInterface(connection,location,virtualNetwork,publicIp,resourceGroup,nicName,ipConfigName) ;</script>
+        <in-binding>
+            <bind name="connection" type="Azure:Connection" export-name="connection">
+                <description>Azure connection</description>
+            </bind>
+            <bind name="location" type="Azure:Location" export-name="location">
+                <description>Azure location</description>
+            </bind>
+            <bind name="virtualNetwork" type="Azure:VirtualNetwork" export-name="virtualNetwork">
+                <description>Virtual network</description>
+            </bind>
+            <bind name="publicIp" type="Azure:PublicIpAddress" export-name="publicIp">
+                <description>Public IP address</description>
+            </bind>
+            <bind name="resourceGroup" type="Azure:ResourceGroupExtended" export-name="resourceGroup">
+                <description>Resource group</description>
+            </bind>
+            <bind name="nicName" type="string" export-name="nicName">
+                <description>Network interface name</description>
+            </bind>
+            <bind name="ipConfigName" type="string" export-name="ipConfigName">
+                <description>IP config name</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Azure:NetworkInterface" export-name="actionResult"/>
+        </out-binding>
+        <position y="19.045454545454543" x="144.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="nicName">
+            <desc>Network interface name</desc>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+        <p-param name="ipConfigName">
+            <desc>IP config name</desc>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+    </presentation>
+</ns2:workflow>

@@ -1,68 +1,68 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="9c4c67dd-6523-40f0-b736-38aef6af0ac2" version="0.0.0" api-version="6.0.0" allowed-operations="evf" editor-version="1.6" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Create and add Database ]]></display-name>
-  <description><![CDATA[This workflow Creates Database in Microsoft SQL Server
-Assign the provided AD user with DB_Owner permission to the Database]]></description>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="DBName" type="string">
-      <description><![CDATA[Enter the Database Name]]></description>
-    </param>
-    <param name="DomainUser" type="string">
-      <description><![CDATA[Enter the Domain user name]]></description>
-    </param>
-  </input>
-  <output>
-    <param name="database" type="SQL:Database"/>
-  </output>
-  <attrib name="interactiveSession" type="boolean" read-only="false">
-    <value encoded="n"><![CDATA[false]]></value>
-  </attrib>
-  <attrib name="programPath" type="string" read-only="false">
-    <value encoded="n"><![CDATA[C:\Windows\System32\cmd.exe]]></value>
-  </attrib>
-  <attrib name="arguments" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="workingDirectory" type="string" read-only="false">
-    <value encoded="n"><![CDATA[C:\Windows\System32]]></value>
-  </attrib>
-  <attrib name="environment" type="Array/string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="vmUsername" type="string" read-only="false">
-    <value encoded="n"><![CDATA[neetcloud\administrator]]></value>
-  </attrib>
-  <attrib name="vmPassword" type="SecureString" read-only="false">
-    <value encoded="n"><![CDATA[8BQ56S4DI77M40T72U33P31Y21VD0FDEC3Q18F266AN41B79D7L41C9BA1O3E97709YA9D4194Y46F05FAQDD1D243H71D3ADBSF80ECC7P2166E5FH6130560JC3C9FCDL2C4F7C9K6DE6656KEFCAAF1R48B9308G34AE973SF837894W46C85F9OA50E229MD5F16DAH4D7169EZ5CF0828S]]></value>
-  </attrib>
-  <attrib name="vm" type="VC:VirtualMachine" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-57'&dunesName='VC:VirtualMachine']]></value>
-  </attrib>
-  <attrib name="sqluser" type="string" read-only="false">
-    <value encoded="n"><![CDATA[sa]]></value>
-  </attrib>
-  <attrib name="sqlpwd" type="SecureString" read-only="false">
-    <value encoded="n"><![CDATA[8BI56R4DJ77U40S72X33O31H21O1F228AAP2F025D6U596FB63M555F2ABZC0EE526Z9698DC1H93300E3KB11F2ECSCDA34E7O381B8EBXC8ABC3ZDC09189W46E8F33PF4B055DG199A148T27E0170Y972D41EO19EF10AUCAAC44BN67A81DBGD99FE57P66FD4D5N4983B7EG62FC1DCO]]></value>
-  </attrib>
-  <attrib name="sqlinstance" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="Sqlfilepath" type="string" read-only="false">
-    <value encoded="n"><![CDATA[C:\sqlscripts\AddUser.sql]]></value>
-  </attrib>
-  <attrib name="dbServer" type="string" read-only="false">
-    <value encoded="n"><![CDATA[mssql-01a.neetcloud.local]]></value>
-  </attrib>
-  <attrib name="dbPort" type="string" read-only="false">
-    <value encoded="n"><![CDATA[1433]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="564.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task">
-    <display-name><![CDATA[Create Database]]></display-name>
-    <script encoded="false"><![CDATA[var host = vm.sdkConnection;
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="9c4c67dd-6523-40f0-b736-38aef6af0ac2" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Create and add Database </display-name>
+    <description>This workflow Creates Database in Microsoft SQL Server
+Assign the provided AD user with DB_Owner permission to the Database</description>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="DBName" type="string">
+            <description>Enter the Database Name</description>
+        </param>
+        <param name="DomainUser" type="string">
+            <description>Enter the Domain user name</description>
+        </param>
+    </input>
+    <output>
+        <param name="database" type="SQL:Database"/>
+    </output>
+    <attrib name="interactiveSession" type="boolean">
+        <value encoded="n">false</value>
+    </attrib>
+    <attrib name="programPath" type="string">
+        <value encoded="n">C:\Windows\System32\cmd.exe</value>
+    </attrib>
+    <attrib name="arguments" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="workingDirectory" type="string">
+        <value encoded="n">C:\Windows\System32</value>
+    </attrib>
+    <attrib name="environment" type="Array/string">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="vmUsername" type="string">
+        <value encoded="n">neetcloud\administrator</value>
+    </attrib>
+    <attrib name="vmPassword" type="SecureString">
+        <value encoded="n">8BQ56S4DI77M40T72U33P31Y21VD0FDEC3Q18F266AN41B79D7L41C9BA1O3E97709YA9D4194Y46F05FAQDD1D243H71D3ADBSF80ECC7P2166E5FH6130560JC3C9FCDL2C4F7C9K6DE6656KEFCAAF1R48B9308G34AE973SF837894W46C85F9OA50E229MD5F16DAH4D7169EZ5CF0828S</value>
+    </attrib>
+    <attrib name="vm" type="VC:VirtualMachine">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-57'&amp;dunesName='VC:VirtualMachine'</value>
+    </attrib>
+    <attrib name="sqluser" type="string">
+        <value encoded="n">sa</value>
+    </attrib>
+    <attrib name="sqlpwd" type="SecureString">
+        <value encoded="n">8BI56R4DJ77U40S72X33O31H21O1F228AAP2F025D6U596FB63M555F2ABZC0EE526Z9698DC1H93300E3KB11F2ECSCDA34E7O381B8EBXC8ABC3ZDC09189W46E8F33PF4B055DG199A148T27E0170Y972D41EO19EF10AUCAAC44BN67A81DBGD99FE57P66FD4D5N4983B7EG62FC1DCO</value>
+    </attrib>
+    <attrib name="sqlinstance" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="Sqlfilepath" type="string">
+        <value encoded="n">C:\sqlscripts\AddUser.sql</value>
+    </attrib>
+    <attrib name="dbServer" type="string">
+        <value encoded="n">mssql-01a.neetcloud.local</value>
+    </attrib>
+    <attrib name="dbPort" type="string">
+        <value encoded="n">1433</value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="564.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>Create Database</display-name>
+        <script encoded="false">var host = vm.sdkConnection;
 
 var guestOperationsManager = host.guestOperationsManager;
 var guestAuth = new VcNamePasswordAuthentication();
@@ -79,27 +79,27 @@ guestProgramSpec.workingDirectory = workingDirectory;
 guestProgramSpec.envVariables = environment;
 
 var processManager = guestOperationsManager.processManager;
-processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);]]></script>
-    <in-binding>
-      <bind name="vmUsername" type="string" export-name="vmUsername"/>
-      <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
-      <bind name="programPath" type="string" export-name="programPath"/>
-      <bind name="arguments" type="string" export-name="arguments"/>
-      <bind name="workingDirectory" type="string" export-name="workingDirectory"/>
-      <bind name="environment" type="Array/string" export-name="environment"/>
-      <bind name="interactiveSession" type="boolean" export-name="interactiveSession"/>
-      <bind name="DBName" type="string" export-name="DBName"/>
-      <bind name="sqluser" type="string" export-name="sqluser"/>
-      <bind name="sqlpwd" type="SecureString" export-name="sqlpwd"/>
-      <bind name="sqlinstance" type="string" export-name="sqlinstance"/>
-    </in-binding>
-    <out-binding/>
-    <position y="55.40909090909091" x="184.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item3" type="task">
-    <display-name><![CDATA[Add Domain user]]></display-name>
-    <script encoded="false"><![CDATA[var host = vm.sdkConnection;
+processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);</script>
+        <in-binding>
+            <bind name="vmUsername" type="string" export-name="vmUsername"/>
+            <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+            <bind name="programPath" type="string" export-name="programPath"/>
+            <bind name="arguments" type="string" export-name="arguments"/>
+            <bind name="workingDirectory" type="string" export-name="workingDirectory"/>
+            <bind name="environment" type="Array/string" export-name="environment"/>
+            <bind name="interactiveSession" type="boolean" export-name="interactiveSession"/>
+            <bind name="DBName" type="string" export-name="DBName"/>
+            <bind name="sqluser" type="string" export-name="sqluser"/>
+            <bind name="sqlpwd" type="SecureString" export-name="sqlpwd"/>
+            <bind name="sqlinstance" type="string" export-name="sqlinstance"/>
+        </in-binding>
+        <out-binding/>
+        <position y="55.40909090909091" x="184.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item3" type="task" comparator="0">
+        <display-name>Add Domain user</display-name>
+        <script encoded="false">var host = vm.sdkConnection;
 
 var guestOperationsManager = host.guestOperationsManager;
 var guestAuth = new VcNamePasswordAuthentication();
@@ -116,26 +116,26 @@ guestProgramSpec.workingDirectory = workingDirectory;
 guestProgramSpec.envVariables = environment;
 
 var processManager = guestOperationsManager.processManager;
-processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);]]></script>
-    <in-binding>
-      <bind name="vmUsername" type="string" export-name="vmUsername"/>
-      <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
-      <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
-      <bind name="programPath" type="string" export-name="programPath"/>
-      <bind name="arguments" type="string" export-name="arguments"/>
-      <bind name="workingDirectory" type="string" export-name="workingDirectory"/>
-      <bind name="environment" type="Array/string" export-name="environment"/>
-      <bind name="interactiveSession" type="boolean" export-name="interactiveSession"/>
-      <bind name="DBName" type="string" export-name="DBName"/>
-      <bind name="DomainUser" type="string" export-name="DomainUser"/>
-      <bind name="Sqlfilepath" type="string" export-name="Sqlfilepath"/>
-    </in-binding>
-    <out-binding/>
-    <position y="55.40909090909091" x="304.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item0" type="task">
-    <display-name><![CDATA[Add Database]]></display-name>
-    <script encoded="false"><![CDATA[//var url = "jdbc:jtds:sqlserver://"+dbServer+":"+dbPort+"/"+dbName+";";
+processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);</script>
+        <in-binding>
+            <bind name="vmUsername" type="string" export-name="vmUsername"/>
+            <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
+            <bind name="vm" type="VC:VirtualMachine" export-name="vm"/>
+            <bind name="programPath" type="string" export-name="programPath"/>
+            <bind name="arguments" type="string" export-name="arguments"/>
+            <bind name="workingDirectory" type="string" export-name="workingDirectory"/>
+            <bind name="environment" type="Array/string" export-name="environment"/>
+            <bind name="interactiveSession" type="boolean" export-name="interactiveSession"/>
+            <bind name="DBName" type="string" export-name="DBName"/>
+            <bind name="DomainUser" type="string" export-name="DomainUser"/>
+            <bind name="Sqlfilepath" type="string" export-name="Sqlfilepath"/>
+        </in-binding>
+        <out-binding/>
+        <position y="55.40909090909091" x="304.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" type="task" comparator="0">
+        <display-name>Add Database</display-name>
+        <script encoded="false">//var url = "jdbc:jtds:sqlserver://"+dbServer+":"+dbPort+"/"+dbName+";";
 var url = "jdbc:jtds:sqlserver://"+dbServer+":"+dbPort+"/"+dbName+";user=sa;password="+sqlpwd+"";
 
 var main = new JDBCConnection();
@@ -163,27 +163,27 @@ database = SQLDatabaseManager.addDatabase(database);
 
 System.log("Database object added: " + database);
 
-]]></script>
-    <in-binding>
-      <bind name="password" type="SecureString" export-name="vmPassword"/>
-      <bind name="user" type="string" export-name="vmUsername"/>
-      <bind name="dbServer" type="string" export-name="dbServer"/>
-      <bind name="dbPort" type="string" export-name="dbPort"/>
-      <bind name="dbName" type="string" export-name="DBName"/>
-      <bind name="sqluser" type="string" export-name="sqluser"/>
-      <bind name="sqlpwd" type="SecureString" export-name="sqlpwd"/>
-    </in-binding>
-    <out-binding>
-      <bind name="database" type="SQL:Database" export-name="database"/>
-    </out-binding>
-    <position y="55.40909090909091" x="404.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="DBName">
-      <desc><![CDATA[DBName]]></desc>
-    </p-param>
-    <p-param name="DomainUser">
-      <desc><![CDATA[DomainUser]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+</script>
+        <in-binding>
+            <bind name="password" type="SecureString" export-name="vmPassword"/>
+            <bind name="user" type="string" export-name="vmUsername"/>
+            <bind name="dbServer" type="string" export-name="dbServer"/>
+            <bind name="dbPort" type="string" export-name="dbPort"/>
+            <bind name="dbName" type="string" export-name="DBName"/>
+            <bind name="sqluser" type="string" export-name="sqluser"/>
+            <bind name="sqlpwd" type="SecureString" export-name="sqlpwd"/>
+        </in-binding>
+        <out-binding>
+            <bind name="database" type="SQL:Database" export-name="database"/>
+        </out-binding>
+        <position y="55.40909090909091" x="404.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="DBName">
+            <desc>DBName</desc>
+        </p-param>
+        <p-param name="DomainUser">
+            <desc>DomainUser</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

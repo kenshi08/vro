@@ -1,96 +1,97 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="Workflow:name=generic" id="af0d3656-755f-455f-8b53-bb3dd9a0adce" version="0.0.4" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Change a user password]]></display-name>
-  <description><![CDATA[Changes the password of a user. SSL connection is required and the password must meet the Active Directory restrictions.]]></description>
-  <position y="20.0" x="180.0"/>
-  <input>
-    <param name="user" type="AD:User">
-      <description><![CDATA[The user which password will be changed]]></description>
-    </param>
-    <param name="password" type="SecureString">
-      <description><![CDATA[The new password to set]]></description>
-    </param>
-    <param name="confirmPassword" type="SecureString">
-      <description><![CDATA[Confirmation of the new password]]></description>
-    </param>
-    <param name="changePasswordAtNextLogon" type="boolean">
-      <description><![CDATA[Set to true if the user must change its password at next logon]]></description>
-    </param>
-  </input>
-  <attrib name="errorCode" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="setUserPasswordActionResult" type="AD:User" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-  </attrib>
-  <attrib name="setChangePasswordAtNextLogonActionResult" type="AD:User" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-  </attrib>
-  <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.library.microsoft.activeDirectory/setChangePasswordAtNextLogon">
-    <display-name><![CDATA[setChangePasswordAtNextLogon]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").setChangePasswordAtNextLogon(user,changePasswordAtNextLogon) ;]]></script>
-    <in-binding>
-      <bind name="user" type="AD:User" export-name="user"/>
-      <bind name="changePasswordAtNextLogon" type="boolean" export-name="changePasswordAtNextLogon"/>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="AD:User" export-name="setChangePasswordAtNextLogonActionResult"/>
-    </out-binding>
-    <description><![CDATA[sets the ChangePasswordAtNextLogon property for the given user.]]></description>
-    <position y="200.0" x="140.0"/>
-  </workflow-item>
-  <workflow-item name="item2" type="end" end-mode="0">
-    <position y="250.0" x="180.0"/>
-  </workflow-item>
-  <workflow-item name="item0" out-name="item1" type="task" script-module="com.vmware.library.microsoft.activeDirectory/setUserPassword">
-    <display-name><![CDATA[setUserPassword]]></display-name>
-    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
-actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").setUserPassword(user,password) ;]]></script>
-    <in-binding>
-      <bind name="user" type="AD:User" export-name="user"/>
-      <bind name="password" type="SecureString" export-name="password"/>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="AD:User" export-name="setUserPasswordActionResult"/>
-    </out-binding>
-    <description><![CDATA[Sets the user password to the given password string.]]></description>
-    <position y="140.0" x="140.0"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item0" catch-name="item4" throw-bind-name="errorCode" type="task">
-    <display-name><![CDATA[Validate Password]]></display-name>
-    <script encoded="false"><![CDATA[if(password){
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item3" object-name="Workflow:name=generic" id="af0d3656-755f-455f-8b53-bb3dd9a0adce" editor-version="1.6" version="0.0.4" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Change a user password</display-name>
+    <description>Changes the password of a user. SSL connection is required and the password must meet the Active Directory restrictions.</description>
+    <position y="30.0" x="180.0"/>
+    <input>
+        <param name="user" type="AD:User">
+            <description>The user which password will be changed</description>
+        </param>
+        <param name="password" type="SecureString">
+            <description>The new password to set</description>
+        </param>
+        <param name="confirmPassword" type="SecureString">
+            <description>Confirmation of the new password</description>
+        </param>
+        <param name="changePasswordAtNextLogon" type="boolean">
+            <description>Set to true if the user must change its password at next logon</description>
+        </param>
+    </input>
+    <output/>
+    <attrib name="errorCode" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="setUserPasswordActionResult" type="AD:User">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="setChangePasswordAtNextLogonActionResult" type="AD:User">
+        <value encoded="n"/>
+    </attrib>
+    <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.library.microsoft.activeDirectory/setChangePasswordAtNextLogon" comparator="0">
+        <display-name>setChangePasswordAtNextLogon</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").setChangePasswordAtNextLogon(user,changePasswordAtNextLogon) ;</script>
+        <in-binding>
+            <bind name="user" type="AD:User" export-name="user"/>
+            <bind name="changePasswordAtNextLogon" type="boolean" export-name="changePasswordAtNextLogon"/>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="AD:User" export-name="setChangePasswordAtNextLogonActionResult"/>
+        </out-binding>
+        <description>sets the ChangePasswordAtNextLogon property for the given user.</description>
+        <position y="200.0" x="140.0"/>
+    </workflow-item>
+    <workflow-item name="item2" type="end" end-mode="0" comparator="0">
+        <position y="250.0" x="180.0"/>
+    </workflow-item>
+    <workflow-item name="item0" out-name="item1" type="task" script-module="com.vmware.library.microsoft.activeDirectory/setUserPassword" comparator="0">
+        <display-name>setUserPassword</display-name>
+        <script encoded="false">//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").setUserPassword(user,password) ;</script>
+        <in-binding>
+            <bind name="user" type="AD:User" export-name="user"/>
+            <bind name="password" type="SecureString" export-name="password"/>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="AD:User" export-name="setUserPasswordActionResult"/>
+        </out-binding>
+        <description>Sets the user password to the given password string.</description>
+        <position y="140.0" x="140.0"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item0" catch-name="item4" throw-bind-name="errorCode" type="task" comparator="0">
+        <display-name>Validate Password</display-name>
+        <script encoded="false">if(password){
 	if(password != confirmPassword){
 		throw "Unable to create a new user: Password not confirmed";
 	}
-}]]></script>
-    <in-binding>
-      <bind name="password" type="SecureString" export-name="password"/>
-      <bind name="confirmPassword" type="SecureString" export-name="confirmPassword"/>
-    </in-binding>
-    <out-binding/>
-    <position y="80.0" x="140.0"/>
-  </workflow-item>
-  <workflow-item name="item4" throw-bind-name="errorCode" type="end" end-mode="1">
-    <position y="70.0" x="340.0"/>
-  </workflow-item>
-  <presentation>
-    <desc><![CDATA[User Attributes]]></desc>
-    <p-param name="user">
-      <desc><![CDATA[User whose password to change]]></desc>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-    <p-param name="password">
-      <desc><![CDATA[New password]]></desc>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-    <p-param name="confirmPassword">
-      <desc><![CDATA[Confirm password]]></desc>
-      <p-qual kind="ognl" name="ognlValidator" type="String"><![CDATA[#confirmPassword == #password]]></p-qual>
-      <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
-    </p-param>
-    <p-param name="changePasswordAtNextLogon">
-      <desc><![CDATA[User must change the password at the next login]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+}</script>
+        <in-binding>
+            <bind name="password" type="SecureString" export-name="password"/>
+            <bind name="confirmPassword" type="SecureString" export-name="confirmPassword"/>
+        </in-binding>
+        <out-binding/>
+        <position y="80.0" x="140.0"/>
+    </workflow-item>
+    <workflow-item name="item4" throw-bind-name="errorCode" type="end" end-mode="1" comparator="0">
+        <position y="70.0" x="340.0"/>
+    </workflow-item>
+    <presentation>
+        <desc>User Attributes</desc>
+        <p-param name="user">
+            <desc>User whose password to change</desc>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+        <p-param name="password">
+            <desc>New password</desc>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+        <p-param name="confirmPassword">
+            <desc>Confirm password</desc>
+            <p-qual kind="ognl" name="ognlValidator" type="String">#confirmPassword == #password</p-qual>
+            <p-qual kind="static" name="mandatory" type="boolean">true</p-qual>
+        </p-param>
+        <p-param name="changePasswordAtNextLogon">
+            <desc>User must change the password at the next login</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

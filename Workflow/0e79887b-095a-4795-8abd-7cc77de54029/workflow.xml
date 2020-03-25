@@ -1,58 +1,58 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="0e79887b-095a-4795-8abd-7cc77de54029" version="0.0.16" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Insert into CMDB]]></display-name>
-  <position y="45.90909090909091" x="25.0"/>
-  <input>
-    <param name="requestId" type="string"/>
-    <param name="machine" type="Properties"/>
-    <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
-    <param name="virtualMachineEvent" type="string"/>
-    <param name="lifecycleState" type="Properties"/>
-    <param name="componentId" type="string"/>
-    <param name="blueprintName" type="string"/>
-    <param name="componentTypeId" type="string"/>
-    <param name="endpointId" type="string"/>
-    <param name="workflowNextState" type="string"/>
-    <param name="virtualMachineDeleteProperties" type="Properties"/>
-  </input>
-  <output>
-    <param name="result" type="SQL:ActiveRecord">
-      <description><![CDATA[Mapped record object to a database record.]]></description>
-    </param>
-  </output>
-  <attrib name="vmProperties" type="Properties" read-only="false">
-    <value encoded="n"><![CDATA[__NULL__]]></value>
-  </attrib>
-  <attrib name="hostname" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="ipaddress" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="gateway" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="netmask" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="nodeName" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="host" type="vCAC:VCACHost" read-only="false">
-    <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='80e5ecb5-0f5b-4b01-a4e8-bf5833042c8d'&dunesName='vCAC:VCACHost']]></value>
-  </attrib>
-  <attrib name="machineowner" type="string" read-only="false">
-    <value encoded="n"><![CDATA[]]></value>
-  </attrib>
-  <attrib name="isUnique" type="boolean" read-only="false">
-    <value encoded="n"><![CDATA[true]]></value>
-  </attrib>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="444.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item2" type="task">
-    <display-name><![CDATA[Scriptable task]]></display-name>
-    <script encoded="false"><![CDATA[System.log("------List Properties------");
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="0e79887b-095a-4795-8abd-7cc77de54029" editor-version="1.6" version="0.0.16" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Insert into CMDB</display-name>
+    <position y="45.90909090909091" x="25.0"/>
+    <input>
+        <param name="requestId" type="string"/>
+        <param name="machine" type="Properties"/>
+        <param name="virtualMachineAddOrUpdateProperties" type="Properties"/>
+        <param name="virtualMachineEvent" type="string"/>
+        <param name="lifecycleState" type="Properties"/>
+        <param name="componentId" type="string"/>
+        <param name="blueprintName" type="string"/>
+        <param name="componentTypeId" type="string"/>
+        <param name="endpointId" type="string"/>
+        <param name="workflowNextState" type="string"/>
+        <param name="virtualMachineDeleteProperties" type="Properties"/>
+    </input>
+    <output>
+        <param name="result" type="SQL:ActiveRecord">
+            <description>Mapped record object to a database record.</description>
+        </param>
+    </output>
+    <attrib name="vmProperties" type="Properties">
+        <value encoded="n"/>
+    </attrib>
+    <attrib name="hostname" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="ipaddress" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="gateway" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="netmask" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="nodeName" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="host" type="vCAC:VCACHost">
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='80e5ecb5-0f5b-4b01-a4e8-bf5833042c8d'&amp;dunesName='vCAC:VCACHost'</value>
+    </attrib>
+    <attrib name="machineowner" type="string">
+        <value encoded="n"></value>
+    </attrib>
+    <attrib name="isUnique" type="boolean">
+        <value encoded="n">true</value>
+    </attrib>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="444.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item2" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">System.log("------List Properties------");
 System.log("requestId: " + requestId);
 System.log("machine.id: " + machine.get("id"))
 System.log("machine.name: " + machine.get("name"))
@@ -92,93 +92,93 @@ ipaddress = vmProperties.get("VirtualMachine.Network0.Address");
 netmask = vmProperties.get("VirtualMachine.Network0.SubnetMask");
 gateway = vmProperties.get("VirtualMachine.Network0.Gateway");
 machineowner = machine.get("owner");
-]]></script>
-    <in-binding>
-      <bind name="requestId" type="string" export-name="requestId"/>
-      <bind name="machine" type="Properties" export-name="machine"/>
-      <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
-      <bind name="virtualMachineEvent" type="string" export-name="virtualMachineEvent"/>
-      <bind name="lifecycleState" type="Properties" export-name="lifecycleState"/>
-      <bind name="componentId" type="string" export-name="componentId"/>
-      <bind name="blueprintName" type="string" export-name="blueprintName"/>
-      <bind name="componentTypeId" type="string" export-name="componentTypeId"/>
-      <bind name="endpointId" type="string" export-name="endpointId"/>
-      <bind name="workflowNextState" type="string" export-name="workflowNextState"/>
-      <bind name="virtualMachineDeleteProperties" type="Properties" export-name="virtualMachineDeleteProperties"/>
-      <bind name="host" type="vCAC:VCACHost" export-name="host"/>
-      <bind name="vmProperties" type="Properties" export-name="vmProperties"/>
-    </in-binding>
-    <out-binding>
-      <bind name="hostname" type="string" export-name="hostname"/>
-      <bind name="ipaddress" type="string" export-name="ipaddress"/>
-      <bind name="gateway" type="string" export-name="gateway"/>
-      <bind name="nodeName" type="string" export-name="nodeName"/>
-      <bind name="netmask" type="string" export-name="netmask"/>
-      <bind name="machineowner" type="string" export-name="machineowner"/>
-    </out-binding>
-    <position y="55.40909090909091" x="124.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="93a9dea6-b46a-4fc7-a2f5-0c24b96095ed">
-    <display-name><![CDATA[Create active record for 'Assets']]></display-name>
-    <in-binding>
-      <bind name="ServerOwner" type="string" export-name="machineowner">
-        <description><![CDATA[Serverowner]]></description>
-      </bind>
-      <bind name="ServerID" type="string" export-name="nodeName">
-        <description><![CDATA[Serverid]]></description>
-      </bind>
-      <bind name="ServerDNS" type="string" export-name="gateway">
-        <description><![CDATA[Serverdns]]></description>
-      </bind>
-      <bind name="ServerIP" type="string" export-name="ipaddress">
-        <description><![CDATA[Serverip]]></description>
-      </bind>
-      <bind name="ServerName" type="string" export-name="hostname">
-        <description><![CDATA[Servername]]></description>
-      </bind>
-      <bind name="isUnique" type="boolean" export-name="isUnique"/>
-    </in-binding>
-    <out-binding>
-      <bind name="result" type="SQL:ActiveRecord" export-name="result">
-        <description><![CDATA[Mapped record object to a database record.]]></description>
-      </bind>
-    </out-binding>
-    <description><![CDATA[Autogenerated workflow that creates records.]]></description>
-    <position y="55.40909090909091" x="264.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="requestId">
-      <desc><![CDATA[requestId]]></desc>
-    </p-param>
-    <p-param name="machine">
-      <desc><![CDATA[machine]]></desc>
-    </p-param>
-    <p-param name="virtualMachineAddOrUpdateProperties">
-      <desc><![CDATA[virtualMachineAddOrUpdateProperties]]></desc>
-    </p-param>
-    <p-param name="virtualMachineEvent">
-      <desc><![CDATA[virtualMachineEvent]]></desc>
-    </p-param>
-    <p-param name="lifecycleState">
-      <desc><![CDATA[lifecycleState]]></desc>
-    </p-param>
-    <p-param name="componentId">
-      <desc><![CDATA[componentId]]></desc>
-    </p-param>
-    <p-param name="blueprintName">
-      <desc><![CDATA[blueprintName]]></desc>
-    </p-param>
-    <p-param name="componentTypeId">
-      <desc><![CDATA[componentTypeId]]></desc>
-    </p-param>
-    <p-param name="endpointId">
-      <desc><![CDATA[endpointId]]></desc>
-    </p-param>
-    <p-param name="workflowNextState">
-      <desc><![CDATA[workflowNextState]]></desc>
-    </p-param>
-    <p-param name="virtualMachineDeleteProperties">
-      <desc><![CDATA[virtualMachineDeleteProperties]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+</script>
+        <in-binding>
+            <bind name="requestId" type="string" export-name="requestId"/>
+            <bind name="machine" type="Properties" export-name="machine"/>
+            <bind name="virtualMachineAddOrUpdateProperties" type="Properties" export-name="virtualMachineAddOrUpdateProperties"/>
+            <bind name="virtualMachineEvent" type="string" export-name="virtualMachineEvent"/>
+            <bind name="lifecycleState" type="Properties" export-name="lifecycleState"/>
+            <bind name="componentId" type="string" export-name="componentId"/>
+            <bind name="blueprintName" type="string" export-name="blueprintName"/>
+            <bind name="componentTypeId" type="string" export-name="componentTypeId"/>
+            <bind name="endpointId" type="string" export-name="endpointId"/>
+            <bind name="workflowNextState" type="string" export-name="workflowNextState"/>
+            <bind name="virtualMachineDeleteProperties" type="Properties" export-name="virtualMachineDeleteProperties"/>
+            <bind name="host" type="vCAC:VCACHost" export-name="host"/>
+            <bind name="vmProperties" type="Properties" export-name="vmProperties"/>
+        </in-binding>
+        <out-binding>
+            <bind name="hostname" type="string" export-name="hostname"/>
+            <bind name="ipaddress" type="string" export-name="ipaddress"/>
+            <bind name="gateway" type="string" export-name="gateway"/>
+            <bind name="nodeName" type="string" export-name="nodeName"/>
+            <bind name="netmask" type="string" export-name="netmask"/>
+            <bind name="machineowner" type="string" export-name="machineowner"/>
+        </out-binding>
+        <position y="55.40909090909091" x="124.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="93a9dea6-b46a-4fc7-a2f5-0c24b96095ed" comparator="0">
+        <display-name>Create active record for 'Assets'</display-name>
+        <in-binding>
+            <bind name="ServerOwner" type="string" export-name="machineowner">
+                <description>Serverowner</description>
+            </bind>
+            <bind name="ServerID" type="string" export-name="nodeName">
+                <description>Serverid</description>
+            </bind>
+            <bind name="ServerDNS" type="string" export-name="gateway">
+                <description>Serverdns</description>
+            </bind>
+            <bind name="ServerIP" type="string" export-name="ipaddress">
+                <description>Serverip</description>
+            </bind>
+            <bind name="ServerName" type="string" export-name="hostname">
+                <description>Servername</description>
+            </bind>
+            <bind name="isUnique" type="boolean" export-name="isUnique"/>
+        </in-binding>
+        <out-binding>
+            <bind name="result" type="SQL:ActiveRecord" export-name="result">
+                <description>Mapped record object to a database record.</description>
+            </bind>
+        </out-binding>
+        <description>Autogenerated workflow that creates records.</description>
+        <position y="55.40909090909091" x="264.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="requestId">
+            <desc>requestId</desc>
+        </p-param>
+        <p-param name="machine">
+            <desc>machine</desc>
+        </p-param>
+        <p-param name="virtualMachineAddOrUpdateProperties">
+            <desc>virtualMachineAddOrUpdateProperties</desc>
+        </p-param>
+        <p-param name="virtualMachineEvent">
+            <desc>virtualMachineEvent</desc>
+        </p-param>
+        <p-param name="lifecycleState">
+            <desc>lifecycleState</desc>
+        </p-param>
+        <p-param name="componentId">
+            <desc>componentId</desc>
+        </p-param>
+        <p-param name="blueprintName">
+            <desc>blueprintName</desc>
+        </p-param>
+        <p-param name="componentTypeId">
+            <desc>componentTypeId</desc>
+        </p-param>
+        <p-param name="endpointId">
+            <desc>endpointId</desc>
+        </p-param>
+        <p-param name="workflowNextState">
+            <desc>workflowNextState</desc>
+        </p-param>
+        <p-param name="virtualMachineDeleteProperties">
+            <desc>virtualMachineDeleteProperties</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

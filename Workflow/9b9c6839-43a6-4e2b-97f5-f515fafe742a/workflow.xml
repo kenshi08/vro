@@ -1,180 +1,180 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="9b9c6839-43a6-4e2b-97f5-f515fafe742a" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Create Azure VM]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="publicIpAddressName" type="string">
-      <description><![CDATA[Public IP address name]]></description>
-    </param>
-    <param name="networkInterface" type="Azure:NetworkInterface">
-      <description><![CDATA[Network interface]]></description>
-    </param>
-    <param name="virtualNetworkName" type="string">
-      <description><![CDATA[Virtual network name]]></description>
-    </param>
-    <param name="subnetName" type="string">
-      <description><![CDATA[Subnet name]]></description>
-    </param>
-    <param name="addressPrefix" type="string">
-      <description><![CDATA[Address prefix]]></description>
-    </param>
-    <param name="dnsServer" type="string">
-      <description><![CDATA[DNS server]]></description>
-    </param>
-    <param name="subnetPrefix" type="string">
-      <description><![CDATA[Subnet prefix]]></description>
-    </param>
-    <param name="nicName" type="string">
-      <description><![CDATA[NIC name]]></description>
-    </param>
-    <param name="ipConfigName" type="string">
-      <description><![CDATA[IP config name]]></description>
-    </param>
-    <param name="vmName" type="string">
-      <description><![CDATA[Virtual machine name]]></description>
-    </param>
-    <param name="vmSize" type="Azure:VirtualMachineSize">
-      <description><![CDATA[Virtual machine size]]></description>
-    </param>
-    <param name="vmImage" type="Azure:VirtualMachineImage">
-      <description><![CDATA[Virtual machine image]]></description>
-    </param>
-    <param name="adminUsername" type="string">
-      <description><![CDATA[Admin username]]></description>
-    </param>
-    <param name="adminPassword" type="SecureString">
-      <description><![CDATA[Admin password]]></description>
-    </param>
-    <param name="newNetInterface" type="boolean"/>
-  </input>
-  <output>
-    <param name="virtualMachine" type="Azure:VirtualMachine">
-      <description><![CDATA[Virtual machine]]></description>
-    </param>
-    <param name="actionResult" type="Azure:NetworkInterface"/>
-  </output>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <position y="45.40909090909091" x="664.5"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item3" type="task">
-    <display-name><![CDATA[Scriptable task]]></display-name>
-    <in-binding/>
-    <out-binding/>
-    <position y="55.40909090909091" x="204.5"/>
-  </workflow-item>
-  <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="2ce03fa9-b20c-4545-9486-3888583f3f6a">
-    <display-name><![CDATA[Create virtual machine]]></display-name>
-    <in-binding>
-      <bind name="publicIpAddressName" type="string" export-name="publicIpAddressName">
-        <description><![CDATA[Public IP address name]]></description>
-      </bind>
-      <bind name="networkInterface" type="Azure:NetworkInterface" export-name="networkInterface">
-        <description><![CDATA[Network interface]]></description>
-      </bind>
-      <bind name="virtualNetworkName" type="string" export-name="virtualNetworkName">
-        <description><![CDATA[Virtual network name]]></description>
-      </bind>
-      <bind name="subnetName" type="string" export-name="subnetName">
-        <description><![CDATA[Subnet name]]></description>
-      </bind>
-      <bind name="addressPrefix" type="string" export-name="addressPrefix">
-        <description><![CDATA[Address prefix]]></description>
-      </bind>
-      <bind name="dnsServer" type="string" export-name="dnsServer">
-        <description><![CDATA[DNS server]]></description>
-      </bind>
-      <bind name="subnetPrefix" type="string" export-name="subnetPrefix">
-        <description><![CDATA[Subnet prefix]]></description>
-      </bind>
-      <bind name="nicName" type="string" export-name="nicName">
-        <description><![CDATA[NIC name]]></description>
-      </bind>
-      <bind name="ipConfigName" type="string" export-name="ipConfigName">
-        <description><![CDATA[IP config name]]></description>
-      </bind>
-      <bind name="vmName" type="string" export-name="vmName">
-        <description><![CDATA[Virtual machine name]]></description>
-      </bind>
-      <bind name="vmSize" type="Azure:VirtualMachineSize" export-name="vmSize">
-        <description><![CDATA[Virtual machine size]]></description>
-      </bind>
-      <bind name="vmImage" type="Azure:VirtualMachineImage" export-name="vmImage">
-        <description><![CDATA[Virtual machine image]]></description>
-      </bind>
-      <bind name="adminUsername" type="string" export-name="adminUsername">
-        <description><![CDATA[Admin username]]></description>
-      </bind>
-      <bind name="adminPassword" type="SecureString" export-name="adminPassword">
-        <description><![CDATA[Admin password]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="virtualMachine" type="Azure:VirtualMachine" export-name="virtualMachine">
-        <description><![CDATA[Virtual machine]]></description>
-      </bind>
-    </out-binding>
-    <position y="55.40909090909091" x="484.5"/>
-  </workflow-item>
-  <workflow-item name="item3" out-name="item2" type="link" linked-workflow-id="ba4c9254-7b71-42d7-8290-57f931b065dd">
-    <display-name><![CDATA[Create network interface]]></display-name>
-    <in-binding>
-      <bind name="nicName" type="string" export-name="nicName">
-        <description><![CDATA[Network interface name]]></description>
-      </bind>
-      <bind name="ipConfigName" type="string" export-name="ipConfigName">
-        <description><![CDATA[IP config name]]></description>
-      </bind>
-    </in-binding>
-    <out-binding>
-      <bind name="actionResult" type="Azure:NetworkInterface" export-name="actionResult"/>
-    </out-binding>
-    <position y="55.40909090909091" x="344.5"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="vmName">
-      <desc><![CDATA[Virtual machine name]]></desc>
-    </p-param>
-    <p-param name="vmSize">
-      <desc><![CDATA[Virtual machine size]]></desc>
-    </p-param>
-    <p-param name="vmImage">
-      <desc><![CDATA[Virtual machine image]]></desc>
-    </p-param>
-    <p-param name="adminUsername">
-      <desc><![CDATA[Admin username]]></desc>
-    </p-param>
-    <p-param name="adminPassword">
-      <desc><![CDATA[Admin password]]></desc>
-    </p-param>
-    <p-param name="newNetInterface">
-      <desc><![CDATA[newNetInterface]]></desc>
-    </p-param>
-    <p-param name="publicIpAddressName">
-      <desc><![CDATA[Public IP address name]]></desc>
-    </p-param>
-    <p-param name="networkInterface">
-      <desc><![CDATA[Network interface]]></desc>
-    </p-param>
-    <p-param name="virtualNetworkName">
-      <desc><![CDATA[Virtual network name]]></desc>
-    </p-param>
-    <p-param name="subnetName">
-      <desc><![CDATA[Subnet name]]></desc>
-    </p-param>
-    <p-param name="addressPrefix">
-      <desc><![CDATA[Address prefix]]></desc>
-    </p-param>
-    <p-param name="dnsServer">
-      <desc><![CDATA[DNS server]]></desc>
-    </p-param>
-    <p-param name="subnetPrefix">
-      <desc><![CDATA[Subnet prefix]]></desc>
-    </p-param>
-    <p-param name="nicName">
-      <desc><![CDATA[NIC name]]></desc>
-    </p-param>
-    <p-param name="ipConfigName">
-      <desc><![CDATA[IP config name]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="9b9c6839-43a6-4e2b-97f5-f515fafe742a" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Create Azure VM</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="publicIpAddressName" type="string">
+            <description>Public IP address name</description>
+        </param>
+        <param name="networkInterface" type="Azure:NetworkInterface">
+            <description>Network interface</description>
+        </param>
+        <param name="virtualNetworkName" type="string">
+            <description>Virtual network name</description>
+        </param>
+        <param name="subnetName" type="string">
+            <description>Subnet name</description>
+        </param>
+        <param name="addressPrefix" type="string">
+            <description>Address prefix</description>
+        </param>
+        <param name="dnsServer" type="string">
+            <description>DNS server</description>
+        </param>
+        <param name="subnetPrefix" type="string">
+            <description>Subnet prefix</description>
+        </param>
+        <param name="nicName" type="string">
+            <description>NIC name</description>
+        </param>
+        <param name="ipConfigName" type="string">
+            <description>IP config name</description>
+        </param>
+        <param name="vmName" type="string">
+            <description>Virtual machine name</description>
+        </param>
+        <param name="vmSize" type="Azure:VirtualMachineSize">
+            <description>Virtual machine size</description>
+        </param>
+        <param name="vmImage" type="Azure:VirtualMachineImage">
+            <description>Virtual machine image</description>
+        </param>
+        <param name="adminUsername" type="string">
+            <description>Admin username</description>
+        </param>
+        <param name="adminPassword" type="SecureString">
+            <description>Admin password</description>
+        </param>
+        <param name="newNetInterface" type="boolean"/>
+    </input>
+    <output>
+        <param name="virtualMachine" type="Azure:VirtualMachine">
+            <description>Virtual machine</description>
+        </param>
+        <param name="actionResult" type="Azure:NetworkInterface"/>
+    </output>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <position y="45.40909090909091" x="664.5"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item3" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <in-binding/>
+        <out-binding/>
+        <position y="55.40909090909091" x="204.5"/>
+    </workflow-item>
+    <workflow-item name="item2" out-name="item0" type="link" linked-workflow-id="2ce03fa9-b20c-4545-9486-3888583f3f6a" comparator="0">
+        <display-name>Create virtual machine</display-name>
+        <in-binding>
+            <bind name="publicIpAddressName" type="string" export-name="publicIpAddressName">
+                <description>Public IP address name</description>
+            </bind>
+            <bind name="networkInterface" type="Azure:NetworkInterface" export-name="networkInterface">
+                <description>Network interface</description>
+            </bind>
+            <bind name="virtualNetworkName" type="string" export-name="virtualNetworkName">
+                <description>Virtual network name</description>
+            </bind>
+            <bind name="subnetName" type="string" export-name="subnetName">
+                <description>Subnet name</description>
+            </bind>
+            <bind name="addressPrefix" type="string" export-name="addressPrefix">
+                <description>Address prefix</description>
+            </bind>
+            <bind name="dnsServer" type="string" export-name="dnsServer">
+                <description>DNS server</description>
+            </bind>
+            <bind name="subnetPrefix" type="string" export-name="subnetPrefix">
+                <description>Subnet prefix</description>
+            </bind>
+            <bind name="nicName" type="string" export-name="nicName">
+                <description>NIC name</description>
+            </bind>
+            <bind name="ipConfigName" type="string" export-name="ipConfigName">
+                <description>IP config name</description>
+            </bind>
+            <bind name="vmName" type="string" export-name="vmName">
+                <description>Virtual machine name</description>
+            </bind>
+            <bind name="vmSize" type="Azure:VirtualMachineSize" export-name="vmSize">
+                <description>Virtual machine size</description>
+            </bind>
+            <bind name="vmImage" type="Azure:VirtualMachineImage" export-name="vmImage">
+                <description>Virtual machine image</description>
+            </bind>
+            <bind name="adminUsername" type="string" export-name="adminUsername">
+                <description>Admin username</description>
+            </bind>
+            <bind name="adminPassword" type="SecureString" export-name="adminPassword">
+                <description>Admin password</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="virtualMachine" type="Azure:VirtualMachine" export-name="virtualMachine">
+                <description>Virtual machine</description>
+            </bind>
+        </out-binding>
+        <position y="55.40909090909091" x="484.5"/>
+    </workflow-item>
+    <workflow-item name="item3" out-name="item2" type="link" linked-workflow-id="ba4c9254-7b71-42d7-8290-57f931b065dd" comparator="0">
+        <display-name>Create network interface</display-name>
+        <in-binding>
+            <bind name="nicName" type="string" export-name="nicName">
+                <description>Network interface name</description>
+            </bind>
+            <bind name="ipConfigName" type="string" export-name="ipConfigName">
+                <description>IP config name</description>
+            </bind>
+        </in-binding>
+        <out-binding>
+            <bind name="actionResult" type="Azure:NetworkInterface" export-name="actionResult"/>
+        </out-binding>
+        <position y="55.40909090909091" x="344.5"/>
+    </workflow-item>
+    <presentation>
+        <p-param name="vmName">
+            <desc>Virtual machine name</desc>
+        </p-param>
+        <p-param name="vmSize">
+            <desc>Virtual machine size</desc>
+        </p-param>
+        <p-param name="vmImage">
+            <desc>Virtual machine image</desc>
+        </p-param>
+        <p-param name="adminUsername">
+            <desc>Admin username</desc>
+        </p-param>
+        <p-param name="adminPassword">
+            <desc>Admin password</desc>
+        </p-param>
+        <p-param name="newNetInterface">
+            <desc>newNetInterface</desc>
+        </p-param>
+        <p-param name="publicIpAddressName">
+            <desc>Public IP address name</desc>
+        </p-param>
+        <p-param name="networkInterface">
+            <desc>Network interface</desc>
+        </p-param>
+        <p-param name="virtualNetworkName">
+            <desc>Virtual network name</desc>
+        </p-param>
+        <p-param name="subnetName">
+            <desc>Subnet name</desc>
+        </p-param>
+        <p-param name="addressPrefix">
+            <desc>Address prefix</desc>
+        </p-param>
+        <p-param name="dnsServer">
+            <desc>DNS server</desc>
+        </p-param>
+        <p-param name="subnetPrefix">
+            <desc>Subnet prefix</desc>
+        </p-param>
+        <p-param name="nicName">
+            <desc>NIC name</desc>
+        </p-param>
+        <p-param name="ipConfigName">
+            <desc>IP config name</desc>
+        </p-param>
+    </presentation>
+</ns2:workflow>

@@ -1,0 +1,1 @@
+{"layout":{"pages":[{"id":"page_1","title":"General","sections":[{"id":"section_0","fields":[{"id":"t0_id","display":"textField"}]}]},{"id":"page_2","title":"Request content","sections":[]}]},"schema":{"t0_id":{"type":{"dataType":"string","isMultiple":false},"label":"t0id","id":"t0_id"}},"itemId":""}
