@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item3" object-name="Workflow:name=generic" id="af0d3656-755f-455f-8b53-bb3dd9a0adce" editor-version="1.6" version="0.0.4" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item3" object-name="Workflow:name=generic" id="af0d3656-755f-455f-8b53-bb3dd9a0adce" editor-version="1.6" version="1.0.4" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
     <display-name>Change a user password</display-name>
-    <description>Changes the password of a user. SSL connection is required and the password must meet the Active Directory restrictions.</description>
-    <position y="30.0" x="180.0"/>
+    <description>Cloud Assembly Custom Action/XaaS
+Changes the password of a user. </description>
+    <position y="40.0" x="180.0"/>
     <input>
         <param name="user" type="AD:User">
             <description>The user which password will be changed</description>
@@ -42,6 +43,8 @@ actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").
         <position y="200.0" x="140.0"/>
     </workflow-item>
     <workflow-item name="item2" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
         <position y="250.0" x="180.0"/>
     </workflow-item>
     <workflow-item name="item0" out-name="item1" type="task" script-module="com.vmware.library.microsoft.activeDirectory/setUserPassword" comparator="0">
@@ -73,6 +76,8 @@ actionResult = System.getModule("com.vmware.library.microsoft.activeDirectory").
         <position y="80.0" x="140.0"/>
     </workflow-item>
     <workflow-item name="item4" throw-bind-name="errorCode" type="end" end-mode="1" comparator="0">
+        <in-binding/>
+        <out-binding/>
         <position y="70.0" x="340.0"/>
     </workflow-item>
     <presentation>

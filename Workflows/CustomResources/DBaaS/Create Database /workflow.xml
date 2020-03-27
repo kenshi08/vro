@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="9c4c67dd-6523-40f0-b736-38aef6af0ac2" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
-    <display-name>Create and add Database </display-name>
-    <description>This workflow Creates Database in Microsoft SQL Server
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="9c4c67dd-6523-40f0-b736-38aef6af0ac2" editor-version="1.6" version="1.0.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Create Database </display-name>
+    <description>Cloud Assembly Custom Resource/XaaS
+This workflow Creates Database in Microsoft SQL Server
 Assign the provided AD user with DB_Owner permission to the Database</description>
     <position y="50.0" x="100.0"/>
     <input>
@@ -34,16 +35,16 @@ Assign the provided AD user with DB_Owner permission to the Database</descriptio
         <value encoded="n">neetcloud\administrator</value>
     </attrib>
     <attrib name="vmPassword" type="SecureString">
-        <value encoded="n">8BQ56S4DI77M40T72U33P31Y21VD0FDEC3Q18F266AN41B79D7L41C9BA1O3E97709YA9D4194Y46F05FAQDD1D243H71D3ADBSF80ECC7P2166E5FH6130560JC3C9FCDL2C4F7C9K6DE6656KEFCAAF1R48B9308G34AE973SF837894W46C85F9OA50E229MD5F16DAH4D7169EZ5CF0828S</value>
+        <value encoded="n">8BO56Z4DV77Q40Q72W33Z31U21Y53E524AR8932908W882C1DCW6C84FA1PD47BE10MDBCBE12VEC0993ENE2DE435JDE6B24DJ6ED7343I1769B8L974FCA9O4CC9B82SD0BA0F0W15E7965HD063BFDI3081470IEBC0FDFQE659958Q2E0C376M4836C1S7249E2DR13BD8BAH8993E07W</value>
     </attrib>
     <attrib name="vm" type="VC:VirtualMachine">
-        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-57'&amp;dunesName='VC:VirtualMachine'</value>
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-19'&amp;dunesName='VC:VirtualMachine'</value>
     </attrib>
     <attrib name="sqluser" type="string">
         <value encoded="n">sa</value>
     </attrib>
     <attrib name="sqlpwd" type="SecureString">
-        <value encoded="n">8BI56R4DJ77U40S72X33O31H21O1F228AAP2F025D6U596FB63M555F2ABZC0EE526Z9698DC1H93300E3KB11F2ECSCDA34E7O381B8EBXC8ABC3ZDC09189W46E8F33PF4B055DG199A148T27E0170Y972D41EO19EF10AUCAAC44BN67A81DBGD99FE57P66FD4D5N4983B7EG62FC1DCO</value>
+        <value encoded="n">8BT56Z4DX77M40V72N33M31R21J137A514GDFA7631SA359DB2OB9D5BF2LA29899CNEA808AMB4E043IFE81A50WAD4CFCFGBA2FFEBO3163AT1FABA9EY63829CFSA71108BI889C34AM6E0343Q697BFE3MF14C2D4H37A7571O525D99CJFD4F700V782D925X4AF6BFEQ3FC143FX</value>
     </attrib>
     <attrib name="sqlinstance" type="string">
         <value encoded="n"></value>
@@ -58,6 +59,8 @@ Assign the provided AD user with DB_Owner permission to the Database</descriptio
         <value encoded="n">1433</value>
     </attrib>
     <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
         <position y="45.40909090909091" x="564.5"/>
     </workflow-item>
     <workflow-item name="item1" out-name="item2" type="task" comparator="0">

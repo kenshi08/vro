@@ -4,13 +4,15 @@
     <description>Cloud Assembly Custom Resources
 Deletes a user from an Active Directory instance.</description>
     <ref-types>&gt;(AD:User)</ref-types>
-    <position y="30.0" x="280.0"/>
+    <position y="50.0" x="280.0"/>
     <input>
         <param name="user" type="AD:User">
             <description>User to destroy</description>
         </param>
     </input>
-    <output/>
+    <output>
+        <param name="result" type="string"/>
+    </output>
     <attrib name="errorMessage" type="string">
         <value encoded="n"></value>
         <description>Error message if any</description>
@@ -18,9 +20,9 @@ Deletes a user from an Active Directory instance.</description>
     <workflow-item name="item2" type="end" end-mode="0" comparator="0">
         <in-binding/>
         <out-binding/>
-        <position y="130.0" x="280.0"/>
+        <position y="170.0" x="280.0"/>
     </workflow-item>
-    <workflow-item name="item0" out-name="item2" catch-name="item1" throw-bind-name="errorMessage" type="task" script-module="com.vmware.library.microsoft.activeDirectory/destroyElement" comparator="0">
+    <workflow-item name="item0" out-name="item4" catch-name="item1" throw-bind-name="errorMessage" type="task" script-module="com.vmware.library.microsoft.activeDirectory/destroyElement" comparator="0">
         <display-name>destroyElement</display-name>
         <script encoded="false">//Auto generated script, cannot be modified !
 System.getModule("com.vmware.library.microsoft.activeDirectory").destroyElement(element) ;</script>
@@ -48,6 +50,16 @@ System.getModule("com.vmware.library.microsoft.activeDirectory").destroyElement(
         <in-binding/>
         <out-binding/>
         <position y="70.0" x="600.0"/>
+    </workflow-item>
+    <workflow-item name="item4" out-name="item2" type="task" comparator="0">
+        <display-name>Scriptable task</display-name>
+        <script encoded="false">results = 'success'</script>
+        <in-binding/>
+        <out-binding>
+            <bind name="results" type="string" export-name="result"/>
+        </out-binding>
+        <description>Simple task with custom script capability.</description>
+        <position y="130.0" x="240.0"/>
     </workflow-item>
     <presentation>
         <p-param name="user">

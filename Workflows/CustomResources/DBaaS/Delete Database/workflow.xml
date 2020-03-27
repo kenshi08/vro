@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="2b48a9d0-3b83-4912-9c9e-e817c09c7ea6" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="2b48a9d0-3b83-4912-9c9e-e817c09c7ea6" editor-version="1.6" version="1.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
     <display-name>Delete Database</display-name>
-    <description>This Workflow Deletes a user-defined database in SQL Server Management Studio in Microsoft SQL Server.</description>
+    <description>Cloud Assembly Custom Resource/XaaS
+This Workflow Deletes a user-defined database in SQL Server Management Studio in Microsoft SQL Server.</description>
     <position y="50.0" x="100.0"/>
     <input>
         <param name="DBName" type="SQL:Database">
             <description>Enter the Database Name</description>
         </param>
     </input>
-    <output/>
+    <output>
+        <param name="result" type="string"/>
+    </output>
     <attrib name="interactiveSession" type="boolean">
         <value encoded="n">false</value>
     </attrib>
@@ -31,7 +34,7 @@
         <value encoded="n">8BL56T4DV77G40M72X33J31M21YB341927UD2B2718R43DE77FPB9E7986O397A505M37B2FD4TB1CAD5BO21F2EEBJ8A6BAEAH9088C8EO2CF82D2G34DC824N301A6BTA0D7943P38AB96V2EA9B20JCD6112ALD8DD03ENA5348B0ID866D8CM3CE3AB7M57BD039W8062EF3T75C757CJ</value>
     </attrib>
     <attrib name="vm" type="VC:VirtualMachine">
-        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-57'&amp;dunesName='VC:VirtualMachine'</value>
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-19'&amp;dunesName='VC:VirtualMachine'</value>
     </attrib>
     <attrib name="sqluser" type="string">
         <value encoded="n">sa</value>
@@ -46,6 +49,8 @@
         <value encoded="n">C:\sqlscripts\DeleteDB.sql</value>
     </attrib>
     <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
         <position y="45.40909090909091" x="464.5"/>
     </workflow-item>
     <workflow-item name="item1" out-name="item0" type="task" comparator="0">
@@ -73,7 +78,7 @@ guestProgramSpec.workingDirectory = workingDirectory;
 guestProgramSpec.envVariables = environment;
 
 var processManager = guestOperationsManager.processManager;
-processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);</script>
+result = processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);</script>
         <in-binding>
             <bind name="vmUsername" type="string" export-name="vmUsername"/>
             <bind name="vmPassword" type="SecureString" export-name="vmPassword"/>
@@ -89,7 +94,9 @@ processManager.startProgramInGuest(vm , guestAuth , guestProgramSpec);</script>
             <bind name="sqlinstance" type="string" export-name="sqlinstance"/>
             <bind name="Sqlfilepath" type="string" export-name="Sqlfilepath"/>
         </in-binding>
-        <out-binding/>
+        <out-binding>
+            <bind name="result" type="string" export-name="result"/>
+        </out-binding>
         <position y="55.40909090909091" x="224.5"/>
     </workflow-item>
     <presentation>

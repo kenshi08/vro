@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item0" object-name="Workflow:name=generic" id="94f8c1d2-a32e-4e04-9aa8-3fe0a63204be" editor-version="1.6" version="1.1.1" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
     <display-name>Disable a user</display-name>
-    <description>Disables a user from an Active Directory instance.</description>
+    <description>Cloud Assembly Custom Action/XaaS 
+Disables a user from an Active Directory instance.</description>
     <ref-types>&gt;(AD:User)</ref-types>
-    <position y="30.0" x="180.0"/>
+    <position y="40.0" x="180.0"/>
     <input>
         <param name="user" type="AD:User">
             <description>User to disable</description>
@@ -14,6 +15,8 @@
         <value encoded="n">false</value>
     </attrib>
     <workflow-item name="item2" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
         <position y="150.0" x="180.0"/>
     </workflow-item>
     <workflow-item name="item0" out-name="item2" type="task" script-module="com.vmware.library.microsoft.activeDirectory/setUserEnable" comparator="0">

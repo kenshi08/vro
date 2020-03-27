@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="ff1a37c1-7809-4e29-bdef-d5d43d99937f" editor-version="1.6" version="0.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="ff1a37c1-7809-4e29-bdef-d5d43d99937f" editor-version="1.6" version="1.0.0" api-version="6.0.0" allowed-operations="evf" restartMode="1" resumeFromFailedMode="0">
     <display-name>IncreaseDBSize</display-name>
-    <description>This Workflow  increase the size of a database in Microsoft SQL Server .</description>
+    <description>Cloud Assembly Custom Resource/XaaS
+Increase the size of a database in Microsoft SQL Server .</description>
     <position y="50.0" x="100.0"/>
     <input>
         <param name="DBName" type="SQL:Database">
@@ -41,7 +42,7 @@
         <description>Password for the virtual machine</description>
     </attrib>
     <attrib name="vm" type="VC:VirtualMachine">
-        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-57'&amp;dunesName='VC:VirtualMachine'</value>
+        <value encoded="n">dunes://service.dunes.ch/CustomSDKObject?id='vcsa-01a.neetcloud.local%2Cid:vm-19'&amp;dunesName='VC:VirtualMachine'</value>
         <description>Virtual machine</description>
     </attrib>
     <attrib name="sqluser" type="string">
@@ -60,6 +61,8 @@
         <value encoded="n">C:\sqlscripts\IncreaseDBSize.sql</value>
     </attrib>
     <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
         <position y="45.40909090909091" x="464.5"/>
     </workflow-item>
     <workflow-item name="item1" out-name="item0" type="task" comparator="0">

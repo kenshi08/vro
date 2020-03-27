@@ -4,7 +4,7 @@
     <description>Cloud Assembly Custom Resource
 Creates a user in an organizational unit and sets a password for the user. The password can be changed at the next login.</description>
     <ref-types>(AD:OrganizationalUnit)</ref-types>
-    <position y="80.0" x="180.0"/>
+    <position y="90.0" x="180.0"/>
     <input>
         <param name="accountName" type="string">
             <description>The account name for the user (without domain information)</description>
